@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useForm, type SubmitHandler, Controller } from "react-hook-form";
 import {
@@ -22,13 +21,9 @@ import {
   EyeOffIcon,
 } from "../../../assets/AuthBackGrounds/AuthIcons/Icons";
 import { validateAuthForm } from "../../services/Validations";
-
-interface LoginFormData {
-  email: string;
-  password: string;
-}
-
-
+import "./Login.module.css";
+import type { LoginFormData } from "../../../interfaces/Auth/LoginFormData";
+import { toast } from "react-toastify";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -50,13 +45,10 @@ const Login = () => {
     },
   });
 
-
-    const onSubmit = async (data: LoginFormData) => {
-    console.log("Login attempt:", data)
-
-    alert(`Login successful for ${data.email}!`)
-  }
-
+  const onSubmit = async (data: LoginFormData) => {
+    console.log("Login attempt:", data);
+    toast.success("You have successfully logged in!");
+  };
 
   const onSubmitForm: SubmitHandler<LoginFormData> = async (data) => {
     setIsLoading(true);
@@ -81,8 +73,6 @@ const Login = () => {
       setIsLoading(false);
     }
   };
-
-  
 
   return (
     <Box sx={{ display: "flex", maxHeight: "100vh" }}>
@@ -113,12 +103,12 @@ const Login = () => {
           <Box
             sx={{
               width: "100%",
-              marginLeft: { lg: "2rem",  md: "0rem" }, 
+              marginLeft: { lg: "2rem", md: "0rem" },
               maxWidth: 400,
               display: "flex",
               flexDirection: "column",
-               justifyContent: { xs: "center", sm: "center", md: "flex-start" }, 
-              
+              justifyContent: { xs: "center", sm: "center", md: "flex-start" },
+
               gap: 2,
             }}
           >
@@ -172,9 +162,7 @@ const Login = () => {
 
               <Box sx={{ display: "flex", flexDirection: "column", gap: 8 }}>
                 <Box sx={{ display: "flex", flexDirection: "column", gap: 4 }}>
-                  <Box
-                    sx={{ display: "flex", flexDirection: "column", gap: 1 }}
-                  >
+                  <Box sx={{ display: "flex", flexDirection: "column" }}>
                     <Typography
                       variant="subtitle1"
                       sx={{
@@ -221,9 +209,7 @@ const Login = () => {
                   <Box
                     sx={{ display: "flex", flexDirection: "column", gap: 1 }}
                   >
-                    <Box
-                      sx={{ display: "flex", flexDirection: "column", gap: 1 }}
-                    >
+                    <Box sx={{ display: "flex", flexDirection: "column" }}>
                       <Typography
                         variant="subtitle1"
                         sx={{
@@ -232,7 +218,7 @@ const Login = () => {
                           color: "#152C5B",
                         }}
                       >
-                        Email Address
+                        Password
                       </Typography>
                       <Controller
                         name="password"
@@ -270,6 +256,7 @@ const Login = () => {
                                       setShowPassword(!showPassword)
                                     }
                                     edge="end"
+                                    
                                   >
                                     {showPassword ? (
                                       <EyeOffIcon />
@@ -301,6 +288,7 @@ const Login = () => {
                   type="submit"
                   fullWidth
                   disabled={!isValid || isLoading}
+                  className="login-button"
                   sx={{
                     py: 1.5,
                     fontWeight: 500,
@@ -329,18 +317,19 @@ const Login = () => {
       {!isMobile && (
         <Box
           sx={{
-         width: { md: "50%" },
-      height: "95vh", 
-      position: "relative",
-      backgroundImage: `url(${LoginBG})`,
-      backgroundSize: "cover",
-      backgroundPosition: "center",
-      backgroundRepeat: "no-repeat",
-      borderRadius: 3, 
-      overflow: "hidden",
-      mt: 2, 
+            width: { md: "50%" },
+            height: "95.2vh",
+            position: "relative",
+            backgroundImage: `url(${LoginBG})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+            borderRadius: 3,
+            overflow: "hidden",
+            mt: 2,
           }}
         >
+          <img loading="lazy" alt="Login Background" src={LoginBG} />
           <Box
             sx={{
               position: "absolute",

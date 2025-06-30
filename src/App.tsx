@@ -12,6 +12,7 @@ import Login from "./modules/auth/Login/Login";
 import AuthLayout from "./modules/layouts/AuthLayout/AuthLayout";
 import { createBrowserRouter, RouterProvider, type RouteObject } from "react-router-dom";
 import ResetPassword from "./modules/auth/ResetPassword/ResetPassword";
+import { ToastContainer } from "react-toastify";
 
 
 function App() {
@@ -65,7 +66,7 @@ const routes: RouteObject[] = [
 
   return (
     <>
-   
+      <ToastContainer position="top-right" autoClose={3000} />
       <RouterProvider router={createBrowserRouter(routes)} />
     </>
   )
