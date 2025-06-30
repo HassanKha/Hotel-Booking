@@ -15,11 +15,11 @@ import {
   useMediaQuery,
 } from "@mui/material";
 
-import LoginBG from "../../../assets/AuthBackGrounds/LoginBG.png"; // Assuming you have a background image
+import LoginBG from "../../../assets/Auth/AuthBackGrounds/LoginBG.png"; // Assuming you have a background image
 import {
   EyeIcon,
   EyeOffIcon,
-} from "../../../assets/AuthBackGrounds/AuthIcons/Icons";
+} from "../../../assets/Auth/AuthIcons/Icons";
 import { validateAuthForm } from "../../services/Validations";
 import "./Login.module.css";
 import type { LoginFormData } from "../../../interfaces/Auth/LoginFormData";
@@ -256,7 +256,7 @@ const Login = () => {
                                       setShowPassword(!showPassword)
                                     }
                                     edge="end"
-                                    
+
                                   >
                                     {showPassword ? (
                                       <EyeOffIcon />
