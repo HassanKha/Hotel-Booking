@@ -273,12 +273,12 @@ const Login = () => {
                     </Box>
                     <Box sx={{ textAlign: "right" }}>
                       <Link
-                        href="/forgot-password"
+                        href="/forget-password"
                         variant="body2"
                         color="text.secondary"
                         sx={{ textDecoration: "none" }}
                       >
-                        Forgot Password?
+                        Forget Password?
                       </Link>
                     </Box>
                   </Box>
