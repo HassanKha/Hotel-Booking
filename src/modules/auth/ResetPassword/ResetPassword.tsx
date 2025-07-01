@@ -19,7 +19,7 @@ import {
   EyeIcon,
   EyeOffIcon,
 } from "../../../assets/Auth/AuthIcons/Icons";
-import LoginBG from "../../../assets/Auth/AuthBackGrounds/LoginBG.png";
+import LoginBG from "../../../assets/Auth/AuthBackGrounds/d158185a6e98393b02ffa614503c307e55f33da8.jpg";
 // import "./Login.module.css";
 import { toast } from "react-toastify";
 
