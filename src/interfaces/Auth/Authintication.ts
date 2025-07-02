@@ -13,3 +13,13 @@ export interface ResetPasswordFormData {
   password: string;
   confirmPassword: string;
 };
+export interface RegisterFormData {
+  email: string;
+  password: string;
+  confirmPassword: string;
+  phoneNumber: string;
+  userName: string;
+  country: string;
+  profileImage: File | null;
+  role?: string;
+}
