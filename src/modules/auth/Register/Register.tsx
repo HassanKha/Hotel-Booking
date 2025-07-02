@@ -24,9 +24,10 @@ import { validateAuthForm } from "../../services/Validations";
 import "./Register.module.css";
 import type { RegisterFormData } from "../../../interfaces/Auth/Authintication";
 import { toast } from "react-toastify";
-import { registerBG } from "@/assets";
+import registerBg from "../../../assets/Auth/AuthBackGrounds/7bf6331d05683c0d11c825315d6665a638528e5f.jpg"
 import { Link as RouterLink, useNavigate } from "react-router-dom";
-import { axiosInstance, USERS_URLS } from "@/modules/services/Urls";
+import { axiosInstance, USERS_URLS } from "../../services/Urls";
+
 
 
 const Register = () => {
@@ -420,7 +421,7 @@ const Register = () => {
             width: { md: "50%" },
             height: "95.2vh",
             position: "relative",
-            backgroundImage: `url(${registerBG})`,
+            backgroundImage: `url(${registerBg})`,
             backgroundSize: "cover",
             backgroundPosition: "center",
             overflow: "hidden",
