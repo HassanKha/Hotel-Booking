@@ -20,15 +20,11 @@ import {
   EyeOffIcon,
 } from "../../../assets/Auth/AuthIcons/Icons";
 import LoginBG from "../../../assets/Auth/AuthBackGrounds/d158185a6e98393b02ffa614503c307e55f33da8.jpg";
-// import "./Login.module.css";
 import { toast } from "react-toastify";
+import { axiosInstance, USERS_URLS } from "../../services/Urls";
+import { useNavigate } from "react-router-dom";
+import type { ResetPasswordFormData } from "../../../interfaces/Auth/Authintication";
 
-type ResetPasswordFormData = {
-  email: string;
-  otp: string;
-  password: string;
-  confirmPassword: string;
-};
 
 const ResetPassword = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -47,29 +43,25 @@ const ResetPassword = () => {
     mode: "onChange",
     defaultValues: {
       email: "",
-      otp: "",
+      seed: "",
       password: "",
       confirmPassword: "",
     },
   });
 
+  let navigate = useNavigate()
+
   const onSubmit = async (data: ResetPasswordFormData) => {
-    setIsLoading(true);
-    clearErrors();
-
     try {
-      if (data.password !== data.confirmPassword) {
-        setError("confirmPassword", {
-          type: "manual",
-          message: "Passwords do not match",
-        });
-        return;
-      }
-
-      console.log("Reset password data:", data);
-      toast.success("Password reset successful!");
-    } catch (error) {
-      toast.error("Something went wrong!");
+      setIsLoading(true);
+      clearErrors();
+      let response = await axiosInstance.post(USERS_URLS.RESET_PASS, data)
+      toast.success(response.data.message)
+      navigate('/')
+      setIsLoading(false)
+    }
+    catch (error: any) {
+      toast.error(error.response.data.message);
     } finally {
       setIsLoading(false);
     }
@@ -108,8 +100,8 @@ const ResetPassword = () => {
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 If you already have an account register
-                    <Link
-                  href="/register"
+                <Link
+                  href="/"
                   color="primary"
                   sx={{
                     fontWeight: 400,
@@ -123,7 +115,7 @@ const ResetPassword = () => {
                     component="span"
                     sx={{ color: "primary.danger", fontWeight: "600" }}
                   >
-                    Register Here !
+                    Login Here !
                   </Box>
                 </Link>
               </Typography>
@@ -178,7 +170,7 @@ const ResetPassword = () => {
                     OTP Code
                   </Typography>
                   <Controller
-                    name="otp"
+                    name="seed"
                     control={control}
                     rules={{ required: "OTP is required" }}
                     render={({ field }) => (
@@ -186,8 +178,8 @@ const ResetPassword = () => {
                         {...field}
                         fullWidth
                         label="OTP"
-                        error={!!errors.otp}
-                        helperText={errors.otp?.message}
+                        error={!!errors.seed}
+                        helperText={errors.seed?.message}
                         variant="outlined"
                         required
                         sx={{

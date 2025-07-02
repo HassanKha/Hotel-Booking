@@ -11,26 +11,39 @@ import {
 
 import { useTheme } from "@emotion/react";
 import { Controller, useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import LoginBG from "../../../assets/Auth/AuthBackGrounds/d158185a6e98393b02ffa614503c307e55f33da8.jpg" // تأكد من المسار
 import { validateAuthForm } from "../../services/Validations";
+import { axiosInstance, USERS_URLS } from "../../services/Urls";
+import { toast } from "react-toastify";
+import type { ForgotPassword } from "../../../interfaces/Auth/Authintication";
+
 
 export default function ForgetPassword() {
   const [isLoading, setIsLoading] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  let navigate = useNavigate()
 
   const {
     handleSubmit,
     control,
     formState: { errors, isValid },
-  } = useForm({ mode: "onChange" });
+  } = useForm<ForgotPassword>({ mode: "onChange" });
 
-  const onSubmit = (data) => {
-    setIsLoading(true);
-    console.log(data);
- 
-    setIsLoading(false);
+  const onSubmit = async (data: ForgotPassword) => {
+    try {
+      setIsLoading(true);
+      let response = await axiosInstance.post(USERS_URLS.FORGET_PASS, data)
+      console.log(response);
+      toast.success(response.data.message)
+      navigate('/reset-password')
+      setIsLoading(false);
+    }
+    catch (error: any) {
+      toast.error(error.response.data.message)
+      setIsLoading(false)
+    }
   };
 
   return (
@@ -69,8 +82,8 @@ export default function ForgetPassword() {
                 Forget Password
               </Typography>
               <Typography variant="body2" color="text.secondary">
-               If you already have an account register
-               You can   Login here ! <br /> 
+                If you already have an account register
+                You can   Login here ! <br />
                 <Link to="/register" style={{ textDecoration: "none", color: "red" }}>
                   <strong>Register Here!</strong>
                 </Link>
@@ -89,7 +102,7 @@ export default function ForgetPassword() {
                         color: "#152C5B",
                       }}
                     >
-                      Email 
+                      Email
                     </Typography>
                     <Controller
                       name="email"
@@ -125,7 +138,7 @@ export default function ForgetPassword() {
                     />
                   </Box>
 
-             
+
                 </Box>
               </Box>
 
@@ -135,7 +148,7 @@ export default function ForgetPassword() {
                 disabled={!isValid || isLoading}
                 sx={{
                   py: 1.5,
-                 marginTop: '10px',
+                  marginTop: '10px',
                   fontWeight: 500,
                   backgroundColor: "secondary.main",
                   "&:hover": { backgroundColor: "#1d3ecf" },

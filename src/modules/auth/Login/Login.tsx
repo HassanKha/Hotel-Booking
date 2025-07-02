@@ -22,7 +22,7 @@ import {
 } from "../../../assets/Auth/AuthIcons/Icons";
 import { validateAuthForm } from "../../services/Validations";
 import "./Login.module.css";
-import type { LoginFormData } from "../../../interfaces/Auth/LoginFormData";
+import type { LoginFormData } from "../../../interfaces/Auth/Authintication";
 import { toast } from "react-toastify";
 
 const Login = () => {
