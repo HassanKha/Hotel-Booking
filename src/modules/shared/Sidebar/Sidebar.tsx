@@ -16,7 +16,7 @@ import {
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
 import { AdsIcon, BookingsIcon, FacilitiesIcon, HomeIcon, LogoutIcon, MenuIcon, PasswordIcon, RoomsIcon, UsersIcon } from "../../../assets/Dashboard/SideBarIcons"
-
+import { useNavigate } from "react-router-dom";
 const SIDEBAR_WIDTH = 240
 const SIDEBAR_COLLAPSED_WIDTH = 64
 
@@ -86,15 +86,28 @@ const menuItems = [
 ]
 export const Sidebar: React.FC<SidebarProps> = ({ open, collapsed, onToggle, onClose, selectedItem, onItemSelect }) => {
 
+  const navigate = useNavigate();
     const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down("md"))
 
+
   const handleItemClick = (itemId: string) => {
-    onItemSelect(itemId)
-    if (isMobile) {
-      onClose()
-    }
+  if (itemId === "logout") {
+    // 🧹 إزالة التوكن
+    localStorage.removeItem("token");
+
+    // 🔁 إعادة التوجيه لصفحة تسجيل الدخول
+    navigate("/login");
+
+    return;
   }
+
+  onItemSelect(itemId);
+
+  if (isMobile) {
+    onClose();
+  }
+};
 
   const sidebarContent = (
     <Box

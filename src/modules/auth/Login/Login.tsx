@@ -24,17 +24,19 @@ import { validateAuthForm } from "../../services/Validations";
 import "./Login.module.css";
 import type { LoginFormData } from "../../../interfaces/Auth/Authintication";
 import { toast } from "react-toastify";
+import { axiosInstance, USERS_URLS } from "../../services/Urls";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-
+const navigate = useNavigate();
   const {
     control,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors },
     setError,
     clearErrors,
   } = useForm<LoginFormData>({
@@ -45,34 +47,67 @@ const Login = () => {
     },
   });
 
-  const onSubmit = async (data: LoginFormData) => {
-    console.log("Login attempt:", data);
-    toast.success("You have successfully logged in!");
-  };
+const onSubmitForm: SubmitHandler<LoginFormData> = async (data) => {
+  setIsLoading(true);
+  clearErrors();
 
-  const onSubmitForm: SubmitHandler<LoginFormData> = async (data) => {
-    setIsLoading(true);
-    clearErrors();
+  try {
+    const response = await axiosInstance.post(USERS_URLS.LOGIN, data);
+    const { success, message, data: responseData } = response.data;
 
-    try {
-      if (onSubmit) await onSubmit(data);
-    } catch (error) {
-      if (error instanceof Error) {
-        if (error.message.includes("email")) {
-          setError("email", { type: "server", message: error.message });
-        } else if (error.message.includes("password")) {
-          setError("password", { type: "server", message: error.message });
-        } else {
-          setError("root", {
-            type: "server",
-            message: "Login failed. Please try again.",
-          });
-        }
+    console.log(responseData)
+
+    if (!success) {
+
+      const errorMessage = message || "Login failed. Please try again.";
+
+      if (errorMessage.toLowerCase().includes("email")) {
+        setError("email", { type: "server", message: errorMessage });
+      } else if (errorMessage.toLowerCase().includes("password")) {
+        setError("password", { type: "server", message: errorMessage });
+      } else {
+        setError("root", {
+          type: "server",
+          message: errorMessage,
+        });
       }
-    } finally {
-      setIsLoading(false);
+
+      return; 
     }
-  };
+
+    toast.success(message || "You have successfully logged in!");
+
+
+    localStorage.setItem("token", responseData.token);
+
+    navigate("/dashboard");
+
+  } catch (error: any) {
+    console.error("Login error:", error);
+
+    const serverMessage = error?.response?.data?.message;
+
+    const errorMessage =
+      serverMessage || "Network error. Please check your connection.";
+
+  
+    if (errorMessage.toLowerCase().includes("email")) {
+      setError("email", { type: "server", message: errorMessage });
+    } else if (errorMessage.toLowerCase().includes("password")) {
+      setError("password", { type: "server", message: errorMessage });
+    } else {
+      setError("root", {
+        type: "server",
+        message: errorMessage,
+      });
+    }
+
+    toast.error(errorMessage);
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   return (
     <Box sx={{ display: "flex", maxHeight: "100vh" }}>
@@ -287,7 +322,7 @@ const Login = () => {
                 <Button
                   type="submit"
                   fullWidth
-                  disabled={!isValid || isLoading}
+                  disabled={ isLoading}
                   className="login-button"
                   sx={{
                     py: 1.5,

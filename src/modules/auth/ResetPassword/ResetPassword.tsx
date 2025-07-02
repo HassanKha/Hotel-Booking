@@ -37,7 +37,6 @@ const ResetPassword = () => {
     control,
     handleSubmit,
     formState: { errors, isValid },
-    setError,
     clearErrors,
   } = useForm<ResetPasswordFormData>({
     mode: "onChange",
