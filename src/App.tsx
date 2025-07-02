@@ -4,15 +4,12 @@ import NotFound from "./modules/shared/NotFound/NotFound";
 import Dashboard from "./modules/pages/Dashboard/Dashboard";
 import ProtectedRoute from './modules/shared/ProtectedRoute/ProtectedRoute';
 import MasterLayout from "./modules/layouts/MasterLayout.css/MasterLayout";
-import Verify from "./modules/auth/Verify/Verify";
-import ChangePassword from "./modules/auth/ChangePassword/ChangePassword";
-import ForgetPassword from "./modules/auth/ForgetPassword/ForgetPassword";
-import Register from "./modules/auth/Register/Register";
-import Login from "./modules/auth/Login/Login";
+
 import AuthLayout from "./modules/layouts/AuthLayout/AuthLayout";
 import { createBrowserRouter, RouterProvider, type RouteObject } from "react-router-dom";
 import ResetPassword from "./modules/auth/ResetPassword/ResetPassword";
 import { ToastContainer } from "react-toastify";
+import { ChangePassword, ForgetPassword, Login, Register } from "./modules/auth";
 
 
 function App() {
@@ -29,7 +26,7 @@ const routes: RouteObject[] = [
       { path: "forget-password", element: <ForgetPassword /> },
       { path: "reset-password", element: <ResetPassword /> },
       { path: "change-password", element: <ChangePassword /> },
-      { path: "verify-account", element: <Verify /> },
+
     ],
   },
   {
@@ -66,7 +63,7 @@ const routes: RouteObject[] = [
 
   return (
     <>
-      <ToastContainer position="top-right" autoClose={3000} />
+      <ToastContainer position="top-right" autoClose={2000} />
       <RouterProvider router={createBrowserRouter(routes)} />
     </>
   )

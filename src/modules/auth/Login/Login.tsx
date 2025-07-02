@@ -15,7 +15,6 @@ import {
   useMediaQuery,
 } from "@mui/material";
 
-import LoginBG from "../../../assets/Auth/AuthBackGrounds/LoginBG.png"; // Assuming you have a background image
 import {
   EyeIcon,
   EyeOffIcon,
@@ -24,6 +23,9 @@ import { validateAuthForm } from "../../services/Validations";
 import "./Login.module.css";
 import type { LoginFormData } from "../../../interfaces/Auth/LoginFormData";
 import { toast } from "react-toastify";
+import { LoginBG } from "@/assets";
+import { Link as RouterLink } from "react-router-dom";
+
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -129,7 +131,8 @@ const Login = () => {
               >
                 If you don't have an account register{" "}
                 <Link
-                  href="/register"
+                  component={RouterLink}
+                  to="/register"
                   color="primary"
                   sx={{
                     fontWeight: 400,
@@ -294,7 +297,7 @@ const Login = () => {
                     fontWeight: 500,
                     backgroundColor: "secondary.main",
                     "&:hover": {
-                      backgroundColor: "#1d3ecf", // custom hover
+                      backgroundColor: "#1d3ecf",
                     },
                     color: "white",
                   }}
