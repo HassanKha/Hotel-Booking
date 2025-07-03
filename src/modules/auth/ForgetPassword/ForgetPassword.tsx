@@ -41,7 +41,7 @@ export default function ForgetPassword() {
       setIsLoading(false);
     }
     catch (error: any) {
-      toast.error(error.response.data.message || "An unexpected error occurred. Please try again later.")
+      toast.error(error.response.data.message || "cannot find this email")
     }
     finally{
       setIsLoading(false)
