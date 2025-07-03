@@ -16,7 +16,7 @@ import { Controller, useForm, type SubmitHandler } from "react-hook-form";
 import { EyeIcon, EyeOffIcon } from "../../../assets/Auth/AuthIcons/Icons";
 import ChangePassBG from "../../../assets/Auth/AuthBackGrounds/ChangePassBG.png";
 import { toast } from "react-toastify";
-import { axiosInstance } from "../../services/Urls";
+import { axiosInstance, USERS_URLS } from "../../services/Urls";
 import "./ChangePassword.module.css";
 
 interface ChangePasswordData {
@@ -65,10 +65,7 @@ const ChangePassword = () => {
     clearErrors();
 
     try {
-      const response = await axiosInstance.post(
-        "https://upskilling-egypt.com:3000/api/v0/admin/users/change-password",
-        data
-      );
+      const response = await axiosInstance.post(USERS_URLS.CHANGE_PASS,data);
 
       const { success, message } = response.data;
 
