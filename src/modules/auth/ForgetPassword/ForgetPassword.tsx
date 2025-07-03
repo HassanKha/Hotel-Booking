@@ -41,7 +41,9 @@ export default function ForgetPassword() {
       setIsLoading(false);
     }
     catch (error: any) {
-      toast.error(error.response.data.message)
+      toast.error(error.response.data.message || "An unexpected error occurred. Please try again later.")
+    }
+    finally{
       setIsLoading(false)
     }
   };

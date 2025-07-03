@@ -60,9 +60,11 @@ const ResetPassword = () => {
       setIsLoading(false)
     }
     catch (error: any) {
-      toast.error(error.response.data.message);
-      setIsLoading(false);
+     toast.error(error.response?.data?.message || "An unexpected error occurred. Please try again later.");
     } 
+    finally{
+      setIsLoading(false)
+    }
   };
 
   return (
