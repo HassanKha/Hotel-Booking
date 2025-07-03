@@ -172,7 +172,7 @@ const Register = () => {
                 </Alert>
               )}
 
-              <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+              <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}>
                 <Controller
                   name="userName"
                   control={control}
