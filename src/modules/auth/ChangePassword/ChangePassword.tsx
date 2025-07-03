@@ -232,7 +232,7 @@ const ChangePassword = () => {
                   type="submit"
                   fullWidth
                   disabled={isLoading}
-                  className="login-button"
+                  className="changePass-button"
                   sx={{
                     py: 1.5,
                     fontWeight: 500,
@@ -273,7 +273,7 @@ const ChangePassword = () => {
             mt: 2,
           }}
         >
-          <img loading="lazy" alt="Login Background" src={ChangePassBG} />
+          <img loading="lazy" alt="Change Password Background" src={ChangePassBG} />
           <Box
             sx={{
               position: "absolute",
