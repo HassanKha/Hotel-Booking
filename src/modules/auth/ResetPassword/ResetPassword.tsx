@@ -126,7 +126,7 @@ const ResetPassword = () => {
                   {errors.root.message}
                 </Alert>
               )}
-              <Box sx={{ display: "flex", flexDirection: "column", gap: 4 }}>
+              <Box sx={{ display: "flex", flexDirection: "column", gap: 1.7 }}>
                 {/* Email */}
                 <Box>
                   <Typography variant="subtitle1" sx={{ fontWeight: 400, fontSize: "16px", color: "#152C5B" }}>
