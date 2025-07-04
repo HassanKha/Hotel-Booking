@@ -23,8 +23,8 @@ import LoginBG from "../../../assets/Auth/AuthBackGrounds/d158185a6e98393b02ffa6
 import { toast } from "react-toastify";
 import { axiosInstance, USERS_URLS } from "../../services/Urls";
 import { useNavigate } from "react-router-dom";
-import type { ResetPasswordFormData } from "../../../interfaces/Auth/Authintication";
-
+import type { ResetPasswordFormData } from "../../../interfaces/Auth/AuthTypes";
+import "./ResetPassword.module.css";
 
 const ResetPassword = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -296,6 +296,7 @@ const ResetPassword = () => {
                     },
                     color: "white",
                   }}
+                  className="reset-pass-button"
                 >
                   {isLoading ? (
                     <>

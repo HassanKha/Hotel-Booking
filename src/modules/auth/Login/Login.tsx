@@ -22,7 +22,7 @@ import {
 } from "../../../assets/Auth/AuthIcons/Icons";
 import { validateAuthForm } from "../../services/Validations";
 import "./Login.module.css";
-import type { LoginFormData } from "../../../interfaces/Auth/Authintication";
+import type { LoginFormData } from "../../../interfaces/Auth/AuthTypes";
 import { toast } from "react-toastify";
 import { axiosInstance, USERS_URLS } from "../../services/Urls";
 import { useNavigate } from "react-router-dom";

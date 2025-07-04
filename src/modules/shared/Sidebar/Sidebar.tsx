@@ -1,5 +1,4 @@
-
-import React from "react"
+import React from "react";
 import {
   Drawer,
   List,
@@ -13,12 +12,25 @@ import {
   Divider,
   IconButton,
   Tooltip,
-} from "@mui/material"
-import { styled } from "@mui/material/styles"
-import { AdsIcon, BookingsIcon, FacilitiesIcon, HomeIcon, LogoutIcon, MenuIcon, PasswordIcon, RoomsIcon, UsersIcon } from "../../../assets/Dashboard/SideBarIcons"
-import { useNavigate } from "react-router-dom";
-const SIDEBAR_WIDTH = 240
-const SIDEBAR_COLLAPSED_WIDTH = 64
+} from "@mui/material";
+import { useLocation } from "react-router-dom";
+import { styled } from "@mui/material/styles";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  AdsIcon,
+  BookingsIcon,
+  FacilitiesIcon,
+  HomeIcon,
+  LogoutIcon,
+  MenuIcon,
+  PasswordIcon,
+  RoomsIcon,
+  UsersIcon,
+} from "../../../assets/Dashboard/SideBarIcons";
+import type { ListItemButtonProps } from "@mui/material";
+import type { SidebarProps } from "../../../interfaces/MasterLayout/Dashboard";
+const SIDEBAR_WIDTH = 240;
+const SIDEBAR_COLLAPSED_WIDTH = 64;
 
 const StyledDrawer = styled(Drawer, {
   shouldForwardProp: (prop) => prop !== "collapsed",
@@ -37,9 +49,9 @@ const StyledDrawer = styled(Drawer, {
     }),
     overflowX: "hidden",
   },
-}))
+}));
 
-const StyledListItemButton = styled(ListItemButton)(() => ({
+const StyledListItemButton = styled(ListItemButton)<ListItemButtonProps>(() => ({
   margin: "4px 8px",
   borderRadius: "8px",
   minHeight: 48,
@@ -53,7 +65,7 @@ const StyledListItemButton = styled(ListItemButton)(() => ({
       backgroundColor: "rgba(255, 255, 255, 0.25)",
     },
   },
-}))
+}));
 
 const ToggleButton = styled(IconButton)(() => ({
   position: "absolute",
@@ -63,118 +75,161 @@ const ToggleButton = styled(IconButton)(() => ({
   "&:hover": {
     backgroundColor: "rgba(255, 255, 255, 0.1)",
   },
-}))
+}));
 
-interface SidebarProps {
-  open: boolean
-  collapsed: boolean
-  onToggle: () => void
-  onClose: () => void
-  selectedItem: string
-  onItemSelect: (item: string) => void
-}
 
 const menuItems = [
-  { id: "home", label: "Home", icon: HomeIcon },
+  { id: "dashboard", label: "Home", icon: HomeIcon },
   { id: "users", label: "Users", icon: UsersIcon },
   { id: "rooms", label: "Rooms", icon: RoomsIcon },
   { id: "ads", label: "Ads", icon: AdsIcon },
   { id: "bookings", label: "Bookings", icon: BookingsIcon },
   { id: "facilities", label: "Facilities", icon: FacilitiesIcon },
-  { id: "password", label: "Change password", icon: PasswordIcon },
+  { id: "change-password", label: "Change password", icon: PasswordIcon },
   { id: "logout", label: "Logout", icon: LogoutIcon },
-]
-export const Sidebar: React.FC<SidebarProps> = ({ open, collapsed, onToggle, onClose, selectedItem, onItemSelect }) => {
+];
 
+export const Sidebar: React.FC<SidebarProps> = ({
+  open,
+  collapsed,
+  onToggle,
+  onClose,
+  selectedItem,
+  onItemSelect,
+}) => {
   const navigate = useNavigate();
-    const theme = useTheme()
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"))
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+const location = useLocation();
+const currentPath = location.pathname;
 
-
-  const handleItemClick = (itemId: string) => {
-  if (itemId === "logout") {
-    // 🧹 إزالة التوكن
+console.log(currentPath)
+  const handleLogout = () => {
     localStorage.removeItem("token");
-
-    // 🔁 إعادة التوجيه لصفحة تسجيل الدخول
     navigate("/login");
-
-    return;
-  }
-
-  onItemSelect(itemId);
-
-  if (isMobile) {
-    onClose();
-  }
-};
+  };
 
   const sidebarContent = (
     <Box
+      component="nav"
+      aria-label="Sidebar navigation"
       sx={{
         height: "100%",
         display: "flex",
         flexDirection: "column",
         position: "relative",
       }}
-      role="navigation"
-      aria-label="Main navigation"
     >
       {!isMobile && (
-        <ToggleButton onClick={onToggle} aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"} size="small">
+        <ToggleButton
+          onClick={onToggle}
+          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          size="small"
+        >
           <MenuIcon />
         </ToggleButton>
       )}
 
       <Box sx={{ mt: isMobile ? 2 : 7 }}>
-        <List component="nav" aria-label="Navigation menu">
+        <List component="ul" aria-label="Navigation menu">
           {menuItems.map((item) => {
-            const IconComponent = item.icon
-            const isLogout = item.id === "logout"
+            const IconComponent = item.icon;
 
-            return (
-              <React.Fragment key={item.id}>
-                {isLogout && <Divider sx={{ my: 1, backgroundColor: "rgba(255, 255, 255, 0.2)" }} />}
-                <ListItem disablePadding>
-                  <Tooltip title={collapsed && !isMobile ? item.label : ""} placement="right" arrow>
-                    <StyledListItemButton
-                      selected={selectedItem === item.id}
-                      onClick={() => handleItemClick(item.id)}
-                      aria-current={selectedItem === item.id ? "page" : undefined}
-                      role="menuitem"
-                      sx={{
-                        px: collapsed && !isMobile ? 2.5 : 3,
-                        justifyContent: collapsed && !isMobile ? "center" : "flex-start",
-                      }}
+            if (item.id === "logout") {
+              return (
+                <React.Fragment key={item.id}>
+                  <Divider
+                    sx={{ my: 1, backgroundColor: "rgba(255, 255, 255, 0.2)" }}
+                  />
+                  <ListItem disablePadding>
+                    <Tooltip
+                      title={collapsed && !isMobile ? item.label : ""}
+                      placement="right"
+                      arrow
                     >
-                      <ListItemIcon
+                      <StyledListItemButton
+                        onClick={handleLogout}
+                        role="menuitem"
                         sx={{
-                          color: "inherit",
-                          minWidth: collapsed && !isMobile ? "auto" : 40,
-                          mr: collapsed && !isMobile ? 0 : 1,
+                          px: collapsed && !isMobile ? 2.5 : 3,
+                          justifyContent: collapsed && !isMobile ? "center" : "flex-start",
                         }}
                       >
-                        <IconComponent />
-                      </ListItemIcon>
-                      {(!collapsed || isMobile) && (
-                        <ListItemText
-                          primary={item.label}
-                          primaryTypographyProps={{
-                            fontSize: "0.95rem",
-                            fontWeight: selectedItem === item.id ? 600 : 400,
+                        <ListItemIcon
+                          sx={{
+                            color: "inherit",
+                            minWidth: collapsed && !isMobile ? "auto" : 40,
+                            mr: collapsed && !isMobile ? 0 : 1,
                           }}
-                        />
-                      )}
-                    </StyledListItemButton>
-                  </Tooltip>
-                </ListItem>
-              </React.Fragment>
-            )
+                        >
+                          <IconComponent />
+                        </ListItemIcon>
+                        {(!collapsed || isMobile) && (
+                          <ListItemText
+                            primary={item.label}
+                            primaryTypographyProps={{
+                              fontSize: "0.95rem",
+                              fontWeight: 400,
+                            }}
+                          />
+                        )}
+                      </StyledListItemButton>
+                    </Tooltip>
+                  </ListItem>
+                </React.Fragment>
+              );
+            }
+
+            return (
+              <ListItem disablePadding key={item.id}>
+                <Tooltip
+                  title={collapsed && !isMobile ? item.label : ""}
+                  placement="right"
+                  arrow
+                >
+                  <StyledListItemButton
+                    component={React.forwardRef(function LinkButton(itemProps) {
+                      return <Link  to={`/${item.id}`} {...itemProps} />;
+                    })}
+                    selected={selectedItem === item.id || currentPath === `/${item.id}` }
+                    onClick={() => {
+                      onItemSelect(item.id);
+                      if (isMobile) onClose();
+                    }}
+                    aria-current={selectedItem === item.id ? "page" : undefined}
+                    role="menuitem"
+                    sx={{
+                      px: collapsed && !isMobile ? 2.5 : 3,
+                      justifyContent: collapsed && !isMobile ? "center" : "flex-start",
+                    }}
+                  >
+                    <ListItemIcon
+                      sx={{
+                        color: "inherit",
+                        minWidth: collapsed && !isMobile ? "auto" : 40,
+                        mr: collapsed && !isMobile ? 0 : 1,
+                      }}
+                    >
+                      <IconComponent />
+                    </ListItemIcon>
+                    {(!collapsed || isMobile) && (
+                      <ListItemText
+                        primary={item.label}
+                        primaryTypographyProps={{
+                          fontSize: "0.95rem",
+                          fontWeight: selectedItem === item.id ? 600 : 400,
+                        }}
+                      />
+                    )}
+                  </StyledListItemButton>
+                </Tooltip>
+              </ListItem>
+            );
           })}
         </List>
       </Box>
     </Box>
-  )
+  );
 
   if (isMobile) {
     return (
@@ -196,13 +251,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ open, collapsed, onToggle, onC
       >
         {sidebarContent}
       </Drawer>
-    )
+    );
   }
 
-
   return (
-     <StyledDrawer variant="permanent" collapsed={collapsed}>
+    <StyledDrawer variant="permanent" collapsed={collapsed}>
       {sidebarContent}
     </StyledDrawer>
-  )
-}
+  );
+};

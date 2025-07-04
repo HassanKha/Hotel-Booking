@@ -3,6 +3,7 @@ import { Box, useMediaQuery } from "@mui/material";
 import { theme } from "../../services/Theme";
 import { Sidebar } from "../../shared/Sidebar/Sidebar";
 import { Navbar } from "../../shared/Navbar/Navbar";
+import { Outlet } from "react-router-dom";
 
 export default function MasterLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -52,6 +53,9 @@ export default function MasterLayout() {
           onMobileMenuClick={handleSidebarToggle}
         />
 
+        <Box sx={{ flexGrow: 1, marginLeft: 2 , marginTop: 10 }}>
+          <Outlet />
+        </Box>
       </Box>
     </Box>
   );

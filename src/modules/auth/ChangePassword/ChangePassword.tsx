@@ -18,12 +18,8 @@ import ChangePassBG from "../../../assets/Auth/AuthBackGrounds/ChangePassBG.png"
 import { toast } from "react-toastify";
 import { axiosInstance, USERS_URLS } from "../../services/Urls";
 import "./ChangePassword.module.css";
+import type { ChangePasswordData } from "../../../interfaces/Auth/AuthTypes";
 
-interface ChangePasswordData {
-  oldPassword: string;
-  newPassword: string;
-  confirmPassword: string;
-}
 
 const passwordFields: {
   name: keyof ChangePasswordData;

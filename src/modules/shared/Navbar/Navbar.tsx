@@ -17,6 +17,8 @@ import {
 import { styled, alpha } from "@mui/material/styles"
 import { MenuIcon } from "../../../assets/Dashboard/SideBarIcons"
 import { ExpandMoreIcon, NotificationIcon, SearchIcon } from "../../../assets/Dashboard/NavbarIcons"
+import { useNavigate } from "react-router-dom"
+import type { NavbarProps } from "../../../interfaces/MasterLayout/Dashboard"
 
 
 
@@ -83,17 +85,13 @@ const StyledAppBar = styled(AppBar, {
   },
 }))
 
-interface NavbarProps {
-  sidebarWidth: number
-  onMobileMenuClick: () => void
-}
 
 export const Navbar: React.FC<NavbarProps> = ({ sidebarWidth, onMobileMenuClick }) => {
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down("md"))
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [searchValue, setSearchValue] = useState("")
-
+  const navigate = useNavigate()
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)
   }
@@ -109,6 +107,14 @@ export const Navbar: React.FC<NavbarProps> = ({ sidebarWidth, onMobileMenuClick 
   const handleSearchSubmit = (event: React.FormEvent) => {
     event.preventDefault()
     console.log("Search:", searchValue)
+  }
+
+   const handleLogout = () => {
+
+    localStorage.removeItem("token") 
+
+ setAnchorEl(null)
+    navigate("/login")
   }
 
   return (
@@ -214,8 +220,7 @@ export const Navbar: React.FC<NavbarProps> = ({ sidebarWidth, onMobileMenuClick 
           anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
         >
           <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-          <MenuItem onClick={handleMenuClose}>Settings</MenuItem>
-          <MenuItem onClick={handleMenuClose}>Logout</MenuItem>
+          <MenuItem onClick={handleLogout}>Logout</MenuItem>
         </Menu>
       </Toolbar>
     </StyledAppBar>

@@ -21,13 +21,12 @@ import {
   EyeOffIcon,
 } from "../../../assets/Auth/AuthIcons/Icons";
 import { validateAuthForm } from "../../services/Validations";
-import "./Register.module.css";
-import type { RegisterFormData } from "../../../interfaces/Auth/Authintication";
+import type { RegisterFormData } from "../../../interfaces/Auth/AuthTypes";
 import { toast } from "react-toastify";
 import registerBg from "../../../assets/Auth/AuthBackGrounds/register.jpg"
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { axiosInstance, USERS_URLS } from "../../services/Urls";
-
+import "./Register.module.css";
 
 
 const Register = () => {
@@ -394,7 +393,7 @@ const Register = () => {
                     color: "white",
                   }}
                   style={{ color: "white", fontWeight: 500, fontSize: "17px", borderRadius: "10px", boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.25)", marginBottom: "15px" }}
-
+className="register-button"
                 >
                   {isLoading ? (
                     <>

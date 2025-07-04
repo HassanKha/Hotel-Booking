@@ -4,7 +4,6 @@ import NotFound from "./modules/shared/NotFound/NotFound";
 import Dashboard from "./modules/pages/Dashboard/Dashboard";
 import ProtectedRoute from './modules/shared/ProtectedRoute/ProtectedRoute';
 import MasterLayout from "./modules/layouts/MasterLayout.css/MasterLayout";
-import Verify from "./modules/auth/Verify/Verify";
 import ChangePassword from "./modules/auth/ChangePassword/ChangePassword";
 import ForgetPassword from "./modules/auth/ForgetPassword/ForgetPassword";
 import Register from "./modules/auth/Register/Register";
@@ -29,7 +28,6 @@ const routes: RouteObject[] = [
       { path: "forget-password", element: <ForgetPassword /> },
       { path: "reset-password", element: <ResetPassword /> },
       { path: "change-password", element: <ChangePassword /> },
-      { path: "verify-account", element: <Verify /> },
     ],
   },
   {
@@ -48,14 +46,26 @@ const routes: RouteObject[] = [
           </Suspense>
         ),
       },
+     
+    ],
+  },
+   {
+    path: "/landing",
+    element: (
+     
+        <Landing />
+ 
+    ),
+    children: [
       {
-        path: "landing",
+        index: true,
         element: (
           <Suspense fallback={null}>
             <Landing />
           </Suspense>
         ),
       },
+     
     ],
   },
   {
