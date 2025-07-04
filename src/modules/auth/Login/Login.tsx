@@ -16,23 +16,22 @@ import {
 } from "@mui/material";
 
 import LoginBG from "../../../assets/Auth/AuthBackGrounds/LoginBG.png"; // Assuming you have a background image
-import {
-  EyeIcon,
-  EyeOffIcon,
-} from "../../../assets/Auth/AuthIcons/Icons";
+import { EyeIcon, EyeOffIcon } from "../../../assets/Auth/AuthIcons/Icons";
 import { validateAuthForm } from "../../services/Validations";
 import "./Login.module.css";
 import type { LoginFormData } from "../../../interfaces/Auth/AuthTypes";
 import { toast } from "react-toastify";
 import { axiosInstance, USERS_URLS } from "../../services/Urls";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../contexts/AuthContext";
 
 const Login = () => {
+  const {  login } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-const navigate = useNavigate();
+  const navigate = useNavigate();
   const {
     control,
     handleSubmit,
@@ -47,19 +46,44 @@ const navigate = useNavigate();
     },
   });
 
-const onSubmitForm: SubmitHandler<LoginFormData> = async (data) => {
-  setIsLoading(true);
-  clearErrors();
+  const onSubmitForm: SubmitHandler<LoginFormData> = async (data) => {
+    setIsLoading(true);
+    clearErrors();
 
-  try {
-    const response = await axiosInstance.post(USERS_URLS.LOGIN, data);
-    const { success, message, data: responseData } = response.data;
+    try {
+      const response = await axiosInstance.post(USERS_URLS.LOGIN, data);
+      const { success, message, data: responseData } = response.data;
 
-    console.log(responseData)
+      console.log(responseData);
 
-    if (!success) {
+      if (!success) {
+        const errorMessage = message || "Login failed. Please try again.";
 
-      const errorMessage = message || "Login failed. Please try again.";
+        if (errorMessage.toLowerCase().includes("email")) {
+          setError("email", { type: "server", message: errorMessage });
+        } else if (errorMessage.toLowerCase().includes("password")) {
+          setError("password", { type: "server", message: errorMessage });
+        } else {
+          setError("root", {
+            type: "server",
+            message: errorMessage,
+          });
+        }
+
+        return;
+      }
+
+      toast.success(message || "You have successfully logged in!");
+
+login(responseData.token, responseData.user);
+      navigate("/dashboard");
+    } catch (error: any) {
+      console.error("Login error:", error);
+
+      const serverMessage = error?.response?.data?.message;
+
+      const errorMessage =
+        serverMessage || "Network error. Please check your connection.";
 
       if (errorMessage.toLowerCase().includes("email")) {
         setError("email", { type: "server", message: errorMessage });
@@ -72,42 +96,11 @@ const onSubmitForm: SubmitHandler<LoginFormData> = async (data) => {
         });
       }
 
-      return; 
+      toast.error(errorMessage);
+    } finally {
+      setIsLoading(false);
     }
-
-    toast.success(message || "You have successfully logged in!");
-
-
-    localStorage.setItem("token", responseData.token);
-
-    navigate("/dashboard");
-
-  } catch (error: any) {
-    console.error("Login error:", error);
-
-    const serverMessage = error?.response?.data?.message;
-
-    const errorMessage =
-      serverMessage || "Network error. Please check your connection.";
-
-  
-    if (errorMessage.toLowerCase().includes("email")) {
-      setError("email", { type: "server", message: errorMessage });
-    } else if (errorMessage.toLowerCase().includes("password")) {
-      setError("password", { type: "server", message: errorMessage });
-    } else {
-      setError("root", {
-        type: "server",
-        message: errorMessage,
-      });
-    }
-
-    toast.error(errorMessage);
-  } finally {
-    setIsLoading(false);
-  }
-};
-
+  };
 
   return (
     <Box sx={{ display: "flex", maxHeight: "100vh" }}>
@@ -291,7 +284,6 @@ const onSubmitForm: SubmitHandler<LoginFormData> = async (data) => {
                                       setShowPassword(!showPassword)
                                     }
                                     edge="end"
-
                                   >
                                     {showPassword ? (
                                       <EyeOffIcon />
@@ -322,7 +314,7 @@ const onSubmitForm: SubmitHandler<LoginFormData> = async (data) => {
                 <Button
                   type="submit"
                   fullWidth
-                  disabled={ isLoading}
+                  disabled={isLoading}
                   className="login-button"
                   sx={{
                     py: 1.5,

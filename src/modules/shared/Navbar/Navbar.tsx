@@ -19,6 +19,7 @@ import { MenuIcon } from "../../../assets/Dashboard/SideBarIcons"
 import { ExpandMoreIcon, NotificationIcon, SearchIcon } from "../../../assets/Dashboard/NavbarIcons"
 import { useNavigate } from "react-router-dom"
 import type { NavbarProps } from "../../../interfaces/MasterLayout/Dashboard"
+import { useAuth } from "../../../contexts/AuthContext"
 
 
 
@@ -95,7 +96,7 @@ export const Navbar: React.FC<NavbarProps> = ({ sidebarWidth, onMobileMenuClick 
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)
   }
-
+  const {   logout} = useAuth();
   const handleMenuClose = () => {
     setAnchorEl(null)
   }
@@ -111,8 +112,7 @@ export const Navbar: React.FC<NavbarProps> = ({ sidebarWidth, onMobileMenuClick 
 
    const handleLogout = () => {
 
-    localStorage.removeItem("token") 
-
+logout();
  setAnchorEl(null)
     navigate("/login")
   }

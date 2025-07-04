@@ -4,11 +4,14 @@ import "./index.css";
 import App from "./App.tsx";
 import { ThemeProvider } from "@mui/material/styles";
 import { theme } from "./modules/services/Theme.ts";
+import { AuthProvider } from "./contexts/AuthContext.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ThemeProvider theme={theme}>
-      <App />
+       <AuthProvider>
+          <App />
+       </AuthProvider>
     </ThemeProvider>
   </StrictMode>
 );

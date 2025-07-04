@@ -13,7 +13,7 @@ import {
   IconButton,
   Tooltip,
 } from "@mui/material";
-import { useLocation } from "react-router-dom";
+import { useLocation, type LinkProps } from "react-router-dom";
 import { styled } from "@mui/material/styles";
 import { Link, useNavigate } from "react-router-dom";
 import {
@@ -27,8 +27,8 @@ import {
   RoomsIcon,
   UsersIcon,
 } from "../../../assets/Dashboard/SideBarIcons";
-import type { ListItemButtonProps } from "@mui/material";
 import type { SidebarProps } from "../../../interfaces/MasterLayout/Dashboard";
+import { useAuth } from "../../../contexts/AuthContext";
 const SIDEBAR_WIDTH = 240;
 const SIDEBAR_COLLAPSED_WIDTH = 64;
 
@@ -51,7 +51,10 @@ const StyledDrawer = styled(Drawer, {
   },
 }));
 
-const StyledListItemButton = styled(ListItemButton)<ListItemButtonProps>(() => ({
+const StyledListItemButton = styled(ListItemButton)<{
+  component?: React.ElementType;
+  to?: LinkProps["to"];
+}>(() => ({
   margin: "4px 8px",
   borderRadius: "8px",
   minHeight: 48,
@@ -102,10 +105,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 const location = useLocation();
 const currentPath = location.pathname;
+  const {   logout} = useAuth();
 
-console.log(currentPath)
   const handleLogout = () => {
-    localStorage.removeItem("token");
+   logout();
     navigate("/login");
   };
 
@@ -187,22 +190,21 @@ console.log(currentPath)
                   placement="right"
                   arrow
                 >
-                  <StyledListItemButton
-                    component={React.forwardRef(function LinkButton(itemProps) {
-                      return <Link  to={`/${item.id}`} {...itemProps} />;
-                    })}
-                    selected={selectedItem === item.id || currentPath === `/${item.id}` }
-                    onClick={() => {
-                      onItemSelect(item.id);
-                      if (isMobile) onClose();
-                    }}
-                    aria-current={selectedItem === item.id ? "page" : undefined}
-                    role="menuitem"
-                    sx={{
-                      px: collapsed && !isMobile ? 2.5 : 3,
-                      justifyContent: collapsed && !isMobile ? "center" : "flex-start",
-                    }}
-                  >
+  <StyledListItemButton
+    component={Link}
+    to={`/${item.id}`}
+    selected={selectedItem === item.id || currentPath === `/${item.id}` }
+    onClick={() => {
+      onItemSelect(item.id);
+      if (isMobile) onClose();
+    }}
+    aria-current={selectedItem === item.id ? "page" : undefined}
+    role="menuitem"
+    sx={{
+      px: collapsed && !isMobile ? 2.5 : 3,
+      justifyContent: collapsed && !isMobile ? "center" : "flex-start",
+    }}
+  >
                     <ListItemIcon
                       sx={{
                         color: "inherit",
