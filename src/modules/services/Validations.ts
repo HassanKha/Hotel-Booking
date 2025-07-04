@@ -1,20 +1,20 @@
 
 export const validateAuthForm = {
-userName: {
-  required: "User name is required",
-  minLength: {
-    value: 2,
-    message: "Name must be at least 2 characters",
+  userName: {
+    required: "User name is required",
+    minLength: {
+      value: 2,
+      message: "Name must be at least 2 characters",
+    },
+    maxLength: {
+      value: 8,
+      message: "Name must be at most 8 characters",
+    },
+    validate: {
+      hasNumber: (value: any) =>
+        /\d/.test(value) || "Name must contain at least one number",
+    },
   },
-  maxLength: {
-    value: 8,
-    message: "Name must be at most 8 characters",
-  },
-  validate: {
-    hasNumber: (value : any) =>
-      /\d/.test(value) || "Name must contain at least one number",
-  },
-},
   email: {
     required: "Email is required",
     pattern: {
@@ -34,21 +34,21 @@ userName: {
   },
   password: {
     required: "Password is required",
-   pattern: {
-    value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$/,
-    message:
-      "Password must be at least 6 characters and include uppercase, lowercase, number, and special character",
-  },
+    pattern: {
+      value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$/,
+      message:
+        "Password must be at least 6 characters and include uppercase, lowercase, number, and special character",
+    },
   },
   confirmPassword: (password: string | undefined) => ({
     required: "Please confirm your password",
     validate: (value: string | undefined) =>
       value === password || "Passwords do not match",
   }),
-    code: {
+  code: {
     required: "OTP is required",
     pattern: {
-      value: /^[A-Za-z0-9]{4}$/, 
+      value: /^[A-Za-z0-9]{4}$/,
       message: "OTP must be 4 letters or digits",
     },
   },

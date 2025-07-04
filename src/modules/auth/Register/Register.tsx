@@ -24,7 +24,7 @@ import { validateAuthForm } from "../../services/Validations";
 import "./Register.module.css";
 import type { RegisterFormData } from "../../../interfaces/Auth/Authintication";
 import { toast } from "react-toastify";
-import registerBg from "../../../assets/Auth/AuthBackGrounds/7bf6331d05683c0d11c825315d6665a638528e5f.jpg"
+import registerBg from "../../../assets/Auth/AuthBackGrounds/register.jpg"
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { axiosInstance, USERS_URLS } from "../../services/Urls";
 
@@ -69,7 +69,7 @@ const Register = () => {
     formData.append("confirmPassword", data.confirmPassword);
     formData.append("role", "user");
 
-    // حل المشكلة هنا 👇
+
     if (data.profileImage && data.profileImage instanceof File) {
       formData.append("profileImage", data.profileImage);
     }
@@ -176,7 +176,7 @@ const Register = () => {
                 <Controller
                   name="userName"
                   control={control}
-                  rules={{ required: "User Name is required" }}
+                  rules={validateAuthForm.userName}
                   render={({ field }) => (
                     <TextField
                       {...field}
@@ -194,7 +194,7 @@ const Register = () => {
                     <Controller
                       name="phoneNumber"
                       control={control}
-                      rules={{ required: "Phone number is required" }}
+                      rules={validateAuthForm.phoneNumber}
                       render={({ field }) => (
                         <TextField
                           {...field}
@@ -211,7 +211,7 @@ const Register = () => {
                     <Controller
                       name="country"
                       control={control}
-                      rules={{ required: "Country is required" }}
+                      rules={validateAuthForm.country}
                       render={({ field }) => (
                         <TextField
                           {...field}
@@ -382,10 +382,6 @@ const Register = () => {
                     </>
                   )}
                 />
-
-
-
-
                 <Button
                   type="submit"
                   fullWidth
@@ -420,15 +416,18 @@ const Register = () => {
           sx={{
             width: { md: "50%" },
             height: "95.2vh",
-            position: "relative",
+            position: "fixed",        
+            right: 0,                     
             backgroundImage: `url(${registerBg})`,
             backgroundSize: "cover",
             backgroundPosition: "center",
             overflow: "hidden",
             borderRadius: 3,
             mt: 2,
+            zIndex: 10                 
           }}
         >
+
 
           <Box
             sx={{
@@ -441,7 +440,7 @@ const Register = () => {
             }}
           >
             <Box sx={{ color: "white" }}>
-              <Typography variant="h2" sx={{ fontWeight: 700 }}>
+              <Typography variant="h3" sx={{ fontWeight: 700 }}>
                 Sign up to Roamhome
               </Typography>
               <Typography variant="h6" sx={{ opacity: 0.9 }}>
