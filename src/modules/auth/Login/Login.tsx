@@ -24,7 +24,7 @@ import { toast } from "react-toastify";
 import { axiosInstance, USERS_URLS } from "../../services/Urls";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../contexts/AuthContext";
-
+import { Link as RouterLink } from "react-router-dom";
 const Login = () => {
   const {  login } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
@@ -157,7 +157,8 @@ login(responseData.token, responseData.user);
               >
                 If you don't have an account register{" "}
                 <Link
-                  href="/register"
+                component={RouterLink}
+                  to="/register"
                   color="primary"
                   sx={{
                     fontWeight: 400,

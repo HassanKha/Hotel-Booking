@@ -7,19 +7,20 @@ import {
   TextField,
   Typography,
   useMediaQuery,
+  Link
 } from "@mui/material";
 
 import { useTheme } from "@mui/material/styles";
 import type { Theme } from "@mui/material/styles";
 import { Controller, useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import LoginBG from "../../../assets/Auth/AuthBackGrounds/d158185a6e98393b02ffa614503c307e55f33da8.jpg"; // تأكد من المسار
 import { validateAuthForm } from "../../services/Validations";
 import { axiosInstance, USERS_URLS } from "../../services/Urls";
 import { toast } from "react-toastify";
 import type { ForgotPassword } from "../../../interfaces/Auth/AuthTypes";
 import "./ForgetPassword.module.css";
-
+import { Link as RouterLink } from "react-router-dom";
 export default function ForgetPassword() {
   const [isLoading, setIsLoading] = useState(false);
   const theme = useTheme<Theme>();
@@ -83,24 +84,44 @@ export default function ForgetPassword() {
               gap: 2,
             }}
           >
-            <Box
+              <Box
               sx={{ mb: 3, display: "flex", flexDirection: "column", gap: 3 }}
             >
               <Typography variant="h3" sx={{ fontWeight: 500, mb: 1 }}>
                 Forget Password
               </Typography>
-              <Typography variant="body2" color="text.secondary">
-                If you already have an account register You can Login here !{" "}
-                <br />
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  fontWeight: "400",
+                }}
+              >
+                If you don't have an account register{" "}
                 <Link
-                  to="/register"
-                  style={{ textDecoration: "none", color: "red" }}
+                component={RouterLink}
+                  to="/login"
+                  color="primary"
+                  sx={{
+                    fontWeight: 400,
+                    textDecoration: "none",
+                    display: "flex",
+                    gap: 1,
+                  }}
                 >
-                  <strong>Register Here!</strong>
+                  You can{" "}
+                  <Box
+                    component="span"
+                    sx={{ color: "primary.main", fontWeight: "600" }}
+                  >
+                    Login Here !
+                  </Box>
                 </Link>
               </Typography>
             </Box>
-
+          
             <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
               <Box sx={{ display: "flex", flexDirection: "column", gap: 8 }}>
                 <Box sx={{ display: "flex", flexDirection: "column", gap: 4 }}>
