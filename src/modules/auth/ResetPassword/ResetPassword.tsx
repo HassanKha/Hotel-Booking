@@ -113,7 +113,8 @@ const ResetPassword = () => {
                   You can{" "}
                   <Box
                     component="span"
-                    sx={{ color: "primary.danger", fontWeight: "600" }}
+                
+                    style={{color:"#EB5148",fontWeight:800}}
                   >
                     Login Here !
                   </Box>
@@ -164,7 +165,7 @@ const ResetPassword = () => {
                   />
                 </Box>
 
-                {/* OTP */}
+                
                 <Box>
                   <Typography variant="subtitle1" sx={{ fontWeight: 400, fontSize: "16px", color: "#152C5B" }}>
                     OTP Code
@@ -199,7 +200,7 @@ const ResetPassword = () => {
                   />
                 </Box>
 
-                {/* Password */}
+              
                 <Box>
                   <Typography variant="subtitle1" sx={{ fontWeight: 400, fontSize: "16px", color: "#152C5B" }}>
                     New Password
@@ -241,7 +242,7 @@ const ResetPassword = () => {
                   />
                 </Box>
 
-                {/* Confirm Password */}
+                
                 <Box>
                   <Typography variant="subtitle1" sx={{ fontWeight: 400, fontSize: "16px", color: "#152C5B" }}>
                     Confirm Password
@@ -296,12 +297,13 @@ const ResetPassword = () => {
                     },
                     color: "white",
                   }}
+                  style={{color: "white"  , marginTop: "15px"}}
                   className="reset-pass-button"
                 >
                   {isLoading ? (
                     <>
-                      <CircularProgress size={20} sx={{ mr: 1 }} />
-                      Submitting...
+                      <CircularProgress size={20} sx={{ mr: 1 , color: "white"}} />
+                      <span style={{ color: "white" }}>Loading...</span>
                     </>
                   ) : (
                     "Reset Password"

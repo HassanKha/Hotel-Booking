@@ -26,7 +26,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../contexts/AuthContext";
 import { Link as RouterLink } from "react-router-dom";
 const Login = () => {
-  const {  login } = useAuth();
+  const { login } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const theme = useTheme();
@@ -54,7 +54,6 @@ const Login = () => {
       const response = await axiosInstance.post(USERS_URLS.LOGIN, data);
       const { success, message, data: responseData } = response.data;
 
-      console.log(responseData);
 
       if (!success) {
         const errorMessage = message || "Login failed. Please try again.";
@@ -75,7 +74,7 @@ const Login = () => {
 
       toast.success(message || "You have successfully logged in!");
 
-login(responseData.token, responseData.user);
+      login(responseData.token, responseData.user);
       navigate("/dashboard");
     } catch (error: any) {
       console.error("Login error:", error);
@@ -157,7 +156,7 @@ login(responseData.token, responseData.user);
               >
                 If you don't have an account register{" "}
                 <Link
-                component={RouterLink}
+                  component={RouterLink}
                   to="/register"
                   color="primary"
                   sx={{
@@ -170,7 +169,7 @@ login(responseData.token, responseData.user);
                   You can{" "}
                   <Box
                     component="span"
-                    sx={{ color: "primary.main", fontWeight: "600" }}
+                    sx={{ color: "#EB5148", fontWeight: "600" }}
                   >
                     Register Here !
                   </Box>
@@ -322,7 +321,7 @@ login(responseData.token, responseData.user);
                     fontWeight: 500,
                     backgroundColor: "secondary.main",
                     "&:hover": {
-                      backgroundColor: "#1d3ecf", // custom hover
+                      backgroundColor: "#1d3ecf", 
                     },
                     color: "white",
                   }}

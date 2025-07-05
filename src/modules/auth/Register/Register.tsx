@@ -29,7 +29,7 @@ const Register = () => {
   const [showConfirm, setShowConfirm] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [uploadedImage, setUploadedImage] = useState<File | null>(null);
-  let navigate = useNavigate();
+  const navigate = useNavigate();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -52,6 +52,16 @@ const Register = () => {
       profileImage: null,
     },
   });
+
+  const inputSx = {
+    "& .MuiOutlinedInput-root": {
+      backgroundColor: "grey.50",
+    },
+    "& fieldset": {
+      border: "none",
+    },
+  };
+
   const appendFormData = (data: any) => {
     const formData = new FormData();
     formData.append("userName", data.userName);
@@ -89,12 +99,13 @@ const Register = () => {
       navigate("/login");
     } catch (error: any) {
       toast.error(
-        error.response.data.message || "Registration failed. Try again."
+        error.response?.data?.message || "Registration failed. Try again."
       );
     } finally {
       setIsLoading(false);
     }
   };
+
   return (
     <Box sx={{ display: "flex", maxHeight: "100vh" }}>
       <Box
@@ -142,7 +153,7 @@ const Register = () => {
                 fontWeight: "400",
               }}
             >
-              If you don't have an account register{" "}
+              If you already have an account{" "}
               <Link
                 component={RouterLink}
                 to="/login"
@@ -172,33 +183,46 @@ const Register = () => {
               )}
 
               <Box sx={{ display: "flex", flexDirection: "column", gap: 4 }}>
-                <Controller
-                  name="userName"
-                  control={control}
-                  rules={validateAuthForm.userName}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      id="userName"
-                      label="User Name"
-                      error={!!errors.userName}
-                      helperText={errors.userName?.message}
-                      fullWidth
-                      variant="outlined"
-                      inputProps={{ "aria-describedby": "userName-helper" }}
-                      FormHelperTextProps={{ id: "userName-helper" }}
-                    />
-                  )}
-                />
+             
+                <Box sx={{ display: "flex", flexDirection: "column" }}>
+                  <Typography variant="subtitle1" sx={{ fontSize: "16px", color: "#152C5B" }}>
+                    User Name
+                  </Typography>
+                  <Controller
+                    name="userName"
+                    control={control}
+                    rules={validateAuthForm.userName}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        error={!!errors.userName}
+                        helperText={errors.userName?.message}
+                        fullWidth
+                        variant="outlined"
+                        sx={inputSx}
+                        InputLabelProps={{ shrink: true, sx: { display: "none" } }}
+                      />
+                    )}
+                  />
+                </Box>
 
                 <Box
                   sx={{
                     display: "flex",
-                    flexWrap: "wrap",
+                    flexDirection: { xs: "column", sm: "row" },
                     gap: 2,
                   }}
                 >
-                  <Box sx={{ flex: { xs: "100%", sm: "48%" } }}>
+                  <Box sx={{ flex: 1, display: "flex", flexDirection: "column", gap: 0.5 }}>
+                    <Typography
+                      variant="subtitle1"
+                      sx={{
+                        fontSize: "16px",
+                        color: "#152C5B",
+                      }}
+                    >
+                      Phone Number
+                    </Typography>
                     <Controller
                       name="phoneNumber"
                       control={control}
@@ -206,18 +230,30 @@ const Register = () => {
                       render={({ field }) => (
                         <TextField
                           {...field}
-                          id="phoneNumber"
-                          label="Phone Number"
                           error={!!errors.phoneNumber}
                           helperText={errors.phoneNumber?.message}
                           fullWidth
-                          aria-describedby="phoneNumber-helper"
+                          variant="outlined"
+                          sx={inputSx}
+                          InputLabelProps={{
+                            shrink: true,
+                            sx: { display: "none" },
+                          }}
                         />
                       )}
                     />
                   </Box>
 
-                  <Box sx={{ flex: { xs: "100%", sm: "48%" } }}>
+                  <Box sx={{ flex: 1, display: "flex", flexDirection: "column", gap: 0.5 }}>
+                    <Typography
+                      variant="subtitle1"
+                      sx={{
+                        fontSize: "16px",
+                        color: "#152C5B",
+                      }}
+                    >
+                      Country
+                    </Typography>
                     <Controller
                       name="country"
                       control={control}
@@ -225,99 +261,116 @@ const Register = () => {
                       render={({ field }) => (
                         <TextField
                           {...field}
-                          id="country"
-                          label="Country"
                           error={!!errors.country}
                           helperText={errors.country?.message}
                           fullWidth
-                          aria-describedby="country-helper"
+                          variant="outlined"
+                          sx={inputSx}
+                          InputLabelProps={{
+                            shrink: true,
+                            sx: { display: "none" },
+                          }}
                         />
                       )}
                     />
                   </Box>
                 </Box>
 
-                <Controller
-                  name="email"
-                  control={control}
-                  rules={validateAuthForm.email}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      id="email"
-                      label="Email"
-                      type="email"
-                      error={!!errors.email}
-                      helperText={errors.email?.message}
-                      fullWidth
-                      aria-describedby="email-helper"
-                    />
-                  )}
-                />
 
-                <Controller
-                  name="password"
-                  control={control}
-                  rules={validateAuthForm.password}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      id="password"
-                      label="Password"
-                      type={showPassword ? "text" : "password"}
-                      error={!!errors.password}
-                      helperText={errors.password?.message}
-                      fullWidth
-                      aria-describedby="password-helper"
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <IconButton
-                              onClick={() => setShowPassword(!showPassword)}
-                              aria-label="Toggle password visibility"
-                            >
-                              {showPassword ? <EyeOffIcon /> : <EyeIcon />}
-                            </IconButton>
-                          </InputAdornment>
-                        ),
-                      }}
-                    />
-                  )}
-                />
 
-                <Controller
-                  name="confirmPassword"
-                  control={control}
-                  rules={{
-                    required: "Please confirm your password",
-                    validate: (value) =>
-                      value === watch("password") || "Passwords do not match",
-                  }}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      id="confirmPassword"
-                      label="Confirm Password"
-                      type={showConfirm ? "text" : "password"}
-                      error={!!errors.confirmPassword}
-                      helperText={errors.confirmPassword?.message}
-                      fullWidth
-                      aria-describedby="confirmPassword-helper"
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <IconButton
-                              onClick={() => setShowConfirm(!showConfirm)}
-                              aria-label="Toggle confirm password visibility"
-                            >
-                              {showConfirm ? <EyeOffIcon /> : <EyeIcon />}
-                            </IconButton>
-                          </InputAdornment>
-                        ),
-                      }}
-                    />
-                  )}
-                />
+                
+                <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}>
+                  <Typography variant="subtitle1" sx={{ fontSize: "16px", color: "#152C5B" }}>
+                    Email Address
+                  </Typography>
+                  <Controller
+                    name="email"
+                    control={control}
+                    rules={validateAuthForm.email}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        type="email"
+                        error={!!errors.email}
+                        helperText={errors.email?.message}
+                        fullWidth
+                        variant="outlined"
+                        sx={inputSx}
+                        InputLabelProps={{ shrink: true, sx: { display: "none" } }}
+                      />
+                    )}
+                  />
+                </Box>
+
+           
+                <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}>
+                  <Typography variant="subtitle1" sx={{ fontSize: "16px", color: "#152C5B" }}>
+                    Password
+                  </Typography>
+                  <Controller
+                    name="password"
+                    control={control}
+                    rules={validateAuthForm.password}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        type={showPassword ? "text" : "password"}
+                        error={!!errors.password}
+                        helperText={errors.password?.message}
+                        fullWidth
+                        variant="outlined"
+                        sx={inputSx}
+                        InputLabelProps={{ shrink: true, sx: { display: "none" } }}
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <IconButton onClick={() => setShowPassword(!showPassword)}>
+                                {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+                              </IconButton>
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+                    )}
+                  />
+                </Box>
+
+              
+                <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}>
+                  <Typography variant="subtitle1" sx={{ fontSize: "16px", color: "#152C5B" }}>
+                    Confirm Password
+                  </Typography>
+                  <Controller
+                    name="confirmPassword"
+                    control={control}
+                    rules={{
+                      required: "Please confirm your password",
+                      validate: (value) =>
+                        value === watch("password") || "Passwords do not match",
+                    }}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        type={showConfirm ? "text" : "password"}
+                        error={!!errors.confirmPassword}
+                        helperText={errors.confirmPassword?.message}
+                        fullWidth
+                        variant="outlined"
+                        sx={inputSx}
+                        InputLabelProps={{ shrink: true, sx: { display: "none" } }}
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <IconButton onClick={() => setShowConfirm(!showConfirm)}>
+                                {showConfirm ? <EyeOffIcon /> : <EyeIcon />}
+                              </IconButton>
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+                    )}
+                  />
+                </Box>
 
                 <Controller
                   name="profileImage"
@@ -335,13 +388,13 @@ const Register = () => {
                         <Button
                           variant="outlined"
                           component="label"
-                          aria-label="Upload profile image"
                           sx={{
                             borderStyle: "dashed",
                             borderColor: "#6ad0f8",
                             color: "#2196f3",
                             fontWeight: 600,
                             width: "100%",
+                            height: "50px",
                           }}
                         >
                           Upload Image
@@ -359,7 +412,6 @@ const Register = () => {
                           />
                         </Button>
                       )}
-
                       {uploadedImage && (
                         <Box
                           sx={{
@@ -370,9 +422,7 @@ const Register = () => {
                             textAlign: "center",
                           }}
                         >
-                          <Typography
-                            sx={{ color: "#2196f3", fontWeight: 500 }}
-                          >
+                          <Typography sx={{ color: "#2196f3", fontWeight: 500 }}>
                             Image uploaded successfully!
                           </Typography>
                           <Button
@@ -392,7 +442,6 @@ const Register = () => {
                           </Button>
                         </Box>
                       )}
-
                       {errors.profileImage && (
                         <Typography color="error" variant="caption">
                           {errors.profileImage.message}
@@ -401,6 +450,7 @@ const Register = () => {
                     </>
                   )}
                 />
+
                 <Button
                   type="submit"
                   fullWidth
@@ -409,28 +459,22 @@ const Register = () => {
                     py: 1.5,
                     fontWeight: 500,
                     backgroundColor: "secondary.main",
-                    "&:hover": { backgroundColor: "#1d3ecf" },
-                    color: "white",
+                    '&:hover': {
+                      backgroundColor: '#1d3ecf',
+                    },
                   }}
-                  style={{
-                    color: "white",
-                    fontWeight: 500,
-                    fontSize: "17px",
-                    borderRadius: "10px",
-                    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.25)",
-                    marginBottom: "15px",
-                  }}
-                  className="register-button"
+                  className="register_button"
                 >
                   {isLoading ? (
-                    <>
-                      <CircularProgress size={20} sx={{ mr: 1 }} />
+                    <Box sx={{ display: 'flex', alignItems: 'center', color: '#fff' }}>
+                      <CircularProgress size={20} sx={{ mr: 1, color: '#fff' }} />
                       Signing up...
-                    </>
+                    </Box>
                   ) : (
-                    "Register"
+                    <Typography sx={{ color: '#fff' }}>Register</Typography>
                   )}
                 </Button>
+
               </Box>
             </Box>
           </Box>
@@ -457,8 +501,7 @@ const Register = () => {
             sx={{
               position: "absolute",
               inset: 0,
-              background:
-                "linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.3))",
+              background: "linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.3))",
               display: "flex",
               alignItems: "flex-end",
               p: { md: 4, lg: 6 },

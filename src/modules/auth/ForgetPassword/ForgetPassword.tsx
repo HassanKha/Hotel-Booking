@@ -183,13 +183,15 @@ export default function ForgetPassword() {
                   backgroundColor: "secondary.main",
                   "&:hover": { backgroundColor: "#1d3ecf" },
                   color: "white",
+                  
                 }}
+                style={{color: "white",marginTop: "20px"}}
                 className="forget-pass-button"
               >
                 {isLoading ? (
                   <>
-                    <CircularProgress size={20} sx={{ mr: 1 }} />
-                    Signing in...
+                    <CircularProgress size={20} sx={{ mr: 1 , color: "white"}} />
+                    <span style={{ color: "white" }}>Loading...</span>
                   </>
                 ) : (
                   "Submit"
