@@ -34,22 +34,26 @@ const SIDEBAR_COLLAPSED_WIDTH = 64;
 
 const StyledDrawer = styled(Drawer, {
   shouldForwardProp: (prop) => prop !== "collapsed",
-})<{ collapsed?: boolean }>(({ theme, collapsed }) => ({
-  width: collapsed ? SIDEBAR_COLLAPSED_WIDTH : SIDEBAR_WIDTH,
-  flexShrink: 0,
-  "& .MuiDrawer-paper": {
+})<{ collapsed?: boolean }>(({ theme, collapsed }) => {
+  const isDark = theme.palette.mode === "dark";
+  return {
     width: collapsed ? SIDEBAR_COLLAPSED_WIDTH : SIDEBAR_WIDTH,
-    backgroundColor: "#4F46E5",
-    color: "white",
-    border: "none",
-    boxSizing: "border-box",
-    transition: theme.transitions.create("width", {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-    overflowX: "hidden",
-  },
-}));
+    flexShrink: 0,
+    "& .MuiDrawer-paper": {
+      width: collapsed ? SIDEBAR_COLLAPSED_WIDTH : SIDEBAR_WIDTH,
+      backgroundColor: isDark ? "#0f172a" : "#4F46E5",
+      color: isDark ? "#ffffff" : "#ffffff",
+      border: "none",
+      boxSizing: "border-box",
+      transition: theme.transitions.create("width", {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.enteringScreen,
+      }),
+      overflowX: "hidden",
+    },
+  };
+});
+
 
 const StyledListItemButton = styled(ListItemButton)<{
   component?: React.ElementType;
@@ -142,7 +146,13 @@ const currentPath = location.pathname;
               return (
                 <React.Fragment key={item.id}>
                   <Divider
-                    sx={{ my: 1, backgroundColor: "rgba(255, 255, 255, 0.2)" }}
+                    sx={{
+    my: 1,
+    backgroundColor:
+      theme.palette.mode === "dark"
+        ? "rgba(255, 255, 255, 0.12)"
+        : "rgba(255, 255, 255, 0.2)",
+  }}
                   />
                   <ListItem disablePadding>
                     <Tooltip

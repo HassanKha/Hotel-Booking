@@ -4,12 +4,14 @@ import { theme } from "../../services/Theme";
 import { Sidebar } from "../../shared/Sidebar/Sidebar";
 import { Navbar } from "../../shared/Navbar/Navbar";
 import { Outlet } from "react-router-dom";
+import { useThemeContext } from "../../../contexts/ThemeContext";
 
 export default function MasterLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [selectedItem, setSelectedItem] = useState("home");
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+   const { darkMode } = useThemeContext();
+  const isMobile = useMediaQuery(theme(darkMode).breakpoints.down("md"));
 
   const handleSidebarToggle = () => {
     if (isMobile) {
