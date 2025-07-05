@@ -1,5 +1,5 @@
-import type React from "react"
-import { useState } from "react"
+import type React from "react";
+import { useState } from "react";
 import {
   AppBar,
   Toolbar,
@@ -13,21 +13,24 @@ import {
   useTheme,
   useMediaQuery,
   Typography,
-} from "@mui/material"
-import { styled, alpha } from "@mui/material/styles"
-import { MenuIcon } from "../../../assets/Dashboard/SideBarIcons"
-import { ExpandMoreIcon, NotificationIcon, SearchIcon } from "../../../assets/Dashboard/NavbarIcons"
-import { useNavigate } from "react-router-dom"
-import type { NavbarProps } from "../../../interfaces/MasterLayout/Dashboard"
-import { useAuth } from "../../../contexts/AuthContext"
-
-
+} from "@mui/material";
+import { styled, alpha } from "@mui/material/styles";
+import { MenuIcon } from "../../../assets/Dashboard/SideBarIcons";
+import {
+  ExpandMoreIcon,
+  NotificationIcon,
+  SearchIcon,
+} from "../../../assets/Dashboard/NavbarIcons";
+import { useNavigate } from "react-router-dom";
+import type { NavbarProps } from "../../../interfaces/MasterLayout/Dashboard";
+import { useAuth } from "../../../contexts/AuthContext";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
-  borderRadius: typeof theme.shape.borderRadius === "number"
-    ? theme.shape.borderRadius * 3
-    : 12,
+  borderRadius:
+    typeof theme.shape.borderRadius === "number"
+      ? theme.shape.borderRadius * 3
+      : 12,
   backgroundColor: alpha(theme.palette.common.white, 0.15),
   "&:hover": {
     backgroundColor: alpha(theme.palette.common.white, 0.25),
@@ -38,7 +41,7 @@ const Search = styled("div")(({ theme }) => ({
     marginLeft: theme.spacing(1),
     width: "auto",
   },
-}))
+}));
 
 const SearchIconWrapper = styled("div")(({ theme }) => ({
   padding: theme.spacing(0, 1),
@@ -49,7 +52,7 @@ const SearchIconWrapper = styled("div")(({ theme }) => ({
   alignItems: "center",
   justifyContent: "center",
   color: alpha(theme.palette.common.white, 0.7),
-}))
+}));
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
   color: "inherit",
@@ -65,7 +68,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
       },
     },
   },
-}))
+}));
 
 const StyledAppBar = styled(AppBar, {
   shouldForwardProp: (prop) => prop !== "sidebarWidth",
@@ -84,49 +87,65 @@ const StyledAppBar = styled(AppBar, {
     marginLeft: 0,
     width: "100%",
   },
-}))
+}));
 
-
-export const Navbar: React.FC<NavbarProps> = ({ sidebarWidth, onMobileMenuClick }) => {
-  const theme = useTheme()
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"))
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-  const [searchValue, setSearchValue] = useState("")
-  const navigate = useNavigate()
+export const Navbar: React.FC<NavbarProps> = ({
+  sidebarWidth,
+  onMobileMenuClick,
+}) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [searchValue, setSearchValue] = useState("");
+  const navigate = useNavigate();
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget)
-  }
-  const {   logout} = useAuth();
+    setAnchorEl(event.currentTarget);
+  };
+  const { logout } = useAuth();
   const handleMenuClose = () => {
-    setAnchorEl(null)
-  }
+    setAnchorEl(null);
+     navigate("/users-update");
+  };
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchValue(event.target.value)
-  }
+    setSearchValue(event.target.value);
+  };
 
   const handleSearchSubmit = (event: React.FormEvent) => {
-    event.preventDefault()
-    console.log("Search:", searchValue)
-  }
+    event.preventDefault();
+    console.log("Search:", searchValue);
+  };
 
-   const handleLogout = () => {
-
-logout();
- setAnchorEl(null)
-    navigate("/login")
-  }
+  const handleLogout = () => {
+    logout();
+    setAnchorEl(null);
+    navigate("/login");
+  };
 
   return (
     <StyledAppBar position="fixed" sidebarWidth={isMobile ? 0 : sidebarWidth}>
       <Toolbar>
         {isMobile && (
-          <IconButton edge="start" color="inherit" aria-label="open drawer" onClick={onMobileMenuClick} sx={{ mr: 2 }}>
+          <IconButton
+            edge="start"
+            color="inherit"
+            aria-label="open drawer"
+            onClick={onMobileMenuClick}
+            sx={{ mr: 2 }}
+          >
             <MenuIcon />
           </IconButton>
         )}
 
-        <Box sx={{ flexGrow: 1, display: "flex", alignItems: "center", backgroundColor:"#ffff", borderRadius: "2rem", }}>
+        <Box
+          sx={{
+            flexGrow: 1,
+            display: "flex",
+            alignItems: "center",
+            backgroundColor: "#ffff",
+            borderRadius: "2rem",
+          }}
+        >
           <Search>
             <SearchIconWrapper>
               <SearchIcon />
@@ -145,7 +164,6 @@ logout();
         </Box>
 
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-       
           <Box
             sx={{
               display: "flex",
@@ -182,12 +200,15 @@ logout();
               </>
             )}
           </Box>
-             <IconButton size="large" aria-label="show notifications" color="inherit">
+          <IconButton
+            size="large"
+            aria-label="show notifications"
+            color="inherit"
+          >
             <Badge badgeContent={4} color="error">
               <NotificationIcon />
             </Badge>
           </IconButton>
-
         </Box>
 
         <Menu
@@ -224,5 +245,5 @@ logout();
         </Menu>
       </Toolbar>
     </StyledAppBar>
-  )
-}
+  );
+};

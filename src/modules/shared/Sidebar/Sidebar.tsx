@@ -83,11 +83,11 @@ const ToggleButton = styled(IconButton)(() => ({
 
 const menuItems = [
   { id: "dashboard", label: "Home", icon: HomeIcon },
-  { id: "users", label: "Users", icon: UsersIcon },
-  { id: "rooms", label: "Rooms", icon: RoomsIcon },
-  { id: "ads", label: "Ads", icon: AdsIcon },
-  { id: "bookings", label: "Bookings", icon: BookingsIcon },
-  { id: "facilities", label: "Facilities", icon: FacilitiesIcon },
+  { id: "dashboard/users", label: "Users", icon: UsersIcon },
+  { id: "dashboard/rooms", label: "Rooms", icon: RoomsIcon },
+  { id: "dashboard/ads", label: "Ads", icon: AdsIcon },
+  { id: "dashboard/bookings", label: "Bookings", icon: BookingsIcon },
+  { id: "dashboard/facilities", label: "Facilities", icon: FacilitiesIcon },
   { id: "change-password", label: "Change password", icon: PasswordIcon },
   { id: "logout", label: "Logout", icon: LogoutIcon },
 ];

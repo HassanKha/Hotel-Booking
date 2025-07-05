@@ -42,6 +42,14 @@ function App() {
         { path: "forget-password", element: <ForgetPassword /> },
         { path: "reset-password", element: <ResetPassword /> },
         { path: "change-password", element: <ChangePassword /> },
+         {
+          path: "users-update",
+          element: (
+            <Suspense fallback={null}>
+              <UsersUpdate />
+            </Suspense>
+          ),
+        },
       ],
     },
     {
@@ -68,14 +76,7 @@ function App() {
             </Suspense>
           ),
         },
-          {
-          path: "users-update",
-          element: (
-            <Suspense fallback={null}>
-              <UsersUpdate />
-            </Suspense>
-          ),
-        },
+         
         {
           path: "rooms",
           element: (
