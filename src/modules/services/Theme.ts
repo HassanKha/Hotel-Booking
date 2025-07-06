@@ -5,7 +5,8 @@ export const theme = (darkMode: boolean) =>
     palette: {
       mode: darkMode ? "dark" : "light",
       primary: {
-        main: darkMode ? "#ffffff" : "#000000",
+        main: "#1976d2",       
+        contrastText: "#fff",
       },
       secondary: {
         main: "#3252DF",
