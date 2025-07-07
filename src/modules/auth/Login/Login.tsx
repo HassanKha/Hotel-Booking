@@ -75,7 +75,7 @@ const Login = () => {
       toast.success(message || "You have successfully logged in!");
 
       login(responseData.token, responseData.user);
-      navigate("/dashboard");
+      navigate("/dashboard",{state:responseData.user});
     } catch (error: any) {
       console.error("Login error:", error);
 

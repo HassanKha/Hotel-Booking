@@ -21,5 +21,5 @@ export const USERS_URLS = {
   REGISTER: `/portal/users`,
   CHANGE_PASS: `/portal/users/change-password`,
   RESET_PASS: `/portal/users/reset-password`,
-  GET_CURRENT_USER: (id : Number) => `/api/v0/portal/users/${id}`
+  GET_CURRENT_USER: (id : Number) => `/admin/users/${id}`
 }

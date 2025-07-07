@@ -1,13 +1,15 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import type { AuthContextProps, User } from "../interfaces/Auth/AuthContextType";
+import type { UserDataa } from "../interfaces/Auth/AuthTypes";
 
 
 
-const AuthContext = createContext<AuthContextProps | undefined>(undefined);
+export const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
+  const [userData,setUserData] = useState<UserDataa| null >(null);
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
@@ -34,6 +36,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     token,
     login,
     logout,
+    userData,
+    setUserData,
     isAuthenticated: !!token,
   };
 

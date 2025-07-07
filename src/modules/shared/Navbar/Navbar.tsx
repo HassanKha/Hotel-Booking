@@ -1,5 +1,5 @@
 import type React from "react";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import {
   AppBar,
   Toolbar,
@@ -28,7 +28,7 @@ import {
 } from "../../../assets/Dashboard/NavbarIcons";
 
 import type { NavbarProps } from "../../../interfaces/MasterLayout/Dashboard";
-import { useAuth } from "../../../contexts/AuthContext";
+import { AuthContext, useAuth } from "../../../contexts/AuthContext";
 import { useThemeContext } from "../../../contexts/ThemeContext";
 
 const Search = styled("div")(({ theme }) => ({
@@ -120,6 +120,8 @@ export const Navbar: React.FC<NavbarProps> = ({ sidebarWidth, onMobileMenuClick 
     navigate("/login");
   };
 
+  let {userData} = useContext(AuthContext)
+
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
@@ -194,7 +196,7 @@ export const Navbar: React.FC<NavbarProps> = ({ sidebarWidth, onMobileMenuClick 
               {!isMobile && (
                 <>
                   <Typography variant="body2" sx={{ mr: 0.5, fontWeight: 500 }}>
-                    Upskilling
+                    {userData?.userName}
                   </Typography>
                   <ExpandMoreIcon />
                 </>
@@ -235,7 +237,7 @@ export const Navbar: React.FC<NavbarProps> = ({ sidebarWidth, onMobileMenuClick 
               transformOrigin={{ horizontal: "right", vertical: "top" }}
               anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
             >
-              <MenuItem onClick={() => navigate("/users-update")}>Profile</MenuItem>
+              <MenuItem onClick={() => navigate("/users-update",{state:userData._id})}>Profile</MenuItem>
               <MenuItem onClick={handleLogout}>Logout</MenuItem>
             </Menu>
           </Box>
