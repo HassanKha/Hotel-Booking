@@ -29,3 +29,19 @@ export interface ChangePasswordData {
   newPassword: string;
   confirmPassword: string;
 }
+
+export interface UserDataa {
+  userName:string;
+  role:string;
+  _id:number;
+}
+
+export interface UserDataProfile {
+  country:string;
+  createdAt:string;
+  updatedAt:string;
+  email:string;
+  profileImage: string | null;
+  userName:string;
+  _id:number;
+}

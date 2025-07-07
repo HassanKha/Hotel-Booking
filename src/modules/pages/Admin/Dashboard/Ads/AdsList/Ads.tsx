@@ -1,7 +1,15 @@
+import Header from "../../../../../shared/Header/Header";
 
 
 export default function Ads() {
   return (
-    <div>Ads</div>
+    <>
+     <Header
+            title="Adds Table Details"
+            description="You can check all details"
+            buttonText="Add New Add"
+           
+          />
+    </>
   )
 }
