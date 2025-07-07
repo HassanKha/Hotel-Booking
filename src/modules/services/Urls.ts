@@ -1,9 +1,13 @@
 import axios from "axios";
+
 const baseURL = "https://upskilling-egypt.com:3000/api/v0";
-export const ImageURL = "https://upskilling-egypt.com:3000/"
+
+export const ImageURL = "https://upskilling-egypt.com:3000/";
+
 export const axiosInstance = axios.create({
   baseURL,
 });
+
 axiosInstance.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
@@ -21,5 +25,9 @@ export const USERS_URLS = {
   REGISTER: `/portal/users`,
   CHANGE_PASS: `/portal/users/change-password`,
   RESET_PASS: `/portal/users/reset-password`,
-  GET_CURRENT_USER: (id : Number) => `/api/v0/portal/users/${id}`
-}
+  GET_CURRENT_USER: (id: number) => `/portal/users/${id}`,
+};
+
+export const ROOMS_URLS = {
+  GET_ROOMS: `/admin/rooms?page=1&size=10`,
+};
