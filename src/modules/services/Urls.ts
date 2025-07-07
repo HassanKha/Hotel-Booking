@@ -25,14 +25,9 @@ export const USERS_URLS = {
   REGISTER: `/portal/users`,
   CHANGE_PASS: `/portal/users/change-password`,
   RESET_PASS: `/portal/users/reset-password`,
-<<<<<<< HEAD
   GET_CURRENT_USER: (id: number) => `/portal/users/${id}`,
 };
 
 export const ROOMS_URLS = {
   GET_ROOMS: `/admin/rooms?page=1&size=10`,
 };
-=======
-  GET_CURRENT_USER: (id : Number) => `/admin/users/${id}`
-}
->>>>>>> bbf2be5096bae8a029a97ea7bac00cb2b32fa579

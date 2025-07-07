@@ -11,4 +11,5 @@ export interface AuthContextProps {
   login: (token: string, user: User) => void;
   logout: () => void;
   isAuthenticated: boolean;
+  loading: boolean;
 }
