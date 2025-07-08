@@ -5,6 +5,8 @@ import { Box, CircularProgress } from "@mui/material";
 import { toast } from "react-toastify";
 import ViewModel from "../ViewAddModel/ViewModel.tsx";
 import Header from "../../../../../shared/Header/Header.tsx";
+import Swal from "sweetalert2";
+import "./Ads.css";
 
 export default function Ads() {
   const [Ads, setAds] = useState<any[]>([]);
@@ -33,17 +35,48 @@ export default function Ads() {
   };
 
   const handleDelete = async (row: any) => {
+  const swalWithMuiButtons = Swal.mixin({
+    customClass: {
+      confirmButton: "swal2-confirm",
+      cancelButton: "swal2-cancel",
+    },
+    buttonsStyling: false,
+  });
+
+  const result = await swalWithMuiButtons.fire({
+    title: "Are you sure?",
+    text: `This will permanently delete the ad for room "${row.room?.roomNumber}".`,
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Delete",
+    cancelButtonText: "Cancel",
+    reverseButtons: true,
+  });
+
+  if (result.isConfirmed) {
     setLoading(true);
     try {
-      let res = await axiosInstance.delete(ADS_URL.DELETE_ads(row._id));
-      toast.success(res.data.message || "Ad deleted successfully");
+      const res = await axiosInstance.delete(ADS_URL.DELETE_ads(row._id));
       fetchAds(currentPage, itemsPerPage);
+      swalWithMuiButtons.fire({
+        title: "Deleted!",
+        text: res.data.message || "The ad has been deleted successfully.",
+        icon: "success",
+        timer: 2000,
+        showConfirmButton: false,
+      });
     } catch (error: any) {
-      toast.error(error.response?.data?.message || "Error deleting ad");
+      swalWithMuiButtons.fire({
+        title: "Error!",
+        text: error.response?.data?.message || "Failed to delete the ad.",
+        icon: "error",
+      });
     } finally {
       setLoading(false);
     }
-  };
+  }
+};
+
 
   const handleView = (row: any) => {
     setSelectedAds(row);

@@ -31,6 +31,7 @@ export const USERS_URLS = {
 
 export const ROOMS_URLS = {
   GET_ROOMS: `/admin/rooms?page=1&size=10`,
+  DELETE_ROOM:(id:number) => `/admin/rooms/${id}`
 };
 
 

@@ -3,7 +3,9 @@
   import SharedTable from "../../../../../shared/SharedTable/SharedTable.tsx";
   import { axiosInstance, ROOMS_URLS } from "../../../../../services/Urls.ts";
   import { CircularProgress, Box } from "@mui/material"; 
-
+  import "./Rooms.css";
+import Swal from "sweetalert2";
+  
   const columns = [
     { id: "name", label: "Room Number" },
     {
@@ -55,24 +57,26 @@
           capacity?: number | string;
           facilities?: Facility[];
         }
+interface FormattedRoom {
+  _id: string;
+  name: string;
+  image: string;
+  price: number | string;
+  discount: number | string;
+  capacity: number | string;
+  category: string;
+}
 
-        interface FormattedRoom {
-          name: string;
-          image: string;
-          price: number | string;
-          discount: number | string;
-          capacity: number | string;
-          category: string;
-        }
+const formatted: FormattedRoom[] = (roomList as any[]).map((room) => ({
+  _id: room._id, 
+  name: room.roomNumber || "N/A",
+  image: room.images?.[0] || "",
+  price: room.price || "N/A",
+  discount: room.discount || "N/A",
+  capacity: room.capacity || "N/A",
+  category: room.facilities?.map((f) => f.name).join(", ") || "N/A",
+}));
 
-        const formatted: FormattedRoom[] = (roomList as Room[]).map((room) => ({
-          name: room.roomNumber || "N/A",
-          image: room.images?.[0] || "",
-          price: room.price || "N/A",
-          discount: room.discount || "N/A",
-          capacity: room.capacity || "N/A",
-          category: room.facilities?.map((f) => f.name).join(", ") || "N/A",
-        }));
 
         setRows(formatted);
       } catch (error) {
@@ -81,6 +85,50 @@
         setLoading(false);
       }
     };
+
+    const handleDelete = async (row: any) => {
+  const swalWithMuiButtons = Swal.mixin({
+    customClass: {
+      confirmButton: "swal2-confirm",
+      cancelButton: "swal2-cancel",
+    },
+    buttonsStyling: false,
+  });
+
+  const result = await swalWithMuiButtons.fire({
+    title: "Are you sure?",
+    text: `This will permanently delete the room "${row.name}".`,
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Delete",
+    cancelButtonText: "Cancel",
+    reverseButtons: true,
+  });
+
+  if (result.isConfirmed) {
+    setLoading(true);
+    try {
+      await axiosInstance.delete(ROOMS_URLS.DELETE_ROOM(row._id));
+      await fetchRooms();
+      swalWithMuiButtons.fire({
+        title: "Deleted!",
+        text: `Room "${row.name}" has been deleted successfully.`,
+        icon: "success",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+    } catch (error: any) {
+      swalWithMuiButtons.fire({
+        title: "Error!",
+        text: error.response?.data?.message || "Failed to delete the room.",
+        icon: "error",
+      });
+    } finally {
+      setLoading(false);
+    }
+  }
+};
+
 
     const handleAddRoom = () => {
       console.log("Redirect to Add Room form");
@@ -110,7 +158,7 @@
             rows={rows}
             onView={(row) => console.log("View", row)}
             onEdit={(row) => console.log("Edit", row)}
-            onDelete={(row) => console.log("Delete", row)}
+            onDelete={handleDelete}
           />
         )}
       </div>
