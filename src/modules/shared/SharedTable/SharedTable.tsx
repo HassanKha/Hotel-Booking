@@ -36,15 +36,9 @@ const StyledTableCell = styled(TableCell)(() => ({
 }));
 
 const StyledTableRow = styled(TableRow)(() => ({
-  "&:nth-of-type(odd)": {
-    backgroundColor: "#ffffff",
-  },
-  "&:nth-of-type(even)": {
-    backgroundColor: "#F9FAFB",
-  },
-  "&:hover": {
-    backgroundColor: "#F3F4F6 !important",
-  },
+  "&:nth-of-type(odd)": { backgroundColor: "#ffffff" },
+  "&:nth-of-type(even)": { backgroundColor: "#F9FAFB" },
+  "&:hover": { backgroundColor: "#F3F4F6 !important" },
 }));
 
 const StyledTableContainer = styled(TableContainer)(() => ({
@@ -103,15 +97,6 @@ const PaginationContainer = styled("div")(() => ({
   borderTop: "1px solid #E5E7EB",
   "@media (min-width: 768px)": {
     flexDirection: "row",
-  },
-}));
-
-const PaginationInfo = styled("div")(() => ({
-  display: "flex",
-  alignItems: "center",
-  marginBottom: "8px",
-  "@media (min-width: 768px)": {
-    marginBottom: "0",
   },
 }));
 
@@ -222,7 +207,6 @@ export default function SharedTable<
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedRow, setSelectedRow] = useState<RowType | null>(null);
   const open = Boolean(anchorEl);
-
   const totalPages = Math.ceil(totalResults / itemsPerPage);
 
   const handleOpenMenu = useCallback(
@@ -267,7 +251,7 @@ export default function SharedTable<
               align="center"
               className="head"
               style={{ width: "80px", paddingRight: "12px" }}
-            ></StyledTableCell>
+            />
           </TableRow>
         </TableHead>
         <TableBody>
@@ -283,7 +267,7 @@ export default function SharedTable<
       </Table>
 
       <PaginationContainer>
-        <PaginationInfo>
+        <div style={{ display: "flex", alignItems: "center", marginBottom: "8px" }}>
           <span style={{ color: "#6B7280", marginRight: "8px" }}>Showing</span>
           <PageSizeSelect
             value={itemsPerPage}
@@ -294,7 +278,7 @@ export default function SharedTable<
             <option value={15}>15</option>
           </PageSizeSelect>
           <span style={{ color: "#6B7280" }}>of {totalResults} Results</span>
-        </PaginationInfo>
+        </div>
 
         <PaginationButtons>
           <PageInfo>

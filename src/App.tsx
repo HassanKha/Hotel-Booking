@@ -30,7 +30,7 @@ const Bookings = lazy(() => import("./modules/pages/Admin/Dashboard/Bookings/Boo
 const Rooms = lazy(() => import("./modules/pages/Admin/Dashboard/Rooms/RoomsList/Rooms"));
 const Users = lazy(() => import("./modules/pages/Admin/Dashboard/Users/UsersList/Users"));
 const RoomData = lazy(() => import("./modules/pages/Admin/Dashboard/Rooms/RoomsData/RoomData"));
-const BookingData = lazy(() => import("./modules/pages/Admin/Dashboard/Bookings/BookingData/BookingData"));
+const BookingData = lazy(() => import("./modules/pages/Admin/Dashboard/Bookings/ViewBookingModal/ViewBookingModal"));
 const FacilitesData = lazy(() => import("./modules/pages/Admin/Dashboard/Facilities/FacilitesData/FacilitesData"));
 const AdData = lazy(() => import("./modules/pages/Admin/Dashboard/Ads/AdData/AdData"));
 const UsersUpdate = lazy(() => import("./modules/pages/Admin/Dashboard/Users/UsersUpdate/UsersUpdate"));

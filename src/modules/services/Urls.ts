@@ -34,5 +34,10 @@ export const ROOMS_URLS = {
 };
 
 
+export const BOOKINGS_URLS = {
+  GET_BOOKINGS: `/admin/booking`,
+  GET_BOOKING_DETAILS: (id: number) => `/admin/booking/${id}`,
+  DELETE_BOOKING: (id: number) => `/admin/booking/${id}`,
+};
 
 

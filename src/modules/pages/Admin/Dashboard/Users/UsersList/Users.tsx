@@ -3,7 +3,8 @@ import Header from "../../../../../shared/Header/Header.tsx";
 import SharedTable from "../../../../../shared/SharedTable/SharedTable.tsx";
 import { axiosInstance, USERS_URLS } from "../../../../../services/Urls.ts";
 import { CircularProgress, Box } from "@mui/material";
-import UserDetailsModal from "../UserDetailsModal/UserDetailsModal.tsx";
+import UserDetailsModal from "../UsersData/UserDetailsModal.tsx";
+import { toast } from "react-toastify";
 
 const columns = [
   { id: "userName", label: "Name", align: "center" as "center" },
@@ -62,8 +63,8 @@ export default function Users() {
 
       setRows(formattedUsers);
       setTotalResults(totalCount);
-    } catch (error) {
-      console.error("Error fetching user data:", error);
+    } catch (error : any) {
+      toast.error(error.response?.data?.message || "Error fetching users");
     } finally {
       setLoading(false);
     }
