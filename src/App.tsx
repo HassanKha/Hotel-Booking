@@ -29,7 +29,6 @@ const Facilities = lazy(() => import("./modules/pages/Admin/Dashboard/Facilities
 const Bookings = lazy(() => import("./modules/pages/Admin/Dashboard/Bookings/BookingList/Bookings"));
 const Rooms = lazy(() => import("./modules/pages/Admin/Dashboard/Rooms/RoomsList/Rooms"));
 const Users = lazy(() => import("./modules/pages/Admin/Dashboard/Users/UsersList/Users"));
-const UserData = lazy(() => import("./modules/pages/Admin/Dashboard/Users/UsersData/UserData"));
 const RoomData = lazy(() => import("./modules/pages/Admin/Dashboard/Rooms/RoomsData/RoomData"));
 const BookingData = lazy(() => import("./modules/pages/Admin/Dashboard/Bookings/BookingData/BookingData"));
 const FacilitesData = lazy(() => import("./modules/pages/Admin/Dashboard/Facilities/FacilitesData/FacilitesData"));
@@ -116,14 +115,7 @@ function App() {
             </Suspense>
           ),
         },
-        {
-          path: "users-data",
-          element: (
-            <Suspense fallback={null}>
-              <UserData />
-            </Suspense>
-          ),
-        },
+      
        
         {
           path: "rooms-data",

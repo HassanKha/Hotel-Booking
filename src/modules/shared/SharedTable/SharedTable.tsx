@@ -27,13 +27,11 @@ const StyledTableCell = styled(TableCell)(() => ({
     backgroundColor: "#E2E5EB",
     textTransform: "uppercase",
     letterSpacing: "0.05em",
-    borderBottom: "1px solid #E5E7EB",
   },
   [`&.body`]: {
     fontWeight: "400",
     color: "#111827",
     fontSize: "14px",
-    backgroundColor: "transparent",
   },
 }));
 
@@ -52,8 +50,8 @@ const StyledTableRow = styled(TableRow)(() => ({
 const StyledTableContainer = styled(TableContainer)(() => ({
   border: "1px solid #E5E7EB",
   borderRadius: "8px",
-  boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)",
-  overflow: "hidden",
+  boxShadow:
+    "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)",
   backgroundColor: "#ffffff",
 }));
 
@@ -158,12 +156,17 @@ type Column<RowType = Record<string, unknown>> = {
   label: string;
   align?: "left" | "right" | "center";
   render?: (row: RowType) => React.ReactNode;
-  width?: string; 
+  width?: string;
 };
 
 type SharedTableProps<RowType extends Record<string, any>> = {
   columns: Column<RowType>[];
   rows: RowType[];
+  totalResults?: number;
+  currentPage?: number;
+  itemsPerPage?: number;
+  onPageChange?: (newPage: number) => void;
+  onPageSizeChange?: (newSize: number) => void;
   onView?: (row: RowType) => void;
   onEdit?: (row: RowType) => void;
   onDelete?: (row: RowType) => void;
@@ -185,7 +188,6 @@ const TableRowMemo = memo(
           key={col.id}
           align={col.align || "left"}
           className="body"
-          style={{ width: col.width || "auto" }}
         >
           {col.render ? col.render(row) : row[col.id]}
         </StyledTableCell>
@@ -205,14 +207,22 @@ const TableRowMemo = memo(
 
 export default function SharedTable<
   RowType extends Record<string, any> = Record<string, any>
->({ columns, rows, onView, onEdit, onDelete }: SharedTableProps<RowType>) {
+>({
+  columns,
+  rows,
+  totalResults = 0,
+  currentPage = 1,
+  itemsPerPage = 5,
+  onPageChange,
+  onPageSizeChange,
+  onView,
+  onEdit,
+  onDelete,
+}: SharedTableProps<RowType>) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedRow, setSelectedRow] = useState<RowType | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(5);
   const open = Boolean(anchorEl);
 
-  const totalResults = rows.length;
   const totalPages = Math.ceil(totalResults / itemsPerPage);
 
   const handleOpenMenu = useCallback(
@@ -239,76 +249,36 @@ export default function SharedTable<
     [selectedRow, onView, onEdit, onDelete, handleCloseMenu]
   );
 
-  const hasActions = Boolean(onView || onEdit || onDelete);
-
-  const handlePageChange = (newPage: number) => {
-    setCurrentPage(newPage);
-  };
-
-  const handleItemsPerPageChange = (
-    e: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    const newItemsPerPage = Number(e.target.value);
-    setItemsPerPage(newItemsPerPage);
-    setCurrentPage(1);
-  };
-
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentRows = rows.slice(startIndex, endIndex);
-
-  const contentColumns = columns.length;
-  const contentWidth = `calc((100% - 80px) / ${contentColumns})`; 
-
   return (
     <StyledTableContainer>
       <Table sx={{ minWidth: 700, tableLayout: "fixed" }}>
-        {" "}
         <TableHead>
           <TableRow>
             {columns.map((col) => (
               <StyledTableCell
                 key={col.id}
-                align={col.align || "left"}
+                align={col.align || "center"}
                 className="head"
-                style={{ width: contentWidth }} 
               >
                 {col.label}
               </StyledTableCell>
             ))}
-            {hasActions && (
-              <StyledTableCell
-                align="right"
-                className="head"
-                style={{ width: "80px", paddingRight: "12px" }} 
-              ></StyledTableCell>
-            )}
+            <StyledTableCell
+              align="center"
+              className="head"
+              style={{ width: "80px", paddingRight: "12px" }}
+            ></StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {currentRows.map((row, rowIndex) =>
-            hasActions ? (
-              <TableRowMemo
-                key={rowIndex}
-                row={row}
-                columns={columns}
-                onOpenMenu={handleOpenMenu}
-              />
-            ) : (
-              <StyledTableRow key={rowIndex}>
-                {columns.map((col) => (
-                  <StyledTableCell
-                    key={col.id}
-                    align={col.align || "left"}
-                    className="body"
-                    style={{ width: contentWidth }} 
-                  >
-                    {col.render ? col.render(row) : row[col.id]}
-                  </StyledTableCell>
-                ))}
-              </StyledTableRow>
-            )
-          )}
+          {rows.map((row, rowIndex) => (
+            <TableRowMemo
+              key={rowIndex}
+              row={row}
+              columns={columns}
+              onOpenMenu={handleOpenMenu}
+            />
+          ))}
         </TableBody>
       </Table>
 
@@ -317,7 +287,7 @@ export default function SharedTable<
           <span style={{ color: "#6B7280", marginRight: "8px" }}>Showing</span>
           <PageSizeSelect
             value={itemsPerPage}
-            onChange={handleItemsPerPageChange}
+            onChange={(e) => onPageSizeChange?.(Number(e.target.value))}
           >
             <option value={5}>5</option>
             <option value={10}>10</option>
@@ -331,13 +301,13 @@ export default function SharedTable<
             Page {currentPage} of {totalPages}
           </PageInfo>
           <PageButton
-            onClick={() => handlePageChange(currentPage - 1)}
+            onClick={() => onPageChange?.(currentPage - 1)}
             disabled={currentPage === 1}
           >
             ‹
           </PageButton>
           <PageButton
-            onClick={() => handlePageChange(currentPage + 1)}
+            onClick={() => onPageChange?.(currentPage + 1)}
             disabled={currentPage === totalPages || totalPages === 0}
           >
             ›
