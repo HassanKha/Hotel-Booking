@@ -1,11 +1,7 @@
-import { Box, Typography, Button, Stack } from "@mui/material";
+import { Box, Typography, Button, Stack, useTheme } from "@mui/material";
+import type { HeaderProps } from "../../../interfaces/Shared/Shared";
 
-type HeaderProps = {
-  title: string;
-  description: string;
-  buttonText?: string;
-  onButtonClick?: () => void;
-};
+
 
 export default function Header({
   title,
@@ -13,6 +9,7 @@ export default function Header({
   buttonText,
   onButtonClick,
 }: HeaderProps) {
+   const theme = useTheme();
   return (
     <Stack
       direction={{ xs: "column", sm: "row" }}
@@ -39,8 +36,10 @@ export default function Header({
             marginRight: "100px",
             padding: "10px 40px",
             textTransform: "none",
-            backgroundColor: "#203FC7",
-            "&:hover": { backgroundColor: "#1a33a5" },
+           backgroundColor: theme.palette.mode === "dark" ? "#1f2937" : theme.palette.primary.main,
+            "&:hover": {
+              backgroundColor: theme.palette.primary.dark,
+            },
           }}
           onClick={onButtonClick}
         >

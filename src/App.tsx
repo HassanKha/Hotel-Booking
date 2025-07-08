@@ -1,7 +1,6 @@
 import { Suspense } from "react";
 import Landing from "./modules/pages/User/Landing/Landing";
 import NotFound from "./modules/shared/NotFound/NotFound";
-import Dashboard from "./modules/pages/Admin/Dashboard/Dashboard";
 import ProtectedRoute from "./modules/shared/ProtectedRoute/ProtectedRoute";
 import MasterLayout from "./modules/layouts/MasterLayout.css/MasterLayout";
 import ChangePassword from "./modules/auth/ChangePassword/ChangePassword";
@@ -20,6 +19,7 @@ import { ToastContainer } from "react-toastify";
 import { ThemeProvider } from "@mui/material";
 import { theme } from "./modules/services/Theme";
 import { useThemeContext } from "./contexts/ThemeContext";
+import { DashboardHome } from "./modules/pages/Admin/Dashboard/Dashboard";
 
 
 
@@ -70,7 +70,7 @@ function App() {
           index: true,
           element: (
             <Suspense fallback={null}>
-              <Dashboard />
+              <DashboardHome />
             </Suspense>
           ),
         },

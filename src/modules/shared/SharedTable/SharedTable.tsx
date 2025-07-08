@@ -15,93 +15,105 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useState, useCallback, memo } from "react";
 import { styled } from "@mui/material/styles";
+import type { Column, SharedTableProps } from "../../../interfaces/Shared/Shared";
 
-const StyledTableCell = styled(TableCell)(() => ({
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
   fontFamily: "Inter, sans-serif",
   padding: "16px 20px",
-  borderBottom: "1px solid #E5E7EB",
+  borderBottom: `1px solid ${theme.palette.divider}`,
   [`&.head`]: {
-    color: "#374151",
-    fontWeight: "600",
+    color: theme.palette.text.primary,
+    fontWeight: 600,
     fontSize: "12px",
-    backgroundColor: "#E2E5EB",
+    backgroundColor: theme.palette.mode === "dark" ? "#1f2937" : "#E2E5EB",
     textTransform: "uppercase",
     letterSpacing: "0.05em",
   },
   [`&.body`]: {
-    fontWeight: "400",
-    color: "#111827",
+    fontWeight: 400,
+    color: theme.palette.text.primary,
     fontSize: "14px",
   },
 }));
 
-const StyledTableRow = styled(TableRow)(() => ({
-  "&:nth-of-type(odd)": { backgroundColor: "#ffffff" },
-  "&:nth-of-type(even)": { backgroundColor: "#F9FAFB" },
-  "&:hover": { backgroundColor: "#F3F4F6 !important" },
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  "&:nth-of-type(odd)": {
+    backgroundColor: theme.palette.mode === "dark" ? "#1e293b" : "#ffffff",
+  },
+  "&:nth-of-type(even)": {
+    backgroundColor: theme.palette.mode === "dark" ? "#273549" : "#F9FAFB",
+  },
+  "&:hover": {
+    backgroundColor: theme.palette.mode === "dark" ? "#334155" : "#F3F4F6",
+  },
 }));
 
-const StyledTableContainer = styled(TableContainer)(() => ({
-  border: "1px solid #E5E7EB",
+const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
+  border: `1px solid ${theme.palette.divider}`,
   borderRadius: "8px",
   boxShadow:
-    "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)",
-  backgroundColor: "#ffffff",
+    theme.palette.mode === "dark"
+      ? "0 2px 8px rgba(0,0,0,0.6)"
+      : "0 1px 3px rgba(0,0,0,0.1)",
+  backgroundColor: theme.palette.background.paper,
 }));
 
-const ActionButton = styled(IconButton)(() => ({
+const ActionButton = styled(IconButton)(({ theme }) => ({
   padding: "4px",
-  color: "#6B7280",
+  color: theme.palette.text.secondary,
   "&:hover": {
-    backgroundColor: "#F3F4F6",
-    color: "#374151",
+    backgroundColor:
+      theme.palette.mode === "dark" ? "#1e293b" : "#F3F4F6",
+    color: theme.palette.text.primary,
   },
 }));
 
-const StyledMenu = styled(Menu)(() => ({
+const StyledMenu = styled(Menu)(({ theme }) => ({
   "& .MuiPaper-root": {
     borderRadius: "8px",
-    border: "1px solid #E5E7EB",
+    border: `1px solid ${theme.palette.divider}`,
     boxShadow:
-      "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+      "0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05)",
     minWidth: "160px",
     padding: "8px 0",
-    backgroundColor: "#ffffff",
+    backgroundColor: theme.palette.background.paper,
   },
 }));
 
-const StyledMenuItem = styled(MenuItem)(() => ({
+const StyledMenuItem = styled(MenuItem)(({ theme }) => ({
   fontFamily: "Inter, sans-serif",
   fontSize: "14px",
-  color: "#374151",
+  color: theme.palette.text.primary,
   padding: "8px 16px",
   minHeight: "40px",
   display: "flex",
   alignItems: "center",
   "&:hover": {
-    backgroundColor: "#F3F4F6",
+    backgroundColor:
+      theme.palette.mode === "dark" ? "#374151" : "#F3F4F6",
   },
   "& .MuiSvgIcon-root": {
     fontSize: "16px",
-    color: "#6B7280",
+    color: theme.palette.text.secondary,
     marginRight: "12px",
   },
 }));
 
-const PaginationContainer = styled("div")(() => ({
+const PaginationContainer = styled("div")(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
   justifyContent: "space-between",
   padding: "12px 16px",
-  borderTop: "1px solid #E5E7EB",
+  borderTop: `1px solid ${theme.palette.divider}`,
   "@media (min-width: 768px)": {
     flexDirection: "row",
   },
 }));
 
-const PageInfo = styled("span")(() => ({
-  color: "#6B7280",
+const PageInfo = styled("span")(({ theme }) => ({
+  color: theme.palette.text.secondary,
   marginRight: "12px",
 }));
 
@@ -110,10 +122,10 @@ const PaginationButtons = styled("div")(() => ({
   alignItems: "center",
 }));
 
-const PageButton = styled("button")(() => ({
-  border: "1px solid #D1D5DB",
+const PageButton = styled("button")(({ theme }) => ({
+  border: `1px solid ${theme.palette.divider}`,
   backgroundColor: "transparent",
-  color: "#374151",
+  color: theme.palette.text.primary,
   padding: "4px 8px",
   margin: "0 4px",
   borderRadius: "4px",
@@ -123,39 +135,21 @@ const PageButton = styled("button")(() => ({
     cursor: "not-allowed",
   },
   "&:hover:not(:disabled)": {
-    backgroundColor: "#F3F4F6",
+    backgroundColor:
+      theme.palette.mode === "dark" ? "#374151" : "#F3F4F6",
   },
 }));
 
-const PageSizeSelect = styled("select")(() => ({
-  border: "1px solid #D1D5DB",
+const PageSizeSelect = styled("select")(({ theme }) => ({
+  border: `1px solid ${theme.palette.divider}`,
   borderRadius: "4px",
   padding: "4px 8px",
   margin: "0 8px",
   backgroundColor: "transparent",
-  color: "#374151",
+  color: theme.palette.text.primary,
 }));
 
-type Column<RowType = Record<string, unknown>> = {
-  id: string;
-  label: string;
-  align?: "left" | "right" | "center";
-  render?: (row: RowType) => React.ReactNode;
-  width?: string;
-};
 
-type SharedTableProps<RowType extends Record<string, any>> = {
-  columns: Column<RowType>[];
-  rows: RowType[];
-  totalResults?: number;
-  currentPage?: number;
-  itemsPerPage?: number;
-  onPageChange?: (newPage: number) => void;
-  onPageSizeChange?: (newSize: number) => void;
-  onView?: (row: RowType) => void;
-  onEdit?: (row: RowType) => void;
-  onDelete?: (row: RowType) => void;
-};
 
 const TableRowMemo = memo(
   ({
