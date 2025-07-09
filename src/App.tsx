@@ -49,7 +49,7 @@ function App() {
         { path: "reset-password", element: <ResetPassword /> },
         { path: "change-password", element: <ChangePassword /> },
          {
-          path: "users-update",
+          path: "user-profile",
           element: (
             <Suspense fallback={null}>
               <UsersUpdate />

@@ -1,5 +1,5 @@
 import type React from "react";
-import {  useState } from "react";
+import {  useEffect, useState } from "react";
 import {
   AppBar,
   Toolbar,
@@ -123,6 +123,13 @@ export const Navbar: React.FC<NavbarProps> = ({ sidebarWidth, onMobileMenuClick 
     navigate("/login");
   };
 
+const { currentUser, userLoading, getCurrentUser } = useAuth();
+
+console.log(currentUser)
+
+useEffect(() => {
+  getCurrentUser();
+}, []);
 
 
   const handleMenuClose = () => {
@@ -191,15 +198,16 @@ export const Navbar: React.FC<NavbarProps> = ({ sidebarWidth, onMobileMenuClick 
               aria-expanded={Boolean(anchorEl)}
               aria-haspopup="true"
             >
-              <Avatar
-                sx={{ width: 32, height: 32, mr: 1, backgroundColor: "#D4A574" }}
-                alt="User Avatar"
-                src="/placeholder.svg?height=32&width=32"
-              />
+         <Avatar
+  sx={{ width: 32, height: 32, mr: 1, backgroundColor: "#D4A574" }}
+  alt="User Avatar"
+  src={currentUser?.profileImage || "/placeholder.svg?height=32&width=32"}
+/>
+          
               {!isMobile && (
                 <>
                   <Typography variant="body2" sx={{ mr: 0.5, fontWeight: 500 }}>
-                    {"Upskilling"}
+     {!userLoading && currentUser ? currentUser.userName : "..."}
                   </Typography>
                   <ExpandMoreIcon />
                 </>
@@ -240,7 +248,7 @@ export const Navbar: React.FC<NavbarProps> = ({ sidebarWidth, onMobileMenuClick 
               transformOrigin={{ horizontal: "right", vertical: "top" }}
               anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
             >
-              <MenuItem onClick={() => navigate("/users-update")}>Profile</MenuItem>
+              <MenuItem onClick={() => navigate("/user-profile")}>Profile</MenuItem>
               <MenuItem onClick={handleLogout}>Logout</MenuItem>
             </Menu>
           </Box>
