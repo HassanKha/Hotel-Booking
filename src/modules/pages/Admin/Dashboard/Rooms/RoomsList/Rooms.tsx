@@ -5,6 +5,7 @@
   import { CircularProgress, Box } from "@mui/material"; 
   import "./Rooms.css";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
   
   const columns = [
     { id: "name", label: "Room Number" },
@@ -33,7 +34,7 @@ import Swal from "sweetalert2";
   export default function Rooms() {
     const [rows, setRows] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
-
+    const navigate = useNavigate()
     const fetchRooms = async () => {
       try {
         const response = await axiosInstance.get(ROOMS_URLS.GET_ROOMS);
@@ -144,7 +145,7 @@ const formatted: FormattedRoom[] = (roomList as any[]).map((room) => ({
           title="Rooms Table Details"
           description="You can check all details"
           buttonText="Add New Room"
-          onButtonClick={handleAddRoom}
+          onButtonClick={()=>{navigate('/dashboard/rooms-data')}}
         />
 
         {loading ? (
@@ -157,7 +158,7 @@ const formatted: FormattedRoom[] = (roomList as any[]).map((room) => ({
             columns={columns}
             rows={rows}
             onView={(row) => console.log("View", row)}
-            onEdit={(row) => console.log("Edit", row)}
+            onEdit={(row) => navigate(`/dashboard/rooms-data`, { state: { roomToEdit: row } })}
             onDelete={handleDelete}
           />
         )}

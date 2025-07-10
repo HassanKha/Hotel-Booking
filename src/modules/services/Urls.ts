@@ -30,8 +30,10 @@ export const USERS_URLS = {
 };
 
 export const ROOMS_URLS = {
+  ADD_ROOM:`/admin/rooms`,
   GET_ROOMS: `/admin/rooms?page=1&size=10`,
-  DELETE_ROOM: (id: number) => `/admin/rooms/${id}`
+  DELETE_ROOM: (id: number) => `/admin/rooms/${id}`,
+  UPDATE_ROOM: (id: number) => `/admin/rooms/${id}`,
 };
 
 
