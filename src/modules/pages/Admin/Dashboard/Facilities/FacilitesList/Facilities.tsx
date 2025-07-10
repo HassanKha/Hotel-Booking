@@ -5,6 +5,8 @@ import { Box, CircularProgress } from "@mui/material";
 import { toast } from "react-toastify";
 import ViewModel from "../ViewFacilitesModel/ViewModel.tsx";
 import Header from "../../../../../shared/Header/Header.tsx";
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from '@mui/material';
+
 
 export default function Facilities() {
   const [Facilities, setFacilities] = useState<any[]>([]);
@@ -17,7 +19,45 @@ export default function Facilities() {
   const [itemsPerPage, setItemsPerPage] = useState(5);
   const [totalResults, setTotalResults] = useState(0);
 
+  const [open, setOpen] = useState(false);
 
+
+  const handleAddRoom = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const name = formData.get("name") as string;
+
+    if (!name.trim()) {
+      toast.error("Please enter a facility name.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      let response = await axiosInstance.post(Facilities_URL.ADD_facilities, { name });
+      console.log(response);
+
+      toast.success(response.data.message || "Facilities added successfully");
+
+    } catch (error: any) {
+      console.log(error);
+
+      toast.error(error.response?.data?.message || "Error adding facilities");
+    }
+    finally {
+      setLoading(false);
+    }
+    fetchFacilities(currentPage, itemsPerPage);
+    setOpen(false);
+  };
   const fetchFacilities = async (page = 1, size = 5) => {
     setLoading(true);
     try {
@@ -60,9 +100,7 @@ export default function Facilities() {
   }, [currentPage, itemsPerPage]);
 
 
-  const handleAddRoom = () => {
-      console.log("Redirect to Add Room form");
-    };
+
 
   const columns = [
     {
@@ -84,17 +122,114 @@ export default function Facilities() {
       align: "center" as "center",
       render: (row: any) => new Date(row.createdAt).toLocaleDateString(),
     },
-  
+
   ];
 
   return (
     <Box p={2}>
-    <Header
-         title="Facilities Table Details"
-         description="You can check all details"
-              buttonText="Add New Facilities"
-          onButtonClick={handleAddRoom}
-       />
+      <Header
+        title="Facilities Table Details"
+        description="You can check all details"
+        buttonText="Add New Facilities"
+        onButtonClick={handleAddRoom}
+      />
+
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        fullWidth
+        maxWidth="sm"
+        PaperProps={{
+          sx: {
+            borderRadius: 4,
+            p: 0,
+          },
+        }}
+      >
+        <DialogTitle
+          sx={{
+            m: 0,
+            p: 2,
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            borderBottom: '1px solid #eee',
+            fontWeight: 'bold',
+            fontSize: 20,
+          }}
+        >
+          Add Facility
+          <Button onClick={handleClose} size="small" color="error">
+            <span style={{ fontSize: 20 }}>✖️</span>
+          </Button>
+        </DialogTitle>
+
+        <form onSubmit={handleSubmit}>
+          <DialogContent sx={{ p: 3 }}>
+            <TextField
+              autoFocus
+              margin="normal"
+              label="Name"
+              name="name"
+              fullWidth
+              required
+              variant="filled"
+              InputProps={{
+                disableUnderline: true,
+                sx: {
+                  borderRadius: 2,
+                  backgroundColor: '#e0e0e0',
+                   px: 1,
+                },
+              }}
+            />
+          </DialogContent>
+
+          <DialogActions
+            sx={{
+              px: 3,
+              py: 2,
+              borderTop: '1px solid #eee',
+              justifyContent: 'flex-end',
+            }}
+          >
+            <Button
+              onClick={handleClose}
+              variant="outlined"
+              color="inherit"
+              sx={{
+                borderRadius: 2,
+                textTransform: 'none',
+                mr: 1,
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              variant="contained"
+              disabled={loading}
+              sx={{
+                borderRadius: 2,
+                textTransform: 'none',
+                backgroundColor: '#1d3ecf',
+                '&:hover': {
+                  backgroundColor: '#162fa5',
+                },
+                minWidth: 100,
+              }}
+            >
+              {loading ? (
+                <CircularProgress size={20} sx={{ color: '#fff' }} />
+              ) : (
+                "Save"
+              )}
+            </Button>
+          </DialogActions>
+        </form>
+      </Dialog>
+
+
       {loading ? (
         <Box
           display="flex"
@@ -117,7 +252,7 @@ export default function Facilities() {
             onPageSizeChange={(newSize) => setItemsPerPage(newSize)}
             onDelete={handleDelete}
             onView={handleView}
-                onEdit={(row) => console.log("Edit", row)}
+            onEdit={(row) => console.log("Edit", row)}
           />
 
 
@@ -125,7 +260,7 @@ export default function Facilities() {
             open={viewModalOpen}
             onClose={() => setViewModalOpen(false)}
             facilitie={selectedFacilities}
-          
+
           />
 
         </>}

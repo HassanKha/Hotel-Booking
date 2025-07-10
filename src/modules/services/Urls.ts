@@ -45,12 +45,14 @@ export const Facilities_URL = {
   GET_facilities: `/admin/room-facilities`,
   GET_facilities_DETAILS: (id: string) => `/admin/room-facilities/${id}`,
   DELETE_facilities: (id: number) => `/admin/room-facilities/${id}`,
+  ADD_facilities: `/admin/room-facilities`,
 };
 
 export const ADS_URL = {
   GET_ads: `/admin/ads`,
   GET_ads_details: (id: number) => `/admin/ads/${id}`,
   DELETE_ads: (id: number) => `/admin/ads/${id}`,
+  ADD_ads: `/admin/ads`,
 };
 
 export const DASHBOARD_Charts_URL = {
