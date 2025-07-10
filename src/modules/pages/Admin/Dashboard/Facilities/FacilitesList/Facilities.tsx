@@ -104,6 +104,8 @@ export default function Facilities() {
       setLoading(false);
     }
   };
+
+
   const handleEdit = (row: any) => {
     setIsEditMode(true);
     setEditingFacility(row);
@@ -292,6 +294,7 @@ export default function Facilities() {
           />
 
         </>}
+        
     </Box>
   );
 }
