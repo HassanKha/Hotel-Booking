@@ -48,9 +48,9 @@ const AnimatedContainer = styled(Box)(() => ({
   animation: `${fadeInUp} 0.8s ease-out`,
 }));
 
-const StyledCard = styled(Card)<{ delay?: number }>(({ delay = 0 }) => ({
-  background: "#2a2d3a",
-  color: "white",
+const StyledCard = styled(Card)<{ delay?: number }>(({ theme, delay = 0 }) => ({
+  background: theme.palette.mode === "dark" ? "#1e1e2f" : "#f5f7fb",
+  color: theme.palette.text.primary,
   borderRadius: "20px",
   transition: "all 0.3s ease",
   cursor: "pointer",
@@ -59,25 +59,26 @@ const StyledCard = styled(Card)<{ delay?: number }>(({ delay = 0 }) => ({
   animationFillMode: "both",
   height: "120px",
   width: "100%",
-  boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
+ boxShadow: theme.shadows[4],
   "&:hover": {
     transform: "translateY(-4px)",
-    boxShadow: "0 8px 30px rgba(0, 0, 0, 0.2)",
+    boxShadow: theme.shadows[8],
   },
 }));
 
-const StatNumber = styled(Typography)(() => ({
+const StatNumber = styled(Typography)(({ theme }) => ({
   fontSize: "3rem",
   fontWeight: 700,
-  color: "white",
+  color: theme.palette.text.primary,
   marginBottom: "2px",
 }));
 
-const StatLabel = styled(Typography)(() => ({
+const StatLabel = styled(Typography)(({ theme }) => ({
   fontSize: "1rem",
   fontWeight: 400,
-  color: "#9ca3af",
+  color: theme.palette.text.secondary,
 }));
+
 
 const ChartContainer = styled(Box)<{ delay?: number }>(({ theme, delay = 0 }) => ({
   background: theme.palette.mode === "dark" ? "#1e293b" : "#ffffff",
@@ -111,15 +112,30 @@ const BriefcaseIcon = ({ color = "#4F46E5" }: { color?: string }) => (
 );
 
 const ProgressRing = ({ value, max, size = 120 }: { value: number; max: number; size?: number }) => {
+  const theme = useTheme();
   const strokeWidth = 12;
   const radius = (size - strokeWidth) / 2;
   const circumference = radius * 2 * Math.PI;
   const strokeDashoffset = circumference - (value / max) * circumference;
 
+  const isDark = theme.palette.mode === "dark";
+
+  const bgStroke = isDark ? "#374151" : "#e5e7eb"; // Tailwind gray-700 vs gray-200
+  const textColor = isDark ? "#ffffff" : theme.palette.text.primary;
+
   return (
     <Box sx={{ position: "relative", display: "inline-block" }}>
       <svg width={size} height={size} style={{ transform: "rotate(-90deg)" }}>
-        <circle cx={size / 2} cy={size / 2} r={radius} fill="transparent" stroke="#e5e7eb" strokeWidth={strokeWidth} />
+        {/* Background Circle */}
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          fill="transparent"
+          stroke={bgStroke}
+          strokeWidth={strokeWidth}
+        />
+        {/* Progress Circle */}
         <circle
           cx={size / 2}
           cy={size / 2}
@@ -133,47 +149,109 @@ const ProgressRing = ({ value, max, size = 120 }: { value: number; max: number; 
           style={{ animation: `${drawCircle} 2s ease-in-out 0.5s both` }}
         />
       </svg>
-      <Box sx={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}>
-        <Typography variant="body1" sx={{ fontWeight: 600 }}>
+
+      {/* Center Text */}
+      <Box
+        sx={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+        }}
+      >
+        <Typography variant="body1" sx={{ fontWeight: 600, color: textColor }}>
           Users
         </Typography>
       </Box>
     </Box>
   );
 };
+const UserStatsItem = ({
+  icon,
+  label,
+  value,
+  color,
+  delay = 0,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: number;
+  color: string;
+  delay?: number;
+}) => {
+  const theme = useTheme();
+  const textColor = theme.palette.mode === "dark" ? "#ffffff" : theme.palette.text.secondary;
 
-const UserStatsItem = ({ icon, label, value, color, delay = 0 }: any) => (
-  <Box sx={{
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    mb: 2,
-    animation: `${fadeInUp} 0.6s ease-out`,
-    animationDelay: `${delay}ms`,
-    animationFillMode: "both",
-  }}>
-    <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-      <Box sx={{ width: 12, height: 12, backgroundColor: color, borderRadius: "50%" }} />
-      {icon}
-      <Typography variant="body2" color="text.secondary" sx={{ fontSize: "1rem" }}>
-        {label}
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        mb: 2,
+        animation: `${fadeInUp} 0.6s ease-out`,
+        animationDelay: `${delay}ms`,
+        animationFillMode: "both",
+      }}
+    >
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+        <Box
+          sx={{
+            width: 12,
+            height: 12,
+            backgroundColor: color,
+            borderRadius: "50%",
+          }}
+        />
+        {icon}
+        <Typography
+          variant="body2"
+          sx={{ fontSize: "1rem", color: textColor }}
+        >
+          {label}
+        </Typography>
+      </Box>
+      <Typography
+        variant="h6"
+        sx={{
+          fontWeight: 600,
+          fontSize: "1.2rem",
+          color: textColor,
+        }}
+      >
+        {value}
       </Typography>
     </Box>
-    <Typography variant="h6" sx={{ fontWeight: 600, fontSize: "1.2rem" }}>
-      {value}
-    </Typography>
-  </Box>
-);
+  );
+};
 
 const DonutChart = ({ bookings }: { bookings: { pending: number; completed: number } }) => {
+  const theme = useTheme();
   const pieData = [
     { name: "Pending", value: bookings.pending, color: "#4F46E5" },
     { name: "Completed", value: bookings.completed, color: "#8B5CF6" },
   ];
+  const textColor = theme.palette.mode === "dark" ? "#ffffff" : theme.palette.text.primary;
 
   return (
-    <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 4, flex: 1 }}>
-      <Box sx={{ flex: "0 0 250px", height: "250px" }}>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: { xs: "column", sm: "row" },
+        alignItems: "center",
+        justifyContent: "space-between",
+        gap: 4,
+        flex: 1,
+      }}
+    >
+      <Box
+        sx={{
+          flex: "0 0 auto",
+          height: { xs: 200, sm: 250 },
+          width: { xs: 200, sm: 250 },
+          mx: "auto",
+        }}
+      >
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
@@ -195,14 +273,37 @@ const DonutChart = ({ bookings }: { bookings: { pending: number; completed: numb
           </PieChart>
         </ResponsiveContainer>
       </Box>
-      <Box sx={{ flex: 1, minWidth: "200px" }}>
+
+      <Box
+        sx={{
+          flex: 1,
+          minWidth: "200px",
+          width: "100%",
+        }}
+      >
         {pieData.map((item) => (
           <Box
             key={item.name}
-            sx={{ display: "flex", alignItems: "center", mb: 2 }}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              mb: 2,
+              justifyContent: { xs: "center", sm: "flex-start" },
+            }}
           >
-            <Box sx={{ width: 16, height: 16, backgroundColor: item.color, borderRadius: "50%", mr: 2 }} />
-            <Typography variant="body2" sx={{ fontSize: "1rem" }}>
+            <Box
+              sx={{
+                width: 16,
+                height: 16,
+                backgroundColor: item.color,
+                borderRadius: "50%",
+                mr: 2,
+              }}
+            />
+            <Typography
+              variant="body2"
+              sx={{ fontSize: "1rem", color: textColor }}
+            >
               {item.name}
             </Typography>
           </Box>
@@ -240,98 +341,141 @@ export const DashboardHome: React.FC = () => {
   const totalUsers = userCount + adminCount;
 
   return (
-    <Box sx={{ p: { xs: 2, md: 2 }, mb: 4 }}>
-      <AnimatedContainer sx={{ mb: 4 }}>
-        <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
-          Dashboard Overview
-        </Typography>
-        <Typography variant="body1" color="text.secondary">
-          Welcome back! Here's what's happening with your rooms today.
-        </Typography>
-      </AnimatedContainer>
+   <Box sx={{ p: { xs: 2, md: 2 }, mb: 4 }}>
+  {/* Title and Subtitle */}
+  <AnimatedContainer sx={{ mb: 4 }}>
+    <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
+      Dashboard Overview
+    </Typography>
+    <Typography variant="body1" color="text.secondary">
+      Welcome back! Here's what's happening with your rooms today.
+    </Typography>
+  </AnimatedContainer>
 
-    <Box
-  display="flex"
-  flexWrap="wrap"
-  gap={3}
-  sx={{ mb: 5 }}
->
-  {stats.map((stat) => (
-    <Box
-      key={stat.title}
-      sx={{
-        flex: {
-          xs: "1 1 100%",                     // Full width on mobile
-          sm: "1 1 calc(50% - 24px)",         // Two per row on small screens
-          md: "1 1 calc(33.33% - 24px)",      // Three per row on medium
-          lg: "1 1 calc(25% - 24px)",         // Four per row on large
-        },
-        justifyContent: "center",
-        alignItems: "center",
-        minWidth: "260px", // Optional safeguard
-        mb: 5,
-      }}
-    >
-      <StyledCard delay={stat.delay}>
-        <CardContent
+  {/* Stats Cards */}
+  <Box
+    display="flex"
+    flexWrap="wrap"
+    gap={3}
+    sx={{ mb: 5, justifyContent: { xs: "center", sm: "flex-start" } }}
+  >
+    {stats.map((stat) => (
+      <Box
+        key={stat.title}
+        sx={{
+          flex: {
+            xs: "1 1 100%",                     // 1 per row on mobile
+            sm: "1 1 calc(50% - 24px)",         // 2 per row on small screens
+            md: "1 1 calc(33.33% - 24px)",      // 3 per row on medium
+            lg: "1 1 calc(25% - 24px)",         // 4 per row on large
+          },
+          justifyContent: "center",
+          alignItems: "center",
+          minWidth: "260px",
+          mb: 3,
+        }}
+      >
+        <StyledCard delay={stat.delay}>
+          <CardContent
+            sx={{
+              p: 3,
+              height: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 2,
+            }}
+          >
+            <Box display="flex" gap={1}>
+              <StatNumber>{stat.value}</StatNumber>
+              <StatLabel>{stat.title}</StatLabel>
+            </Box>
+            <BriefcaseIcon />
+          </CardContent>
+        </StyledCard>
+      </Box>
+    ))}
+  </Box>
+
+  {/* Charts Section */}
+  <Box
+    sx={{
+      display: "flex",
+      flexWrap: "wrap",
+      flexDirection: { xs: "column", md: "row" },
+      gap: 4,
+      margin: 1,
+      paddingBottom: 4,
+    }}
+  >
+    {/* Donut Chart Section */}
+    <Box sx={{ flex: "1 1 60%", minWidth: "280px" }}>
+      <ChartContainer delay={600}>
+        <Typography
+          variant="h6"
           sx={{
-            p: 3,
-            height: "100%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: 2,
+            mb: 3,
+            fontWeight: 600,
+            color:
+              theme.palette.mode === "dark"
+                ? "#ffffff"
+                : theme.palette.text.primary,
           }}
         >
-          <Box display= "flex" gap={1} >
-            <StatNumber>{stat.value}</StatNumber>
-            <StatLabel>{stat.title}</StatLabel>
+          Booking Status Overview
+        </Typography>
+        {dashboardData?.bookings && <DonutChart bookings={dashboardData.bookings} />}
+      </ChartContainer>
+    </Box>
+
+    {/* User Distribution Section */}
+    <Box sx={{ flex: "1 1 35%", minWidth: "280px" }}>
+      <ChartContainer delay={800}>
+        <Typography
+          variant="h6"
+          sx={{
+            mb: 3,
+            fontWeight: 600,
+            textAlign: "center",
+            color:
+              theme.palette.mode === "dark"
+                ? "#ffffff"
+                : theme.palette.text.primary,
+          }}
+        >
+          User Distribution
+        </Typography>
+
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 3,
+          }}
+        >
+          <ProgressRing value={totalUsers} max={totalUsers} size={isSmall ? 100 : 120} />
+          <Box sx={{ width: "100%" }}>
+            <UserStatsItem
+              icon={<UserIcon color={theme.palette.text.secondary} />}
+              label="User"
+              value={userCount}
+              color="#10B981"
+              delay={1500}
+            />
+            <UserStatsItem
+              icon={<AdminIcon color={theme.palette.text.secondary} />}
+              label="Admin"
+              value={adminCount}
+              color="#3B82F6"
+              delay={1700}
+            />
           </Box>
-          <BriefcaseIcon />
-        </CardContent>
-      </StyledCard>
+        </Box>
+      </ChartContainer>
     </Box>
-  ))}
+  </Box>
 </Box>
-
-
-      <Box sx={{ display: "flex", gap: 4, flexWrap: "wrap", margin: 1, paddingBottom: 4 }}>
-        <Box sx={{ flex: "1 1 60%", minWidth: "400px" }}>
-          <ChartContainer delay={600}>
-            <Typography variant="h6" sx={{ mb: 3, fontWeight: 600 }}>
-              Booking Status Overview
-            </Typography>
-            {dashboardData?.bookings && <DonutChart bookings={dashboardData.bookings} />}
-          </ChartContainer>
-        </Box>
-
-        <Box sx={{ flex: "1 1 35%", minWidth: "300px" }}>
-          <ChartContainer delay={800}>
-            <Typography variant="h6" sx={{ mb: 3, fontWeight: 600, textAlign: "center" }}>
-              User Distribution
-            </Typography>
-            <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 3 }}>
-              <ProgressRing value={totalUsers} max={totalUsers} size={isSmall ? 100 : 120} />
-              <Box sx={{ width: "100%" }}>
-                <UserStatsItem
-                  icon={<UserIcon color={theme.palette.text.secondary} />}
-                  label="User"
-                  value={userCount}
-                  color="#10B981"
-                  delay={1500}
-                />
-                <UserStatsItem
-                  icon={<AdminIcon color={theme.palette.text.secondary} />}
-                  label="Admin"
-                  value={adminCount}
-                  color="#3B82F6"
-                  delay={1700}
-                />
-              </Box>
-            </Box>
-          </ChartContainer>
-        </Box>
-      </Box>
-    </Box>
   );
 };
