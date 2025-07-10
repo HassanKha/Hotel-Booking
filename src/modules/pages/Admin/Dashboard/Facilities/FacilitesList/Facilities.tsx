@@ -8,56 +8,73 @@ import Header from "../../../../../shared/Header/Header.tsx";
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from '@mui/material';
 
 
+
 export default function Facilities() {
   const [Facilities, setFacilities] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [selectedFacilities, setSelectedFacilities] = useState<any>(null);
-
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editingFacility, setEditingFacility] = useState<any>(null);
+  const [facilityName, setFacilityName] = useState("");
 
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5);
   const [totalResults, setTotalResults] = useState(0);
-
   const [open, setOpen] = useState(false);
 
 
+
   const handleAddRoom = () => {
+    setIsEditMode(false);
+    setEditingFacility(null);
+    setFacilityName("");
     setOpen(true);
   };
 
+
   const handleClose = () => {
     setOpen(false);
+    setIsEditMode(false);
+    setEditingFacility(null);
+    setFacilityName("");
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const name = formData.get("name") as string;
 
-    if (!name.trim()) {
+    if (!facilityName.trim()) {
       toast.error("Please enter a facility name.");
       return;
     }
 
     setLoading(true);
     try {
-      let response = await axiosInstance.post(Facilities_URL.ADD_facilities, { name });
-      console.log(response);
+      if (isEditMode && editingFacility) {
 
-      toast.success(response.data.message || "Facilities added successfully");
+        let response = await axiosInstance.put(
+          Facilities_URL.UPDATE_FACILITIES(editingFacility._id),
+          { name: facilityName }
+        );
+        toast.success(response.data.message || "Facility updated successfully");
+      } else {
 
+        let response = await axiosInstance.post(
+          Facilities_URL.ADD_facilities,
+          { name: facilityName }
+        );
+        toast.success(response.data.message || "Facility added successfully");
+      }
+
+      fetchFacilities(currentPage, itemsPerPage);
+      setOpen(false);
     } catch (error: any) {
-      console.log(error);
-
-      toast.error(error.response?.data?.message || "Error adding facilities");
-    }
-    finally {
+      toast.error(error.response?.data?.message || "Error saving facility");
+    } finally {
       setLoading(false);
     }
-    fetchFacilities(currentPage, itemsPerPage);
-    setOpen(false);
   };
+
   const fetchFacilities = async (page = 1, size = 5) => {
     setLoading(true);
     try {
@@ -87,12 +104,19 @@ export default function Facilities() {
       setLoading(false);
     }
   };
+  const handleEdit = (row: any) => {
+    setIsEditMode(true);
+    setEditingFacility(row);
+    setFacilityName(row.name);
+    setOpen(true);
+  };
 
 
   const handleView = (row: any) => {
     setSelectedFacilities(row);
     setViewModalOpen(true);
   };
+
 
 
   useEffect(() => {
@@ -158,11 +182,12 @@ export default function Facilities() {
             fontSize: 20,
           }}
         >
-          Add Facility
+          {isEditMode ? "Edit Facility" : "Add Facility"}
           <Button onClick={handleClose} size="small" color="error">
             <span style={{ fontSize: 20 }}>✖️</span>
           </Button>
         </DialogTitle>
+
 
         <form onSubmit={handleSubmit}>
           <DialogContent sx={{ p: 3 }}>
@@ -174,15 +199,18 @@ export default function Facilities() {
               fullWidth
               required
               variant="filled"
+              value={facilityName}
+              onChange={(e) => setFacilityName(e.target.value)}
               InputProps={{
                 disableUnderline: true,
                 sx: {
                   borderRadius: 2,
                   backgroundColor: '#e0e0e0',
-                   px: 1,
+                  px: 1,
                 },
               }}
             />
+
           </DialogContent>
 
           <DialogActions
@@ -252,7 +280,7 @@ export default function Facilities() {
             onPageSizeChange={(newSize) => setItemsPerPage(newSize)}
             onDelete={handleDelete}
             onView={handleView}
-            onEdit={(row) => console.log("Edit", row)}
+            onEdit={handleEdit}
           />
 
 

@@ -19,7 +19,8 @@ export default function Ads() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5);
   const [totalResults, setTotalResults] = useState(0);
-
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editingAd, setEditingAd] = useState<any>(null);
   const { control, handleSubmit, reset } = useForm({
     defaultValues: {
       room: "",
@@ -28,7 +29,7 @@ export default function Ads() {
     },
   });
 
- 
+
   const fetchAds = async (page = 1, size = 5) => {
     setLoading(true);
     try {
@@ -58,30 +59,69 @@ export default function Ads() {
     fetchAds(currentPage, itemsPerPage);
   }, [currentPage, itemsPerPage]);
 
-  const handleAddRoom = () => setOpen(true);
+  const handleAddRoom = () => {
+    setIsEditMode(false);
+    setEditingAd(null);
+    reset({
+      room: "",
+      discount: "",
+      status: "true",
+    });
+    setOpen(true);
+  };
+const handleEdit = (row: any) => {
+  setIsEditMode(true);
+  setEditingAd(row);
+  reset({
+    discount: String(row.room?.discount?? ""),
+    status: row.isActive ? "true" : "false",
+  });
+  setOpen(true);
+};
+
+
   const handleClose = () => {
     setOpen(false);
-    reset(); // Clear form
+    reset(); 
   };
 
-  const onSubmit = async (data: any) => {
-    setLoading(true);
-    try {
-      const postData = {
+const onSubmit = async (data: any) => {
+  setLoading(true);
+  try {
+    let postData;
+
+    if (isEditMode && editingAd) {
+      
+      postData = {
+        discount: Number(data.discount),
+        isActive: data.status === "true",
+      };
+      const res = await axiosInstance.put(
+        ADS_URL.UPDATE_Ads(editingAd._id),
+        postData
+      );
+      toast.success(res.data.message || "Ad updated successfully");
+    } else {
+     
+      postData = {
         room: data.room,
         discount: Number(data.discount),
         isActive: data.status === "true",
       };
       const res = await axiosInstance.post(ADS_URL.ADD_ads, postData);
       toast.success(res.data.message || "Ad added successfully");
-      fetchAds(currentPage, itemsPerPage);
-      handleClose();
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || "Error adding ad");
-    } finally {
-      setLoading(false);
     }
-  };
+
+    await fetchAds(currentPage, itemsPerPage);
+    handleClose();
+  } catch (err: any) {
+    toast.error(err.response?.data?.message || "Error saving ad");
+  } finally {
+    setLoading(false);
+  }
+};
+
+
 
   const handleDelete = async (row: any) => {
     const result = await Swal.fire({
@@ -174,7 +214,8 @@ export default function Ads() {
             fontSize: 20,
           }}
         >
-          Add Ad
+          {isEditMode ? "Edit Ads" : "Add Ads"}
+
           <Button onClick={handleClose} size="small" color="error">
             <span style={{ fontSize: 20 }}>✖️</span>
           </Button>
@@ -182,33 +223,36 @@ export default function Ads() {
 
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogContent sx={{ p: 3 }}>
-            <Controller
-              name="room"
-              control={control}
-              rules={{ required: "Room is required" }}
-              render={({ field, fieldState }) => (
-                <TextField
-                  select
-                  label="Room"
-                  margin="normal"
-                  fullWidth
-                  variant="filled"
-                  {...field}
-                  error={!!fieldState.error}
-                  helperText={fieldState.error?.message}
-                  InputProps={{
-                    disableUnderline: true,
-                    sx: { borderRadius: 2, backgroundColor: '#e0e0e0', px: 1 },
-                  }}
-                >
-                  {roomList.map((r: any) => (
-                    <MenuItem key={r._id} value={r._id}>
-                      {r.roomNumber}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              )}
-            />
+            {!isEditMode && (
+              <Controller
+                name="room"
+                control={control}
+                rules={{ required: "Room is required" }}
+                render={({ field, fieldState }) => (
+                  <TextField
+                    select
+                    label="Room"
+                    margin="normal"
+                    fullWidth
+                    variant="filled"
+                    {...field}
+                    error={!!fieldState.error}
+                    helperText={fieldState.error?.message}
+                    InputProps={{
+                      disableUnderline: true,
+                      sx: { borderRadius: 2, backgroundColor: '#e0e0e0', px: 1 },
+                    }}
+                  >
+                    {roomList.map((r: any) => (
+                      <MenuItem key={r._id} value={r._id}>
+                        {r.roomNumber}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                )}
+              />
+            )}
+
 
             <Controller
               name="discount"
@@ -292,7 +336,7 @@ export default function Ads() {
               {loading ? (
                 <CircularProgress size={20} sx={{ color: '#fff' }} />
               ) : (
-                "Save"
+                isEditMode ? "Update" : "Save"
               )}
             </Button>
           </DialogActions>
@@ -315,7 +359,7 @@ export default function Ads() {
             onPageSizeChange={(newSize) => setItemsPerPage(newSize)}
             onDelete={handleDelete}
             onView={handleView}
-            onEdit={(row) => console.log("Edit", row)}
+            onEdit={handleEdit}
           />
 
           <ViewModel

@@ -31,7 +31,7 @@ export const USERS_URLS = {
 
 export const ROOMS_URLS = {
   GET_ROOMS: `/admin/rooms?page=1&size=10`,
-  DELETE_ROOM:(id:number) => `/admin/rooms/${id}`
+  DELETE_ROOM: (id: number) => `/admin/rooms/${id}`
 };
 
 
@@ -46,6 +46,7 @@ export const Facilities_URL = {
   GET_facilities_DETAILS: (id: string) => `/admin/room-facilities/${id}`,
   DELETE_facilities: (id: number) => `/admin/room-facilities/${id}`,
   ADD_facilities: `/admin/room-facilities`,
+  UPDATE_FACILITIES: (id: number) => `/admin/room-facilities/${id}`
 };
 
 export const ADS_URL = {
@@ -53,10 +54,11 @@ export const ADS_URL = {
   GET_ads_details: (id: number) => `/admin/ads/${id}`,
   DELETE_ads: (id: number) => `/admin/ads/${id}`,
   ADD_ads: `/admin/ads`,
+  UPDATE_Ads: (id: number) => `/admin/ads/${id}`
 };
 
 export const DASHBOARD_Charts_URL = {
- GET_Dash: `/admin/dashboard`,
+  GET_Dash: `/admin/dashboard`,
 
 }
 
