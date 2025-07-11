@@ -18,6 +18,7 @@ import "./Rooms.css";
 import { useNavigate } from "react-router-dom";
 import DeleteConfirmationDialog from "../../../../../shared/DeleteConfirmation/DeleteConfirmation.tsx";
 import { toast } from "react-toastify";
+import  { DefIMG } from "../../../../../../assets/DefaultImg.tsx";
 
 interface Facility {
   _id: string;
@@ -84,9 +85,9 @@ export default function Rooms() {
   const [loadDetails, setLoadDetails] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [roomIdToDelete, setRoomIdToDelete] = useState<string | null>(null);
-
+  const [imgError, setImgError] = useState(false);
   const navigate = useNavigate();
-
+console.log(selectedRoom)
   const openDeleteModal = (row: FormattedRoom) => {
     setRoomIdToDelete(row._id);
     setOpen(true);
@@ -226,19 +227,24 @@ export default function Rooms() {
               <CircularProgress />
             </Box>
           ) : selectedRoom ? (
-            <>
-              <Box textAlign="center" mb={2}>
-                <img
-                  src={selectedRoom.images?.[0] || "/images/placeholder.jpg"} 
-                  alt="Room"
-                  style={{
-                    width: "100%",
-                    maxHeight: "200px",
-                    objectFit: "cover",
-                    borderRadius: 8,
-                  }}
-                />
-              </Box>
+            <> 
+             {!imgError && selectedRoom?.images?.[0] ? (
+        <img
+          src={selectedRoom?.images?.[0]}
+          alt="Room"
+          onError={() => setImgError(true)}
+          style={{
+            width: '100%',
+            maxHeight: 200,
+            objectFit: 'cover',
+            borderRadius: 8,
+          }}
+        />
+      ) : (
+        <DefIMG />
+      )}
+             
+            
 
               <Stack spacing={2}>
                 <Stack direction="row" spacing={2}>
