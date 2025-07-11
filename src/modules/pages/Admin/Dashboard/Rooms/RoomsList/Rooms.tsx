@@ -227,24 +227,19 @@ console.log(selectedRoom)
               <CircularProgress />
             </Box>
           ) : selectedRoom ? (
-            <> 
-             {!imgError && selectedRoom?.images?.[0] ? (
-        <img
-          src={selectedRoom?.images?.[0]}
-          alt="Room"
-          onError={() => setImgError(true)}
-          style={{
-            width: '100%',
-            maxHeight: 200,
-            objectFit: 'cover',
-            borderRadius: 8,
-          }}
-        />
-      ) : (
-        <DefIMG />
-      )}
-             
-            
+            <>
+              <Box textAlign="center" mb={2}>
+                <img
+                  src={selectedRoom.images?.[0] || defultRoom} 
+                  alt="Room"
+                  style={{
+                    width: "100%",
+                    maxHeight: "200px",
+                    objectFit: "cover",
+                    borderRadius: 8,
+                  }}
+                />
+              </Box>
 
               <Stack spacing={2}>
                 <Stack direction="row" spacing={2}>
