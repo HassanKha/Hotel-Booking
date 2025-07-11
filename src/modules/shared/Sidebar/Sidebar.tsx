@@ -29,6 +29,7 @@ import {
 } from "../../../assets/Dashboard/SideBarIcons";
 import type { SidebarProps } from "../../../interfaces/MasterLayout/Dashboard";
 import { useAuth } from "../../../contexts/AuthContext";
+import { useThemeContext } from "../../../contexts/ThemeContext";
 const SIDEBAR_WIDTH = 240;
 const SIDEBAR_COLLAPSED_WIDTH = 64;
 
@@ -110,9 +111,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
 const location = useLocation();
 const currentPath = location.pathname;
   const {   logout} = useAuth();
-
+  const { darkMode, toggleDarkMode } = useThemeContext();
   const handleLogout = () => {
    logout();
+       if(darkMode){
+      toggleDarkMode(); 
+    }
     navigate("/login");
   };
 

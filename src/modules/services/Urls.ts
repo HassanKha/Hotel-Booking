@@ -25,9 +25,46 @@ export const USERS_URLS = {
   REGISTER: `/portal/users`,
   CHANGE_PASS: `/portal/users/change-password`,
   RESET_PASS: `/portal/users/reset-password`,
-  GET_CURRENT_USER: (id: number) => `/portal/users/${id}`,
+  GET_CURRENT_USER: (id: string) => `/portal/users/${id}`,
+  GET_ALL_USERS: `/admin/users`,
 };
 
 export const ROOMS_URLS = {
+  ADD_ROOM:`/admin/rooms`,
   GET_ROOMS: `/admin/rooms?page=1&size=10`,
+  DELETE_ROOM: (id: string) => `/admin/rooms/${id}`,
+  UPDATE_ROOM: (id: string) => `/admin/rooms/${id}`,
+  GET_ROOM_BY_ID:(id:string)=>`/admin/rooms/${id}`
 };
+
+
+export const BOOKINGS_URLS = {
+  GET_BOOKINGS: `/admin/booking`,
+  GET_BOOKING_DETAILS: (id: number) => `/admin/booking/${id}`,
+  DELETE_BOOKING: (id: number) => `/admin/booking/${id}`,
+};
+
+export const Facilities_URL = {
+  GET_facilities: `/admin/room-facilities`,
+  GET_facilities_DETAILS: (id: string) => `/admin/room-facilities/${id}`,
+  DELETE_facilities: (id: number) => `/admin/room-facilities/${id}`,
+  ADD_facilities: `/admin/room-facilities`,
+  UPDATE_FACILITIES: (id: number) => `/admin/room-facilities/${id}`
+};
+
+export const ADS_URL = {
+  GET_ads: `/admin/ads`,
+  GET_ads_details: (id: number) => `/admin/ads/${id}`,
+  DELETE_ads: (id: number) => `/admin/ads/${id}`,
+  ADD_ads: `/admin/ads`,
+  UPDATE_Ads: (id: number) => `/admin/ads/${id}`
+};
+
+export const DASHBOARD_Charts_URL = {
+  GET_Dash: `/admin/dashboard`,
+
+}
+
+
+
+

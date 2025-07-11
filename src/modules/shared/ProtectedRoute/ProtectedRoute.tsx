@@ -1,20 +1,16 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
-import type { ProtectedRouteProps } from "../../../interfaces/ProtectedRoutes/ProtectedRouteProps";
 import { useAuth } from "../../../contexts/AuthContext";
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const { isAuthenticated, user } = useAuth();
+const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { isAuthenticated, user, loading } = useAuth();
 
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
-  }
+  if (loading) return null; // Or a spinner while checking
 
-  if (user?.role === "user") {
-    return <Navigate to="/landing" replace />;
-  }
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
+  if (user?.role === "user") return <Navigate to="/landing" replace />;
 
-  return children;
+  return <>{children}</>;
 };
 
 export default ProtectedRoute;

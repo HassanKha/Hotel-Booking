@@ -15,110 +15,105 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useState, useCallback, memo } from "react";
 import { styled } from "@mui/material/styles";
+import type { Column, SharedTableProps } from "../../../interfaces/Shared/Shared";
 
-const StyledTableCell = styled(TableCell)(() => ({
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
   fontFamily: "Inter, sans-serif",
   padding: "16px 20px",
-  borderBottom: "1px solid #E5E7EB",
+  borderBottom: `1px solid ${theme.palette.divider}`,
   [`&.head`]: {
-    color: "#374151",
-    fontWeight: "600",
+    color: theme.palette.text.primary,
+    fontWeight: 600,
     fontSize: "12px",
-    backgroundColor: "#E2E5EB",
+    backgroundColor: theme.palette.mode === "dark" ? "#1f2937" : "#E2E5EB",
     textTransform: "uppercase",
     letterSpacing: "0.05em",
-    borderBottom: "1px solid #E5E7EB",
   },
   [`&.body`]: {
-    fontWeight: "400",
-    color: "#111827",
+    fontWeight: 400,
+    color: theme.palette.text.primary,
     fontSize: "14px",
-    backgroundColor: "transparent",
   },
 }));
 
-const StyledTableRow = styled(TableRow)(() => ({
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
   "&:nth-of-type(odd)": {
-    backgroundColor: "#ffffff",
+    backgroundColor: theme.palette.mode === "dark" ? "#1e293b" : "#ffffff",
   },
   "&:nth-of-type(even)": {
-    backgroundColor: "#F9FAFB",
+    backgroundColor: theme.palette.mode === "dark" ? "#273549" : "#F9FAFB",
   },
   "&:hover": {
-    backgroundColor: "#F3F4F6 !important",
+    backgroundColor: theme.palette.mode === "dark" ? "#334155" : "#F3F4F6",
   },
 }));
 
-const StyledTableContainer = styled(TableContainer)(() => ({
-  border: "1px solid #E5E7EB",
+const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
+  border: `1px solid ${theme.palette.divider}`,
   borderRadius: "8px",
-  boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)",
-  overflow: "hidden",
-  backgroundColor: "#ffffff",
+  boxShadow:
+    theme.palette.mode === "dark"
+      ? "0 2px 8px rgba(0,0,0,0.6)"
+      : "0 1px 3px rgba(0,0,0,0.1)",
+  backgroundColor: theme.palette.background.paper,
 }));
 
-const ActionButton = styled(IconButton)(() => ({
+const ActionButton = styled(IconButton)(({ theme }) => ({
   padding: "4px",
-  color: "#6B7280",
+  color: theme.palette.text.secondary,
   "&:hover": {
-    backgroundColor: "#F3F4F6",
-    color: "#374151",
+    backgroundColor:
+      theme.palette.mode === "dark" ? "#1e293b" : "#F3F4F6",
+    color: theme.palette.text.primary,
   },
 }));
 
-const StyledMenu = styled(Menu)(() => ({
+const StyledMenu = styled(Menu)(({ theme }) => ({
   "& .MuiPaper-root": {
     borderRadius: "8px",
-    border: "1px solid #E5E7EB",
+    border: `1px solid ${theme.palette.divider}`,
     boxShadow:
-      "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+      "0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05)",
     minWidth: "160px",
     padding: "8px 0",
-    backgroundColor: "#ffffff",
+    backgroundColor: theme.palette.background.paper,
   },
 }));
 
-const StyledMenuItem = styled(MenuItem)(() => ({
+const StyledMenuItem = styled(MenuItem)(({ theme }) => ({
   fontFamily: "Inter, sans-serif",
   fontSize: "14px",
-  color: "#374151",
+  color: theme.palette.text.primary,
   padding: "8px 16px",
   minHeight: "40px",
   display: "flex",
   alignItems: "center",
   "&:hover": {
-    backgroundColor: "#F3F4F6",
+    backgroundColor:
+      theme.palette.mode === "dark" ? "#374151" : "#F3F4F6",
   },
   "& .MuiSvgIcon-root": {
     fontSize: "16px",
-    color: "#6B7280",
+    color: theme.palette.text.secondary,
     marginRight: "12px",
   },
 }));
 
-const PaginationContainer = styled("div")(() => ({
+const PaginationContainer = styled("div")(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
   justifyContent: "space-between",
   padding: "12px 16px",
-  borderTop: "1px solid #E5E7EB",
+  borderTop: `1px solid ${theme.palette.divider}`,
   "@media (min-width: 768px)": {
     flexDirection: "row",
   },
 }));
 
-const PaginationInfo = styled("div")(() => ({
-  display: "flex",
-  alignItems: "center",
-  marginBottom: "8px",
-  "@media (min-width: 768px)": {
-    marginBottom: "0",
-  },
-}));
-
-const PageInfo = styled("span")(() => ({
-  color: "#6B7280",
+const PageInfo = styled("span")(({ theme }) => ({
+  color: theme.palette.text.secondary,
   marginRight: "12px",
 }));
 
@@ -127,10 +122,10 @@ const PaginationButtons = styled("div")(() => ({
   alignItems: "center",
 }));
 
-const PageButton = styled("button")(() => ({
-  border: "1px solid #D1D5DB",
+const PageButton = styled("button")(({ theme }) => ({
+  border: `1px solid ${theme.palette.divider}`,
   backgroundColor: "transparent",
-  color: "#374151",
+  color: theme.palette.text.primary,
   padding: "4px 8px",
   margin: "0 4px",
   borderRadius: "4px",
@@ -140,34 +135,21 @@ const PageButton = styled("button")(() => ({
     cursor: "not-allowed",
   },
   "&:hover:not(:disabled)": {
-    backgroundColor: "#F3F4F6",
+    backgroundColor:
+      theme.palette.mode === "dark" ? "#374151" : "#F3F4F6",
   },
 }));
 
-const PageSizeSelect = styled("select")(() => ({
-  border: "1px solid #D1D5DB",
+const PageSizeSelect = styled("select")(({ theme }) => ({
+  border: `1px solid ${theme.palette.divider}`,
   borderRadius: "4px",
   padding: "4px 8px",
   margin: "0 8px",
   backgroundColor: "transparent",
-  color: "#374151",
+  color: theme.palette.text.primary,
 }));
 
-type Column<RowType = Record<string, unknown>> = {
-  id: string;
-  label: string;
-  align?: "left" | "right" | "center";
-  render?: (row: RowType) => React.ReactNode;
-  width?: string; 
-};
 
-type SharedTableProps<RowType extends Record<string, any>> = {
-  columns: Column<RowType>[];
-  rows: RowType[];
-  onView?: (row: RowType) => void;
-  onEdit?: (row: RowType) => void;
-  onDelete?: (row: RowType) => void;
-};
 
 const TableRowMemo = memo(
   ({
@@ -185,7 +167,6 @@ const TableRowMemo = memo(
           key={col.id}
           align={col.align || "left"}
           className="body"
-          style={{ width: col.width || "auto" }}
         >
           {col.render ? col.render(row) : row[col.id]}
         </StyledTableCell>
@@ -205,14 +186,21 @@ const TableRowMemo = memo(
 
 export default function SharedTable<
   RowType extends Record<string, any> = Record<string, any>
->({ columns, rows, onView, onEdit, onDelete }: SharedTableProps<RowType>) {
+>({
+  columns,
+  rows,
+  totalResults = 0,
+  currentPage = 1,
+  itemsPerPage = 5,
+  onPageChange,
+  onPageSizeChange,
+  onView,
+  onEdit,
+  onDelete,
+}: SharedTableProps<RowType>) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedRow, setSelectedRow] = useState<RowType | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(5);
   const open = Boolean(anchorEl);
-
-  const totalResults = rows.length;
   const totalPages = Math.ceil(totalResults / itemsPerPage);
 
   const handleOpenMenu = useCallback(
@@ -239,105 +227,65 @@ export default function SharedTable<
     [selectedRow, onView, onEdit, onDelete, handleCloseMenu]
   );
 
-  const hasActions = Boolean(onView || onEdit || onDelete);
-
-  const handlePageChange = (newPage: number) => {
-    setCurrentPage(newPage);
-  };
-
-  const handleItemsPerPageChange = (
-    e: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    const newItemsPerPage = Number(e.target.value);
-    setItemsPerPage(newItemsPerPage);
-    setCurrentPage(1);
-  };
-
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentRows = rows.slice(startIndex, endIndex);
-
-  const contentColumns = columns.length;
-  const contentWidth = `calc((100% - 80px) / ${contentColumns})`; 
-
   return (
     <StyledTableContainer>
       <Table sx={{ minWidth: 700, tableLayout: "fixed" }}>
-        {" "}
         <TableHead>
           <TableRow>
             {columns.map((col) => (
               <StyledTableCell
                 key={col.id}
-                align={col.align || "left"}
+                align={col.align || "center"}
                 className="head"
-                style={{ width: contentWidth }} 
               >
                 {col.label}
               </StyledTableCell>
             ))}
-            {hasActions && (
-              <StyledTableCell
-                align="right"
-                className="head"
-                style={{ width: "80px", paddingRight: "12px" }} 
-              ></StyledTableCell>
-            )}
+            <StyledTableCell
+              align="center"
+              className="head"
+              style={{ width: "80px", paddingRight: "12px" }}
+            />
           </TableRow>
         </TableHead>
         <TableBody>
-          {currentRows.map((row, rowIndex) =>
-            hasActions ? (
-              <TableRowMemo
-                key={rowIndex}
-                row={row}
-                columns={columns}
-                onOpenMenu={handleOpenMenu}
-              />
-            ) : (
-              <StyledTableRow key={rowIndex}>
-                {columns.map((col) => (
-                  <StyledTableCell
-                    key={col.id}
-                    align={col.align || "left"}
-                    className="body"
-                    style={{ width: contentWidth }} 
-                  >
-                    {col.render ? col.render(row) : row[col.id]}
-                  </StyledTableCell>
-                ))}
-              </StyledTableRow>
-            )
-          )}
+          {rows.map((row, rowIndex) => (
+            <TableRowMemo
+              key={rowIndex}
+              row={row}
+              columns={columns}
+              onOpenMenu={handleOpenMenu}
+            />
+          ))}
         </TableBody>
       </Table>
 
       <PaginationContainer>
-        <PaginationInfo>
+        <div style={{ display: "flex", alignItems: "center", marginBottom: "8px" }}>
           <span style={{ color: "#6B7280", marginRight: "8px" }}>Showing</span>
           <PageSizeSelect
             value={itemsPerPage}
-            onChange={handleItemsPerPageChange}
+            onChange={(e) => onPageSizeChange?.(Number(e.target.value))}
           >
             <option value={5}>5</option>
             <option value={10}>10</option>
             <option value={15}>15</option>
           </PageSizeSelect>
           <span style={{ color: "#6B7280" }}>of {totalResults} Results</span>
-        </PaginationInfo>
+        </div>
 
         <PaginationButtons>
           <PageInfo>
             Page {currentPage} of {totalPages}
           </PageInfo>
           <PageButton
-            onClick={() => handlePageChange(currentPage - 1)}
+            onClick={() => onPageChange?.(currentPage - 1)}
             disabled={currentPage === 1}
           >
             ‹
           </PageButton>
           <PageButton
-            onClick={() => handlePageChange(currentPage + 1)}
+            onClick={() => onPageChange?.(currentPage + 1)}
             disabled={currentPage === totalPages || totalPages === 0}
           >
             ›

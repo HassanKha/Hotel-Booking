@@ -1,7 +1,6 @@
 import { Suspense } from "react";
 import Landing from "./modules/pages/User/Landing/Landing";
 import NotFound from "./modules/shared/NotFound/NotFound";
-import Dashboard from "./modules/pages/Admin/Dashboard/Dashboard";
 import ProtectedRoute from "./modules/shared/ProtectedRoute/ProtectedRoute";
 import MasterLayout from "./modules/layouts/MasterLayout.css/MasterLayout";
 import ChangePassword from "./modules/auth/ChangePassword/ChangePassword";
@@ -20,6 +19,7 @@ import { ToastContainer } from "react-toastify";
 import { ThemeProvider } from "@mui/material";
 import { theme } from "./modules/services/Theme";
 import { useThemeContext } from "./contexts/ThemeContext";
+import { DashboardHome } from "./modules/pages/Admin/Dashboard/Dashboard";
 
 
 
@@ -29,9 +29,8 @@ const Facilities = lazy(() => import("./modules/pages/Admin/Dashboard/Facilities
 const Bookings = lazy(() => import("./modules/pages/Admin/Dashboard/Bookings/BookingList/Bookings"));
 const Rooms = lazy(() => import("./modules/pages/Admin/Dashboard/Rooms/RoomsList/Rooms"));
 const Users = lazy(() => import("./modules/pages/Admin/Dashboard/Users/UsersList/Users"));
-const UserData = lazy(() => import("./modules/pages/Admin/Dashboard/Users/UsersData/UserData"));
 const RoomData = lazy(() => import("./modules/pages/Admin/Dashboard/Rooms/RoomsData/RoomData"));
-const BookingData = lazy(() => import("./modules/pages/Admin/Dashboard/Bookings/BookingData/BookingData"));
+const BookingData = lazy(() => import("./modules/pages/Admin/Dashboard/Bookings/ViewBookingModal/ViewBookingModal"));
 const FacilitesData = lazy(() => import("./modules/pages/Admin/Dashboard/Facilities/FacilitesData/FacilitesData"));
 const AdData = lazy(() => import("./modules/pages/Admin/Dashboard/Ads/AdData/AdData"));
 const UsersUpdate = lazy(() => import("./modules/pages/Admin/Dashboard/Users/UsersUpdate/UsersUpdate"));
@@ -50,7 +49,7 @@ function App() {
         { path: "reset-password", element: <ResetPassword /> },
         { path: "change-password", element: <ChangePassword /> },
          {
-          path: "users-update",
+          path: "user-profile",
           element: (
             <Suspense fallback={null}>
               <UsersUpdate />
@@ -71,7 +70,7 @@ function App() {
           index: true,
           element: (
             <Suspense fallback={null}>
-              <Dashboard />
+              <DashboardHome />
             </Suspense>
           ),
         },
@@ -116,14 +115,7 @@ function App() {
             </Suspense>
           ),
         },
-        {
-          path: "users-data",
-          element: (
-            <Suspense fallback={null}>
-              <UserData />
-            </Suspense>
-          ),
-        },
+      
        
         {
           path: "rooms-data",

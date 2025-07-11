@@ -1,93 +1,98 @@
-import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useEffect } from "react";
 import {
   Box,
   CircularProgress,
-  Container,
   Typography,
   Avatar,
   Card,
   CardContent,
   Divider,
   Fade,
+  Button,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
-import { axiosInstance, USERS_URLS } from "../../../../../services/Urls";
-import type { UserDataProfile } from "../../../../../../interfaces/Auth/AuthTypes";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../../../../contexts/AuthContext";
 
 export default function UsersUpdate() {
-  const [loading, setLoading] = useState<boolean>(false);
-  const [user, setUser] = useState<UserDataProfile>();
-  const location = useLocation();
-  const id: number = location.state;
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const navigate = useNavigate();
 
-  const getUserProfile = async () => {
-    try {
-      setLoading(true);
-      const response = await axiosInstance.get(USERS_URLS.GET_CURRENT_USER(id));
-      setUser(response?.data?.data?.user);
-    } catch (error: any) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+const { currentUser, userLoading, getCurrentUser } = useAuth();
 
-  useEffect(() => {
-    getUserProfile();
-  }, []);
+useEffect(() => {
+  getCurrentUser();
+}, []);
 
   return (
     <Box
       sx={{
-        backgroundColor: "#f3f6f9",
+        backgroundColor: theme.palette.mode === "dark" ? "#111827" : "#f3f6f9",
         minHeight: "100vh",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         px: 2,
+        py: 4,
       }}
+      role="main"
+      aria-label="User profile content"
     >
-      {loading ? (
-        <CircularProgress size={40} />
-      ) : user ? (
+      {userLoading ? (
+        <CircularProgress size={40} aria-label="Loading user profile" />
+      ) : currentUser ? (
         <Fade in timeout={500}>
           <Card
             elevation={4}
             sx={{
               width: "100%",
-              maxWidth: 450,
+              maxWidth: 480,
               borderRadius: 4,
-              p: 3,
-              background: "#fff",
+              p: isMobile ? 2 : 3,
+              backgroundColor: theme.palette.background.paper,
               boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
             }}
           >
             <CardContent>
               <Box display="flex" flexDirection="column" alignItems="center" gap={2}>
                 <Avatar
-                  src={user.profileImage ?? ""}
-                  alt={user.userName}
+                  src={currentUser.profileImage ?? ""}
+                  alt={`${currentUser.userName} profile image`}
+                  title={currentUser.userName}
                   sx={{
                     width: 120,
                     height: 120,
                     boxShadow: 3,
                     border: "3px solid white",
                   }}
+                  imgProps={{ loading: "lazy" }}
                 />
-                <Typography variant="h5" fontWeight="bold">
-                  {user.userName}
+                <Typography variant="h5" fontWeight="bold" aria-label="Username">
+                  {currentUser.userName}
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {user.email}
+                <Typography variant="body2" color="text.secondary" aria-label="User email">
+                  {currentUser.email}
                 </Typography>
+
                 <Divider sx={{ width: "100%", my: 2 }} />
-                <Box textAlign="left" width="100%" display="flex" flexDirection="column" gap={1}>
+
+                <Box
+                  component="section"
+                  aria-label="User information"
+                  textAlign="left"
+                  width="100%"
+                  display="flex"
+                  flexDirection="column"
+                  gap={1}
+                >
                   <Typography variant="body1">
-                    <strong>Country:</strong> {user.country}
+                    <strong>Country:</strong> {currentUser.country}
                   </Typography>
                   <Typography variant="body1">
                     <strong>Created At:</strong>{" "}
-                    {new Date(user.createdAt).toLocaleDateString("en-GB", {
+                    {new Date(currentUser.createdAt).toLocaleDateString("en-GB", {
                       day: "numeric",
                       month: "long",
                       year: "numeric",
@@ -95,22 +100,32 @@ export default function UsersUpdate() {
                   </Typography>
                   <Typography variant="body1">
                     <strong>Updated At:</strong>{" "}
-                    {new Date(user.updatedAt).toLocaleDateString("en-GB", {
+                    {new Date(currentUser.updatedAt).toLocaleDateString("en-GB", {
                       day: "numeric",
                       month: "long",
                       year: "numeric",
                     })}
                   </Typography>
                 </Box>
+
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => navigate("/dashboard")}
+                  sx={{ mt: 3, alignSelf: "stretch" }}
+                  aria-label="Return to dashboard"
+                >
+                  Back to Dashboard
+                </Button>
               </Box>
             </CardContent>
           </Card>
         </Fade>
       ) : (
-        <Typography color="error">User not found.</Typography>
+        <Typography color="error" role="alert">
+          User not found.
+        </Typography>
       )}
     </Box>
   );
 }
-
-
