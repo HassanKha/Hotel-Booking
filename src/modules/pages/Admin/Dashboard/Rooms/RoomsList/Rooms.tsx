@@ -229,7 +229,7 @@ export default function Rooms() {
             <>
               <Box textAlign="center" mb={2}>
                 <img
-                  src={selectedRoom.images?.[0] || "/images/placeholder.jpg"} 
+                  src={selectedRoom.images?.[0] || defultRoom} 
                   alt="Room"
                   style={{
                     width: "100%",
