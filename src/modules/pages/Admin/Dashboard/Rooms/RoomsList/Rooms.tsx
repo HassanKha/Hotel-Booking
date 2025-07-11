@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Header from "../../../../../shared/Header/Header.tsx";
 import SharedTable from "../../../../../shared/SharedTable/SharedTable.tsx";
 import { axiosInstance, ROOMS_URLS } from "../../../../../services/Urls.ts";
+import defultRoom from "../../../../../../assets/r01_2.jpg"
 import {
   CircularProgress,
   Box,
@@ -44,7 +45,7 @@ interface Room {
 interface FormattedRoom {
   _id: string;
   name: string;
-  image: string;
+  image: string; // تم التأكد من أنها string
   price: number | string;
   discount: number | string;
   capacity: number | string;
@@ -58,7 +59,7 @@ const columns = [
     label: "Image",
     render: (row: FormattedRoom) => (
       <img
-        src={row.image || "/images/placeholder.jpg"}
+        src={row.image || "/images/placeholder.jpg"} // هنا يتم تحديد الصورة الافتراضية
         alt="Room"
         style={{
           width: 50,
@@ -138,7 +139,7 @@ export default function Rooms() {
       const formatted: FormattedRoom[] = roomList.map((room) => ({
         _id: room._id,
         name: room.roomNumber || "N/A",
-        image: room.images?.[0] || "/images/placeholder.jpg",
+        image: room.images && room.images.length > 0 ? room.images[0] : defultRoom, 
         price: room.price || "N/A",
         discount: room.discount || 0,
         capacity: room.capacity || "N/A",
@@ -228,7 +229,7 @@ export default function Rooms() {
             <>
               <Box textAlign="center" mb={2}>
                 <img
-                  src={selectedRoom.images?.[0] || "/images/placeholder.jpg"}
+                  src={selectedRoom.images?.[0] || "/images/placeholder.jpg"} 
                   alt="Room"
                   style={{
                     width: "100%",
