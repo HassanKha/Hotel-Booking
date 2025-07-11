@@ -12,6 +12,8 @@ import {
   CircularProgress,
   FormHelperText,
   Chip,
+  ImageList,
+  ImageListItem,
 } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { axiosInstance, Facilities_URL, ROOMS_URLS } from '../../../../../services/Urls';
@@ -25,21 +27,32 @@ interface RoomFormData {
   price: number | null;
   capacity: number | null;
   discount: number | null;
-  facilities: number[];
+  facilities: string[];
 }
 
-interface Facilities {
+interface Facility {
   name: string;
-  _id: number;
+  _id: string;
+}
+
+interface RoomToEdit {
+  _id: string;
+  name: string;
+  image: string;
+  price: number;
+  discount: number;
+  capacity: number;
+  category: string;
 }
 
 function RoomData() {
   const [loading, setLoading] = useState<boolean>(false);
-  const [facilities, setFacilities] = useState<Facilities[]>([]);
+  const [facilities, setFacilities] = useState<Facility[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const location = useLocation();
-  const roomToEdit = location.state?.roomToEdit;
+
+  const roomToEdit = location.state?.roomToEdit as RoomToEdit | undefined;
 
   const {
     control,
@@ -59,7 +72,6 @@ function RoomData() {
       imgs: null,
     },
   });
-
 
   const watchedFiles: FileList | null = watch('imgs');
 
@@ -84,7 +96,7 @@ function RoomData() {
           const found = facilities.find((f) => f.name.trim() === name.trim());
           return found?._id ?? null;
         })
-        .filter((id) => id !== null) as number[];
+        .filter((id) => id !== null) as string[];
 
       reset({
         roomNumber: roomToEdit.name || '',
@@ -95,7 +107,7 @@ function RoomData() {
         imgs: null,
       });
     }
-  }, [roomToEdit, facilities]);
+  }, [roomToEdit, facilities, reset]);
 
   const onSubmit = async (data: RoomFormData) => {
     const formData = new FormData();
@@ -105,13 +117,14 @@ function RoomData() {
     if (data.discount !== null) formData.append('discount', data.discount.toString());
 
     if (data.facilities.length > 0) {
-      data.facilities.forEach((id) => formData.append('facilities[]', id.toString()));
+      data.facilities.forEach((id) => formData.append('facilities[]', id));
     }
 
     if (data.imgs && data.imgs.length > 0) {
       for (let i = 0; i < data.imgs.length; i++) {
         formData.append('imgs', data.imgs[i]);
       }
+    } else if (roomToEdit) {
     }
 
     try {
@@ -163,7 +176,6 @@ function RoomData() {
 
       <Paper elevation={0} sx={{ p: 4, borderRadius: 2, backgroundColor: 'transparent' }}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          {/* Room Number */}
           <FormControl fullWidth sx={{ mb: 3 }}>
             <Controller
               name="roomNumber"
@@ -186,24 +198,28 @@ function RoomData() {
             />
           </FormControl>
 
-          {/* Grid Inputs */}
           <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 3 }}>
-            {/* Price */}
             <Controller
               name="price"
               control={control}
               rules={{
                 required: 'Price is required',
                 min: { value: 0.01, message: 'Price must be positive' },
+                validate: (value) => value !== null && !isNaN(value) || 'Invalid price',
               }}
-              render={({ field }) => (
+              render={({ field: { onChange, value, ...restField } }) => (
                 <TextField
-                  {...field}
+                  {...restField}
                   label="Price"
                   variant="filled"
-                  InputLabelProps={{ shrink: true }} 
+                  InputLabelProps={{ shrink: true }}
                   fullWidth
                   type="number"
+                  value={value === null ? '' : value}
+                  onChange={(e) => {
+                    const val = parseFloat(e.target.value);
+                    onChange(isNaN(val) ? null : val);
+                  }}
                   error={!!errors.price}
                   helperText={errors.price?.message}
                   inputProps={{ step: '0.01' }}
@@ -212,7 +228,6 @@ function RoomData() {
               )}
             />
 
-            {/* Capacity */}
             <Controller
               name="capacity"
               control={control}
@@ -220,16 +235,21 @@ function RoomData() {
                 required: 'Capacity is required',
                 min: { value: 1, message: 'Must be at least 1' },
                 validate: (v) =>
-                  Number.isInteger(Number(v)) || 'Capacity must be an integer',
+                  (v !== null && Number.isInteger(Number(v))) || 'Capacity must be an integer',
               }}
-              render={({ field }) => (
+              render={({ field: { onChange, value, ...restField } }) => (
                 <TextField
-                  {...field}
+                  {...restField}
                   label="Capacity"
                   variant="filled"
-                  InputLabelProps={{ shrink: true }} 
+                  InputLabelProps={{ shrink: true }}
                   fullWidth
                   type="number"
+                  value={value === null ? '' : value}
+                  onChange={(e) => {
+                    const val = parseInt(e.target.value, 10);
+                    onChange(isNaN(val) ? null : val);
+                  }}
                   error={!!errors.capacity}
                   helperText={errors.capacity?.message}
                   inputProps={{ min: '1' }}
@@ -238,22 +258,27 @@ function RoomData() {
               )}
             />
 
-            {/* Discount */}
             <Controller
               name="discount"
               control={control}
               rules={{
                 required: 'Discount is required',
                 min: { value: 0, message: 'Cannot be negative' },
+                validate: (value) => value !== null && !isNaN(value) || 'Invalid discount',
               }}
-              render={({ field }) => (
+              render={({ field: { onChange, value, ...restField } }) => (
                 <TextField
-                  {...field}
+                  {...restField}
                   label="Discount"
                   variant="filled"
-                  InputLabelProps={{ shrink: true }} 
+                  InputLabelProps={{ shrink: true }}
                   fullWidth
                   type="number"
+                  value={value === null ? '' : value}
+                  onChange={(e) => {
+                    const val = parseFloat(e.target.value);
+                    onChange(isNaN(val) ? null : val);
+                  }}
                   error={!!errors.discount}
                   helperText={errors.discount?.message}
                   inputProps={{ step: '0.01', min: '0' }}
@@ -262,9 +287,8 @@ function RoomData() {
               )}
             />
 
-            {/* Facilities */}
             <FormControl fullWidth error={!!errors.facilities}>
-              <InputLabel id="facilities-label">Facilities</InputLabel>
+              <InputLabel id="facilities-label" shrink={true}>Facilities</InputLabel>
               <Controller
                 name="facilities"
                 control={control}
@@ -281,7 +305,7 @@ function RoomData() {
                     variant="filled"
                     renderValue={(selected) => (
                       <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                        {selected.map((val) => {
+                        {selected.map((val: string) => {
                           const f = facilities.find((f) => f._id === val);
                           return <Chip key={val} label={f?.name || val} />;
                         })}
@@ -301,7 +325,23 @@ function RoomData() {
             </FormControl>
           </Box>
 
-          {/* Image Upload */}
+          {roomToEdit && roomToEdit.image && (
+            <Box sx={{ mt: 3, mb: 2 }}>
+              <Typography variant="subtitle1" gutterBottom>Current Image:</Typography>
+              <img
+                src={roomToEdit.image}
+                alt="Current Room"
+                style={{
+                  maxWidth: '100%',
+                  maxHeight: '200px',
+                  objectFit: 'contain',
+                  borderRadius: 4,
+                  border: '1px solid #ddd',
+                }}
+              />
+            </Box>
+          )}
+
           <Box
             sx={{
               mt: 4,
@@ -324,9 +364,11 @@ function RoomData() {
             <input
               type="file"
               multiple
-              {...register('imgs')}
+              {...register('imgs', )}
               ref={(e) => {
-                fileInputRef.current = e;
+                if (fileInputRef) {
+                  fileInputRef.current = e;
+                }
                 register('imgs').ref(e);
               }}
               style={{ display: 'none' }}
@@ -339,14 +381,14 @@ function RoomData() {
                 Choose Room Images
               </span>
             </Typography>
-            {watchedFiles?.length > 0 && (
+            {watchedFiles && watchedFiles.length > 0 && (
               <Typography variant="caption" sx={{ mt: 1 }}>
                 {watchedFiles.length} file(s) selected
               </Typography>
             )}
+            {errors.imgs && <FormHelperText error>{errors.imgs.message}</FormHelperText>}
           </Box>
 
-          {/* Buttons */}
           <Box sx={{ mt: 4, display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
             <Button variant="outlined" color="primary" onClick={() => navigate('/dashboard/rooms')}>
               Cancel
