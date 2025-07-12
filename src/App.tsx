@@ -19,21 +19,51 @@ import { ToastContainer } from "react-toastify";
 import { ThemeProvider } from "@mui/material";
 import { theme } from "./modules/services/Theme";
 import { useThemeContext } from "./contexts/ThemeContext";
-import { DashboardHome } from "./modules/pages/Admin/Dashboard/Dashboard";
+import { DashboardHome } from "./modules/pages/Admin/Dashboard/Dashboard/Dashboard";
+import Explore from "./modules/pages/User/Explore/Explore";
+import Favorites from "./modules/pages/User/Favorites/Favorites";
+import Details from "./modules/pages/User/Details/Details";
+import UserLayout from "./modules/layouts/UserLayout/UserLayout";
 
-
-
-
-const Ads = lazy(() => import("./modules/pages/Admin/Dashboard/Ads/AdsList/Ads"));
-const Facilities = lazy(() => import("./modules/pages/Admin/Dashboard/Facilities/FacilitesList/Facilities"));
-const Bookings = lazy(() => import("./modules/pages/Admin/Dashboard/Bookings/BookingList/Bookings"));
-const Rooms = lazy(() => import("./modules/pages/Admin/Dashboard/Rooms/RoomsList/Rooms"));
-const Users = lazy(() => import("./modules/pages/Admin/Dashboard/Users/UsersList/Users"));
-const RoomData = lazy(() => import("./modules/pages/Admin/Dashboard/Rooms/RoomsData/RoomData"));
-const BookingData = lazy(() => import("./modules/pages/Admin/Dashboard/Bookings/ViewBookingModal/ViewBookingModal"));
-const FacilitesData = lazy(() => import("./modules/pages/Admin/Dashboard/Facilities/FacilitesData/FacilitesData"));
-const AdData = lazy(() => import("./modules/pages/Admin/Dashboard/Ads/AdData/AdData"));
-const UsersUpdate = lazy(() => import("./modules/pages/Admin/Dashboard/Users/UsersUpdate/UsersUpdate"));
+const Ads = lazy(
+  () => import("./modules/pages/Admin/Dashboard/Ads/AdsList/Ads")
+);
+const Facilities = lazy(
+  () =>
+    import(
+      "./modules/pages/Admin/Dashboard/Facilities/FacilitesList/Facilities"
+    )
+);
+const Bookings = lazy(
+  () => import("./modules/pages/Admin/Dashboard/Bookings/BookingList/Bookings")
+);
+const Rooms = lazy(
+  () => import("./modules/pages/Admin/Dashboard/Rooms/RoomsList/Rooms")
+);
+const Users = lazy(
+  () => import("./modules/pages/Admin/Dashboard/Users/UsersList/Users")
+);
+const RoomData = lazy(
+  () => import("./modules/pages/Admin/Dashboard/Rooms/RoomsData/RoomData")
+);
+const BookingData = lazy(
+  () =>
+    import(
+      "./modules/pages/Admin/Dashboard/Bookings/ViewBookingModal/ViewBookingModal"
+    )
+);
+const FacilitesData = lazy(
+  () =>
+    import(
+      "./modules/pages/Admin/Dashboard/Facilities/FacilitesData/FacilitesData"
+    )
+);
+const AdData = lazy(
+  () => import("./modules/pages/Admin/Dashboard/Ads/AdData/AdData")
+);
+const UsersUpdate = lazy(
+  () => import("./modules/pages/Admin/Dashboard/Users/UsersUpdate/UsersUpdate")
+);
 
 function App() {
   const routes: RouteObject[] = [
@@ -42,13 +72,12 @@ function App() {
       element: <AuthLayout />,
       errorElement: <NotFound />,
       children: [
-        { index: true, element: <Login /> },
         { path: "login", element: <Login /> },
         { path: "register", element: <Register /> },
         { path: "forget-password", element: <ForgetPassword /> },
         { path: "reset-password", element: <ResetPassword /> },
         { path: "change-password", element: <ChangePassword /> },
-         {
+        {
           path: "user-profile",
           element: (
             <Suspense fallback={null}>
@@ -82,7 +111,7 @@ function App() {
             </Suspense>
           ),
         },
-         
+
         {
           path: "rooms",
           element: (
@@ -115,8 +144,7 @@ function App() {
             </Suspense>
           ),
         },
-      
-       
+
         {
           path: "rooms-data",
           element: (
@@ -152,29 +180,66 @@ function App() {
       ],
     },
     {
-      path: "/landing",
-      element: <Landing />,
-      children: [
-        {
-          index: true,
-          element: (
-            <Suspense fallback={null}>
-              <Landing />
-            </Suspense>
-          ),
-        },
-      ],
+  path: "/",                 // ⬅ parent route that renders <UserLayout/>
+  element: <UserLayout />,
+  children: [
+    /* 1️⃣  This renders Landing for "/"         */
+    {                                  // ----- index route
+      index: true,                     //  <─ makes it the default child
+      element: (
+        <Suspense fallback={null}>
+          <Landing />
+        </Suspense>
+      ),
     },
+
+    /* 2️⃣  This renders the same page for /landing */
+    {
+      path: "landing",
+      element: (
+        <Suspense fallback={null}>
+          <Landing />
+        </Suspense>
+      ),
+    },
+
+    /* …the rest of your user‑side pages … */
+    {
+      path: "Explore",
+      element: (
+        <Suspense fallback={null}>
+          <Explore />
+        </Suspense>
+      ),
+    },
+    {
+      path: "Favorites",
+      element: (
+        <Suspense fallback={null}>
+          <Favorites />
+        </Suspense>
+      ),
+    },
+    {
+      path: "details/:id",
+      element: (
+        <Suspense fallback={null}>
+          <Details />
+        </Suspense>
+      ),
+    },
+  ],
+},
     {
       path: "*",
       element: <NotFound />,
     },
   ];
 
- const { darkMode } = useThemeContext();
+  const { darkMode } = useThemeContext();
 
   return (
-        <ThemeProvider theme={theme(darkMode)}>
+    <ThemeProvider theme={theme(darkMode)}>
       <ToastContainer position="top-right" autoClose={3000} />
       <RouterProvider router={createBrowserRouter(routes)} />
     </ThemeProvider>

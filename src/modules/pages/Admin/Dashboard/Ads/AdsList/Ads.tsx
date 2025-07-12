@@ -196,6 +196,18 @@ export default function Ads() {
       align: "center" as const,
       render: (row: Ad) => `$${row.room?.price}`,
     },
+     {
+      id: "Discount",
+      label: "Discount",
+      align: "center" as const,
+      render: (row: Ad) => row.room?.discount,
+    },
+     {
+      id: "Active",
+      label: "Active",
+      align: "center" as const,
+      render: (row: Ad) => row.isActive ? "Yes" : "No",
+    },
     {
       id: "Capacity",
       label: "Capacity",
@@ -207,13 +219,7 @@ export default function Ads() {
       label: "Created By",
       align: "center" as const,
       render: (row: Ad) => row.createdBy?.userName ?? "-", 
-    },
-    {
-      id: "Created At",
-      label: "Created At",
-      align: "center" as const,
-      render: (row: Ad) => new Date(row.createdAt).toLocaleDateString(),
-    },
+    }
   ];
 
   return (
