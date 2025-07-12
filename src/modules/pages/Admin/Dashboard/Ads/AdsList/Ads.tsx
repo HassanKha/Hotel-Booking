@@ -219,13 +219,7 @@ export default function Ads() {
       label: "Created By",
       align: "center" as const,
       render: (row: Ad) => row.createdBy?.userName ?? "-", 
-    },
-    {
-      id: "Created At",
-      label: "Created At",
-      align: "center" as const,
-      render: (row: Ad) => new Date(row.createdAt).toLocaleDateString(),
-    },
+    }
   ];
 
   return (
