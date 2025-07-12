@@ -9,18 +9,54 @@ import Header from "../../../../../shared/Header/Header.tsx";
 import Swal from "sweetalert2";
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from '@mui/material';
 
+
+interface AdCreatedBy {
+  _id: string;
+  userName: string;
+}
+
+
+interface RoomDetails {
+  _id: string;
+  roomNumber: string;
+  price: number;
+  capacity: number;
+  discount: number;
+  facilities: string[];
+  createdBy: string;
+  images: string[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+
+interface Ad {
+  _id: string;
+  isActive: boolean;
+  room: RoomDetails | null; 
+  createdBy: AdCreatedBy; 
+  createdAt: string;
+  updatedAt: string;
+}
+
+
+interface RoomOption {
+  _id: string;
+  roomNumber: string;
+}
+
 export default function Ads() {
-  const [Ads, setAds] = useState<any[]>([]);
+  const [ads, setAds] = useState<Ad[]>([]);
   const [loading, setLoading] = useState(false);
   const [viewModalOpen, setViewModalOpen] = useState(false);
-  const [selectedAds, setSelectedAds] = useState<any>(null);
-  const [roomList, setRoomList] = useState<any[]>([]);
+  const [selectedAd, setSelectedAd] = useState<Ad | null>(null);
+  const [roomList, setRoomList] = useState<RoomOption[]>([]);
   const [open, setOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5);
   const [totalResults, setTotalResults] = useState(0);
   const [isEditMode, setIsEditMode] = useState(false);
-  const [editingAd, setEditingAd] = useState<any>(null);
+  const [editingAd, setEditingAd] = useState<Ad | null>(null);
   const { control, handleSubmit, reset } = useForm({
     defaultValues: {
       room: "",
@@ -29,12 +65,11 @@ export default function Ads() {
     },
   });
 
-
   const fetchAds = async (page = 1, size = 5) => {
     setLoading(true);
     try {
       const res = await axiosInstance.get(`${ADS_URL.GET_ads}?page=${page}&size=${size}`);
-      const { ads, totalCount } = res.data.data;
+      const { ads, totalCount }: { ads: Ad[]; totalCount: number } = res.data.data;
       setAds(ads);
       setTotalResults(totalCount);
     } catch {
@@ -44,7 +79,6 @@ export default function Ads() {
     }
   };
 
-  // 📌 Fetch Rooms
   const getAllRooms = async () => {
     try {
       const res = await axiosInstance.get(ROOMS_URLS.GET_ROOMS);
@@ -69,61 +103,57 @@ export default function Ads() {
     });
     setOpen(true);
   };
-const handleEdit = (row: any) => {
-  setIsEditMode(true);
-  setEditingAd(row);
-  reset({
-    discount: String(row.room?.discount?? ""),
-    status: row.isActive ? "true" : "false",
-  });
-  setOpen(true);
-};
 
+  const handleEdit = (row: Ad) => {
+    setIsEditMode(true);
+    setEditingAd(row);
+    reset({
+      discount: String(row.room?.discount ?? ""),
+      status: row.isActive ? "true" : "false",
+    });
+    setOpen(true);
+  };
 
   const handleClose = () => {
     setOpen(false);
-    reset(); 
+    reset();
   };
 
-const onSubmit = async (data: any) => {
-  setLoading(true);
-  try {
-    let postData;
+  const onSubmit = async (data: { room: string; discount: string; status: string }) => {
+    setLoading(true);
+    try {
+      let postData;
 
-    if (isEditMode && editingAd) {
-      
-      postData = {
-        discount: Number(data.discount),
-        isActive: data.status === "true",
-      };
-      const res = await axiosInstance.put(
-        ADS_URL.UPDATE_Ads(editingAd._id),
-        postData
-      );
-      toast.success(res.data.message || "Ad updated successfully");
-    } else {
-     
-      postData = {
-        room: data.room,
-        discount: Number(data.discount),
-        isActive: data.status === "true",
-      };
-      const res = await axiosInstance.post(ADS_URL.ADD_ads, postData);
-      toast.success(res.data.message || "Ad added successfully");
+      if (isEditMode && editingAd) {
+        postData = {
+          discount: Number(data.discount),
+          isActive: data.status === "true",
+        };
+        const res = await axiosInstance.put(
+          ADS_URL.UPDATE_Ads(editingAd._id),
+          postData
+        );
+        toast.success(res.data.message || "Ad updated successfully");
+      } else {
+        postData = {
+          room: data.room,
+          discount: Number(data.discount),
+          isActive: data.status === "true",
+        };
+        const res = await axiosInstance.post(ADS_URL.ADD_ads, postData);
+        toast.success(res.data.message || "Ad added successfully");
+      }
+
+      await fetchAds(currentPage, itemsPerPage);
+      handleClose();
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || "Error saving ad");
+    } finally {
+      setLoading(false);
     }
+  };
 
-    await fetchAds(currentPage, itemsPerPage);
-    handleClose();
-  } catch (err: any) {
-    toast.error(err.response?.data?.message || "Error saving ad");
-  } finally {
-    setLoading(false);
-  }
-};
-
-
-
-  const handleDelete = async (row: any) => {
+  const handleDelete = async (row: Ad) => {
     const result = await Swal.fire({
       title: "Are you sure?",
       text: `This will permanently delete the ad for room "${row.room?.roomNumber}".`,
@@ -148,8 +178,8 @@ const onSubmit = async (data: any) => {
     }
   };
 
-  const handleView = (row: any) => {
-    setSelectedAds(row);
+  const handleView = (row: Ad) => {
+    setSelectedAd(row);
     setViewModalOpen(true);
   };
 
@@ -158,31 +188,31 @@ const onSubmit = async (data: any) => {
       id: "Room Number",
       label: "Room Number",
       align: "center" as const,
-      render: (row: any) => row.room?.roomNumber,
+      render: (row: Ad) => row.room?.roomNumber,
     },
     {
       id: "Price",
       label: "Price",
       align: "center" as const,
-      render: (row: any) => `$${row.room?.price}`,
+      render: (row: Ad) => `$${row.room?.price}`,
     },
     {
       id: "Capacity",
       label: "Capacity",
       align: "center" as const,
-      render: (row: any) => row.room?.capacity,
+      render: (row: Ad) => row.room?.capacity,
     },
     {
       id: "Created By",
       label: "Created By",
       align: "center" as const,
-      render: (row: any) => row.createdBy?.userName,
+      render: (row: Ad) => row.createdBy?.userName ?? "-", 
     },
     {
       id: "Created At",
       label: "Created At",
       align: "center" as const,
-      render: (row: any) => new Date(row.createdAt).toLocaleDateString(),
+      render: (row: Ad) => new Date(row.createdAt).toLocaleDateString(),
     },
   ];
 
@@ -243,7 +273,7 @@ const onSubmit = async (data: any) => {
                       sx: { borderRadius: 2, backgroundColor: '#e0e0e0', px: 1 },
                     }}
                   >
-                    {roomList.map((r: any) => (
+                    {roomList.map((r: RoomOption) => (
                       <MenuItem key={r._id} value={r._id}>
                         {r.roomNumber}
                       </MenuItem>
@@ -252,7 +282,6 @@ const onSubmit = async (data: any) => {
                 )}
               />
             )}
-
 
             <Controller
               name="discount"
@@ -351,7 +380,7 @@ const onSubmit = async (data: any) => {
         <>
           <SharedTable
             columns={columns}
-            rows={Ads}
+            rows={ads}
             totalResults={totalResults}
             currentPage={currentPage}
             itemsPerPage={itemsPerPage}
@@ -365,7 +394,7 @@ const onSubmit = async (data: any) => {
           <ViewModel
             open={viewModalOpen}
             onClose={() => setViewModalOpen(false)}
-            Ads={selectedAds}
+            Ads={selectedAd}
           />
         </>
       )}

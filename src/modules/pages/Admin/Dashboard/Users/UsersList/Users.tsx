@@ -6,13 +6,26 @@ import { CircularProgress, Box } from "@mui/material";
 import UserDetailsModal from "../UsersData/UserDetailsModal.tsx";
 import { toast } from "react-toastify";
 
+interface User {
+  _id: string;
+  userName: string;
+  email: string;
+  phoneNumber: number;
+  country: string;
+  role: string;
+  profileImage: string;
+  verified: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
 const columns = [
-  { id: "userName", label: "Name", align: "center" as "center" },
+  { id: "userName", label: "Name", align: "center" as "center", render: (row: User) => row.userName },
   {
     id: "profileImage",
     align: "center" as "center",
     label: "Profile",
-    render: (row: any) => (
+    render: (row: User) => (
       <img
         src={row.profileImage || "/images/placeholder.jpg"}
         alt="Profile"
@@ -25,21 +38,20 @@ const columns = [
       />
     ),
   },
-  { id: "email", label: "Email", align: "center" as "center" },
-  { id: "phoneNumber", label: "Phone", align: "center" as "center" },
-  { id: "country", label: "Country", align: "center" as "center" },
-  { id: "role", label: "Role", align: "center" as "center" },
+  { id: "email", label: "Email", align: "center" as "center", render: (row: User) => row.email },
+  { id: "phoneNumber", label: "Phone", align: "center" as "center", render: (row: User) => row.phoneNumber ? `0${row.phoneNumber}` : "N/A" },
+  { id: "country", label: "Country", align: "center" as "center", render: (row: User) => row.country },
+  { id: "role", label: "Role", align: "center" as "center", render: (row: User) => row.role },
 ];
 
 export default function Users() {
-  const [selectedUser, setSelectedUser] = useState<any>(null);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [rows, setRows] = useState<any[]>([]);
+  const [rows, setRows] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5);
   const [totalResults, setTotalResults] = useState(0);
-
 
   const fetchUsers = async (page: number, size: number) => {
     setLoading(true);
@@ -48,22 +60,22 @@ export default function Users() {
         `${USERS_URLS.GET_ALL_USERS}?page=${page}&size=${size}`
       );
 
-      const userList = response.data?.data?.users || [];
+      const userList: User[] = response.data?.data?.users || [];
       const totalCount = response.data?.data?.totalCount || userList.length;
 
-      const formattedUsers = userList.map((user: any) => ({
+      const formattedUsers: User[] = userList.map((user: User) => ({
+        ...user, 
         userName: user.userName || "N/A",
         profileImage: user.profileImage || "",
         email: user.email || "N/A",
-        phoneNumber: user.phoneNumber ? `0${user.phoneNumber}` : "N/A",
-
+        phoneNumber: user.phoneNumber, 
         country: user.country || "N/A",
         role: user.role || "N/A",
       }));
 
       setRows(formattedUsers);
       setTotalResults(totalCount);
-    } catch (error : any) {
+    } catch (error: any) {
       toast.error(error.response?.data?.message || "Error fetching users");
     } finally {
       setLoading(false);
@@ -99,7 +111,7 @@ export default function Users() {
               setItemsPerPage(newSize);
               setCurrentPage(1);
             }}
-            onView={(row) => {
+            onView={(row: User) => {
               setSelectedUser(row);
               setIsModalOpen(true);
             }}
@@ -110,9 +122,6 @@ export default function Users() {
             user={selectedUser}
           />
         </>
-
-
-
       )}
     </div>
   );
