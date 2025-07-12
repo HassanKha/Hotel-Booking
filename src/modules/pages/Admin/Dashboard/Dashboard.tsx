@@ -291,10 +291,10 @@ export const DashboardHome: React.FC = () => {
         key={stat.title}
         sx={{
           flex: {
-            xs: "1 1 100%",                     // 1 per row on mobile
-            sm: "1 1 calc(50% - 24px)",         // 2 per row on small screens
-            md: "1 1 calc(33.33% - 24px)",      // 3 per row on medium
-            lg: "1 1 calc(25% - 24px)",         // 4 per row on large
+            xs: "1 1 100%",                    
+            sm: "1 1 calc(50% - 24px)",         
+            md: "1 1 calc(33.33% - 24px)",      
+            lg: "1 1 calc(25% - 24px)",         
           },
           justifyContent: "center",
           alignItems: "center",
