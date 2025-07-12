@@ -6,16 +6,28 @@ import { toast } from "react-toastify";
 import ViewModel from "../ViewFacilitesModel/ViewModel.tsx";
 import Header from "../../../../../shared/Header/Header.tsx";
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from '@mui/material';
+import Swal from "sweetalert2";
 
+interface FacilityCreatedBy {
+  _id: string;
+  userName: string;
+}
 
+interface Facility {
+  _id: string;
+  name: string;
+  createdBy: FacilityCreatedBy;
+  createdAt: string;
+  updatedAt: string;
+}
 
 export default function Facilities() {
-  const [Facilities, setFacilities] = useState<any[]>([]);
+  const [facilities, setFacilities] = useState<Facility[]>([]);
   const [loading, setLoading] = useState(false);
   const [viewModalOpen, setViewModalOpen] = useState(false);
-  const [selectedFacilities, setSelectedFacilities] = useState<any>(null);
+  const [selectedFacilities, setSelectedFacilities] = useState<Facility | null>(null);
   const [isEditMode, setIsEditMode] = useState(false);
-  const [editingFacility, setEditingFacility] = useState<any>(null);
+  const [editingFacility, setEditingFacility] = useState<Facility | null>(null);
   const [facilityName, setFacilityName] = useState("");
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -23,15 +35,12 @@ export default function Facilities() {
   const [totalResults, setTotalResults] = useState(0);
   const [open, setOpen] = useState(false);
 
-
-
   const handleAddRoom = () => {
     setIsEditMode(false);
     setEditingFacility(null);
     setFacilityName("");
     setOpen(true);
   };
-
 
   const handleClose = () => {
     setOpen(false);
@@ -51,14 +60,12 @@ export default function Facilities() {
     setLoading(true);
     try {
       if (isEditMode && editingFacility) {
-
         let response = await axiosInstance.put(
           Facilities_URL.UPDATE_FACILITIES(editingFacility._id),
           { name: facilityName }
         );
         toast.success(response.data.message || "Facility updated successfully");
       } else {
-
         let response = await axiosInstance.post(
           Facilities_URL.ADD_facilities,
           { name: facilityName }
@@ -81,7 +88,7 @@ export default function Facilities() {
       const res = await axiosInstance.get(
         `${Facilities_URL.GET_facilities}?page=${page}&size=${size}`
       );
-      const { facilities, totalCount } = res.data.data;
+      const { facilities, totalCount }: { facilities: Facility[], totalCount: number } = res.data.data;
       setFacilities(facilities);
       setTotalResults(totalCount);
     } catch (err) {
@@ -91,64 +98,66 @@ export default function Facilities() {
     }
   };
 
-  const handleDelete = async (row: any) => {
-    setLoading(true);
-    try {
-      let res = await axiosInstance.delete(Facilities_URL.DELETE_facilities(row._id));
-      toast.success(res.data.message || "facilities deleted successfully");
-      fetchFacilities(currentPage, itemsPerPage);
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || "Error deleting facilities");
-    }
-    finally {
-      setLoading(false);
+  const handleDelete = async (row: Facility) => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: `This will permanently delete "${row.name}".`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Delete",
+      cancelButtonText: "Cancel",
+      reverseButtons: true,
+    });
+
+    if (result.isConfirmed) {
+      setLoading(true);
+      try {
+        let res = await axiosInstance.delete(Facilities_URL.DELETE_facilities(row._id));
+        fetchFacilities(currentPage, itemsPerPage);
+        Swal.fire("Deleted!", res.data.message || "The facility has been deleted successfully.", "success");
+      } catch (error: any) {
+        Swal.fire("Error!", error.response?.data?.message || "Failed to delete the facility.", "error");
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
-
-  const handleEdit = (row: any) => {
+  const handleEdit = (row: Facility) => {
     setIsEditMode(true);
     setEditingFacility(row);
     setFacilityName(row.name);
     setOpen(true);
   };
 
-
-  const handleView = (row: any) => {
+  const handleView = (row: Facility) => {
     setSelectedFacilities(row);
     setViewModalOpen(true);
   };
 
-
-
   useEffect(() => {
     fetchFacilities(currentPage, itemsPerPage);
   }, [currentPage, itemsPerPage]);
-
-
-
 
   const columns = [
     {
       id: "Name",
       label: "Name",
       align: "center" as "center",
-      render: (row: any) => row.name,
+      render: (row: Facility) => row.name,
     },
     {
       id: "Created By",
       label: "Created By",
       align: "center" as "center",
-      render: (row: any) => `${row.createdBy.userName}`,
+      render: (row: Facility) => row.createdBy?.userName ?? "-",
     },
-
     {
       id: "createdAt",
       label: "createdAt",
       align: "center" as "center",
-      render: (row: any) => new Date(row.createdAt).toLocaleDateString(),
+      render: (row: Facility) => new Date(row.createdAt).toLocaleDateString(),
     },
-
   ];
 
   return (
@@ -190,7 +199,6 @@ export default function Facilities() {
           </Button>
         </DialogTitle>
 
-
         <form onSubmit={handleSubmit}>
           <DialogContent sx={{ p: 3 }}>
             <TextField
@@ -212,7 +220,6 @@ export default function Facilities() {
                 },
               }}
             />
-
           </DialogContent>
 
           <DialogActions
@@ -259,7 +266,6 @@ export default function Facilities() {
         </form>
       </Dialog>
 
-
       {loading ? (
         <Box
           display="flex"
@@ -269,12 +275,11 @@ export default function Facilities() {
         >
           <CircularProgress />
         </Box>
-      ) :
+      ) : (
         <>
-
           <SharedTable
             columns={columns}
-            rows={Facilities}
+            rows={facilities}
             totalResults={totalResults}
             currentPage={currentPage}
             itemsPerPage={itemsPerPage}
@@ -285,16 +290,13 @@ export default function Facilities() {
             onEdit={handleEdit}
           />
 
-
           <ViewModel
             open={viewModalOpen}
             onClose={() => setViewModalOpen(false)}
             facilitie={selectedFacilities}
-
           />
-
-        </>}
-        
+        </>
+      )}
     </Box>
   );
 }
