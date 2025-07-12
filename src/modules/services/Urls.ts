@@ -41,23 +41,23 @@ export const ROOMS_URLS = {
 export const BOOKINGS_URLS = {
   GET_BOOKINGS: `/admin/booking`,
   GET_BOOKING_DETAILS: (id: number) => `/admin/booking/${id}`,
-  DELETE_BOOKING: (id: number) => `/admin/booking/${id}`,
+  DELETE_BOOKING: (id: string) => `/admin/booking/${id}`,
 };
 
 export const Facilities_URL = {
   GET_facilities: `/admin/room-facilities`,
   GET_facilities_DETAILS: (id: string) => `/admin/room-facilities/${id}`,
-  DELETE_facilities: (id: number) => `/admin/room-facilities/${id}`,
+  DELETE_facilities: (id: string) => `/admin/room-facilities/${id}`,
   ADD_facilities: `/admin/room-facilities`,
-  UPDATE_FACILITIES: (id: number) => `/admin/room-facilities/${id}`
+  UPDATE_FACILITIES: (id: string) => `/admin/room-facilities/${id}`
 };
 
 export const ADS_URL = {
   GET_ads: `/admin/ads`,
-  GET_ads_details: (id: number) => `/admin/ads/${id}`,
-  DELETE_ads: (id: number) => `/admin/ads/${id}`,
+  GET_ads_details: (id: string) => `/admin/ads/${id}`,
+  DELETE_ads: (id: string) => `/admin/ads/${id}`,
   ADD_ads: `/admin/ads`,
-  UPDATE_Ads: (id: number) => `/admin/ads/${id}`
+  UPDATE_Ads: (id: string) => `/admin/ads/${id}`
 };
 
 export const DASHBOARD_Charts_URL = {
