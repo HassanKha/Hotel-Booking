@@ -64,6 +64,7 @@ const AdData = lazy(
 const UsersUpdate = lazy(
   () => import("./modules/pages/Admin/Dashboard/Users/UsersUpdate/UsersUpdate")
 );
+import ProtectedUserRoute from "./modules/shared/ProtectedRoute/ProtectedUserRoute";
 
 function App() {
   const routes: RouteObject[] = [
@@ -180,56 +181,55 @@ function App() {
       ],
     },
     {
-  path: "/",                 // ⬅ parent route that renders <UserLayout/>
-  element: <UserLayout />,
-  children: [
-    /* 1️⃣  This renders Landing for "/"         */
-    {                                  // ----- index route
-      index: true,                     //  <─ makes it the default child
-      element: (
-        <Suspense fallback={null}>
-          <Landing />
-        </Suspense>
-      ),
-    },
+      path: "/",
+      element: <UserLayout />,
+      children: [
+        {
+          index: true,
+          element: (
+            <Suspense fallback={null}>
+              <Landing />
+            </Suspense>
+          ),
+        },
 
-    /* 2️⃣  This renders the same page for /landing */
-    {
-      path: "landing",
-      element: (
-        <Suspense fallback={null}>
-          <Landing />
-        </Suspense>
-      ),
-    },
+        {
+          path: "landing",
+          element: (
+            <Suspense fallback={null}>
+              <Landing />
+            </Suspense>
+          ),
+        },
 
-    /* …the rest of your user‑side pages … */
-    {
-      path: "Explore",
-      element: (
-        <Suspense fallback={null}>
-          <Explore />
-        </Suspense>
-      ),
+        {
+          path: "Explore",
+          element: (
+            <Suspense fallback={null}>
+              <Explore />
+            </Suspense>
+          ),
+        },
+        {
+          path: "Favorites",
+          element: (
+            <Suspense fallback={null}>
+              <ProtectedUserRoute>
+                <Favorites />
+              </ProtectedUserRoute>
+            </Suspense>
+          ),
+        },
+        {
+          path: "details/:id",
+          element: (
+            <Suspense fallback={null}>
+              <Details />
+            </Suspense>
+          ),
+        },
+      ],
     },
-    {
-      path: "Favorites",
-      element: (
-        <Suspense fallback={null}>
-          <Favorites />
-        </Suspense>
-      ),
-    },
-    {
-      path: "details/:id",
-      element: (
-        <Suspense fallback={null}>
-          <Details />
-        </Suspense>
-      ),
-    },
-  ],
-},
     {
       path: "*",
       element: <NotFound />,

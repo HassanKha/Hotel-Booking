@@ -55,13 +55,13 @@ const { isAuthenticated } = useAuth();
 
 const navLinks = isAuthenticated
   ? [
-      { label: "Home", href: "/landing" },
-      { label: "Explore", href: "/landing/Explore" },
-      { label: "Favorites", href: "/landing/Favorites" },
+      { label: "Home", href: "landing" },
+      { label: "Explore", href: "Explore" },
+      { label: "Favorites", href: "Favorites" },
     ]
   : [
-      { label: "Home", href: "/landing" },
-      { label: "Explore", href: "/landing/Explore" },
+      { label: "Home", href: "landing" },
+      { label: "Explore", href: "Explore" },
     ];
 
   const drawer = (
@@ -106,7 +106,7 @@ const navLinks = isAuthenticated
       </List>
 
       <Divider />
-{!isAuthenticated && (
+{!isAuthenticated ? (
   <Box sx={{ p: 2, display: "flex", flexDirection: "column", gap: 1 }}>
     <Button
       component={NavLink}
@@ -142,7 +142,30 @@ const navLinks = isAuthenticated
       Login&nbsp;Now
     </Button>
   </Box>
-)}
+)
+: 
+
+ <Box sx={{ p: 2, display: "flex", flexDirection: "column", gap: 1 }}>
+    <Button
+    
+      variant="outlined"
+      fullWidth
+      onClick={toggleDrawer}
+      sx={{
+        borderColor: theme.palette.primary.main,
+        color: theme.palette.primary.main,
+        textTransform: "none",
+        "&.active": {
+          color: theme.palette.primary.main,
+          fontWeight: 600,
+        },
+      }}
+    >
+      Logout
+    </Button>
+ 
+  </Box>
+}
 
     </Box>
   );
@@ -179,7 +202,7 @@ const navLinks = isAuthenticated
   ))}
               </Box>
 
-             {!isAuthenticated && (
+             {!isAuthenticated ? (
   <Box sx={{ display: "flex", gap: 2 }}>
     <Button
       component={NavLink}
@@ -211,7 +234,27 @@ const navLinks = isAuthenticated
       Login&nbsp;Now
     </Button>
   </Box>
-)}
+)
+: 
+ <Box sx={{ display: "flex", gap: 2 }}>
+    <Button
+     
+      variant="contained"
+      sx={{
+        borderColor: theme.palette.primary.main,
+        color: 'white',
+        textTransform: "none",
+        "&.active": {
+          color: theme.palette.primary.main,
+          fontWeight: 600,
+        },
+      }}
+    >
+      Logout
+    </Button>
+
+  </Box>
+}
             </Box>
           )}
 
