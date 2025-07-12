@@ -18,7 +18,6 @@ import "./Rooms.css";
 import { useNavigate } from "react-router-dom";
 import DeleteConfirmationDialog from "../../../../../shared/DeleteConfirmation/DeleteConfirmation.tsx";
 import { toast } from "react-toastify";
-import  { DefIMG } from "../../../../../../assets/DefaultImg.tsx";
 
 interface Facility {
   _id: string;
@@ -85,7 +84,6 @@ export default function Rooms() {
   const [loadDetails, setLoadDetails] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [roomIdToDelete, setRoomIdToDelete] = useState<string | null>(null);
-  const [imgError, setImgError] = useState(false);
   const navigate = useNavigate();
 console.log(selectedRoom)
   const openDeleteModal = (row: FormattedRoom) => {
