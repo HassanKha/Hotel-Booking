@@ -202,6 +202,12 @@ export default function Ads() {
       align: "center" as const,
       render: (row: Ad) => row.room?.discount,
     },
+     {
+      id: "Active",
+      label: "Active",
+      align: "center" as const,
+      render: (row: Ad) => row.isActive ? "Yes" : "No",
+    },
     {
       id: "Capacity",
       label: "Capacity",
