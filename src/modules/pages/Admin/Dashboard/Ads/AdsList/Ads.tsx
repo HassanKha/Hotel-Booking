@@ -196,6 +196,12 @@ export default function Ads() {
       align: "center" as const,
       render: (row: Ad) => `$${row.room?.price}`,
     },
+     {
+      id: "Discount",
+      label: "Discount",
+      align: "center" as const,
+      render: (row: Ad) => row.room?.discount,
+    },
     {
       id: "Capacity",
       label: "Capacity",
