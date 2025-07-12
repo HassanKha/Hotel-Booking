@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardContent, Typography } from "@mui/material"
+import { Box, Button, CardContent, Typography } from "@mui/material"
 import IconButton from '@mui/material/IconButton';
 import React from "react";
 
@@ -16,17 +16,16 @@ export const BookingForm = () => {
   }
 
   return (
-    <Card
+    <Box
       sx={{
         maxWidth: 500,
         width: "100%",
         p: 3,
-        borderRadius: "16px",
-        boxShadow: "0 8px 32px rgba(0, 0, 0, 0.1)",
+        // borderRadius: "16px",
+        // boxShadow: "0 8px 32px rgba(0, 0, 0, 0.1)",
       }}
     >
       <CardContent sx={{ p: 0 }}>
-        {/* Start Booking Header */}
         <Typography
           variant="h5"
           sx={{
@@ -39,7 +38,6 @@ export const BookingForm = () => {
           Start Booking
         </Typography>
 
-        {/* Pick a Date Section */}
         <Box sx={{ mb: 4 }}>
           <Typography
             variant="h6"
@@ -64,7 +62,6 @@ export const BookingForm = () => {
               border: "1px solid #e2e8f0",
             }}
           >
-            {/* Calendar Icon */}
             <Box
               sx={{
                 width: 48,
@@ -122,8 +119,7 @@ export const BookingForm = () => {
           </Box>
         </Box>
 
-        {/* Capacity Section */}
-        <Box sx={{ mb: 4 }}>
+        <Box sx={{ mb: 4  }}>
           <Typography
             variant="h6"
             sx={{
@@ -142,9 +138,10 @@ export const BookingForm = () => {
               alignItems: "center",
               gap: 2,
               justifyContent: "space-between",
+               bgcolor: "#f8fafc",
             }}
           >
-            {/* Minus Button */}
+
             <IconButton
               onClick={() => handleGuestChange(false)}
               sx={{
@@ -173,7 +170,6 @@ export const BookingForm = () => {
               />
             </IconButton>
 
-            {/* Guest Count */}
             <Typography
               variant="h6"
               sx={{
@@ -187,7 +183,6 @@ export const BookingForm = () => {
               {guests} person{guests !== 1 ? "s" : ""}
             </Typography>
 
-            {/* Plus Button */}
             <IconButton
               onClick={() => handleGuestChange(true)}
               sx={{
@@ -234,28 +229,29 @@ export const BookingForm = () => {
           </Box>
         </Box>
 
-        {/* Explore Button */}
-        <Button
-          variant="contained"
-          fullWidth
-          size="large"
-          sx={{
-            py: 2,
-            fontSize: "1.1rem",
-            fontWeight: 600,
-            bgcolor: "#4f46e5",
-            borderRadius: "12px",
-            textTransform: "none",
-            boxShadow: "0 4px 12px rgba(79, 70, 229, 0.3)",
-            "&:hover": {
-              bgcolor: "#4338ca",
-              boxShadow: "0 6px 16px rgba(79, 70, 229, 0.4)",
-            },
-          }}
-        >
-          Explore
-        </Button>
+<Button
+  variant="contained"
+  size="large"
+  // 👉 remove fullWidth
+  sx={{
+    alignSelf: "flex-start",     // ← keeps it on the left
+    px: 4,                       // horizontal padding instead of full width
+    py: 2,
+    fontSize: "1.1rem",
+    fontWeight: 600,
+    bgcolor: "#4f46e5",
+    borderRadius: "12px",
+    textTransform: "none",
+    boxShadow: "0 4px 12px rgba(79, 70, 229, 0.3)",
+    "&:hover": {
+      bgcolor: "#4338ca",
+      boxShadow: "0 6px 16px rgba(79, 70, 229, 0.4)",
+    },
+  }}
+>
+  Explore
+</Button>
       </CardContent>
-    </Card>
+    </Box>
   )
 }
