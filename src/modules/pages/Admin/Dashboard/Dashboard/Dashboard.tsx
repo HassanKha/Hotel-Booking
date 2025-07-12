@@ -9,9 +9,9 @@ import {
   Skeleton,
 } from "@mui/material";
 import { styled, keyframes } from "@mui/material/styles";
-import { axiosInstance, DASHBOARD_Charts_URL } from "../../../services/Urls";
+import { axiosInstance, DASHBOARD_Charts_URL } from "../../../../services/Urls";
 import { toast } from "react-toastify";
-import { AdminIcon, UserIcon } from "../../../../assets/Dashboard/Home";
+import { AdminIcon, UserIcon } from "../../../../../assets/Dashboard/Home";
 const LazyPieChart = React.lazy(() => import("./Charts"));
 
 const fadeInUp = keyframes`
