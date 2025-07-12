@@ -19,6 +19,8 @@ axiosInstance.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+///////Admin Portal///////
+
 export const USERS_URLS = {
   LOGIN: `/portal/users/login`,
   FORGET_PASS: `/portal/users/forgot-password`,
@@ -63,6 +65,13 @@ export const ADS_URL = {
 export const DASHBOARD_Charts_URL = {
   GET_Dash: `/admin/dashboard`,
 
+}
+
+
+///////User Portal///////
+
+export const ROOMS_USERS_URLS = {
+  GET_USERS_ROOMS:`portal/rooms/available`
 }
 
 

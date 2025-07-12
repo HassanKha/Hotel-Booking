@@ -180,7 +180,7 @@ function App() {
       ],
     },
     {
-  path: "/",                 // ⬅ parent route that renders <UserLayout/>
+  path: "/landing",                 // ⬅ parent route that renders <UserLayout/>
   element: <UserLayout />,
   children: [
     /* 1️⃣  This renders Landing for "/"         */
