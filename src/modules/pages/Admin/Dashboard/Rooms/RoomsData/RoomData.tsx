@@ -11,9 +11,7 @@ import {
   TextField,
   CircularProgress,
   FormHelperText,
-  Chip,
-  ImageList,
-  ImageListItem,
+  Chip
 } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { axiosInstance, Facilities_URL, ROOMS_URLS } from '../../../../../services/Urls';
