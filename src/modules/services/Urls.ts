@@ -74,6 +74,12 @@ export const ROOMS_USERS_URLS = {
   GET_USERS_ROOMS:`portal/rooms/available`
 }
 
+export const USERS_FAVORITES = {
+  GET_USER_FAVOURITES:`portal/favorite-rooms`,
+  ADD_TO_FAVOURITES:`portal/favorite-rooms`,
+  DELETE_FROM_FAVOURITE:(id:string)=>`portal/favorite-rooms/${id}`,
+}
+
 
 
 

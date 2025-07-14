@@ -8,11 +8,18 @@ import {
   CardContent,
   Box,
   Pagination,
-  CircularProgress
+  CircularProgress,
+  IconButton
 } from '@mui/material';
 import { styled } from '@mui/system';
 import defaultRoomImage from "../../../../assets/r01_2.jpg";
-import { axiosInstance, ROOMS_USERS_URLS } from '../../../services/Urls';
+import { axiosInstance, ROOMS_USERS_URLS, USERS_FAVORITES } from '../../../services/Urls';
+import { toast } from 'react-toastify';
+import { HeartIcon, ViewIcon } from '../../../../assets/ExploreIcons';
+import { useNavigate } from 'react-router-dom';
+
+
+
 
 interface Facility {
   _id: string;
@@ -50,39 +57,85 @@ const PriceBadge = styled(Box)(({ theme }) => ({
   zIndex: 1,
 }));
 
-const RoomCard = React.memo(({ room }: { room: Room }) => (
-  <Grid
-    item
-    xs={12}
-    sm={6}
-    md={4}
-    key={room._id}
-  >
-    <Card sx={{ borderRadius: 2, boxShadow: '0 4px 12px rgba(0,0,0,0.05)', position: 'relative' }}>
-      <PriceBadge>
-        <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
-          ${room.price} per night
-        </Typography>
-      </PriceBadge>
-      <CardMedia
-        component="img"
-        height="200"
-        image={room.images && room.images.length > 0 ? room.images[0] : defaultRoomImage}
-        alt={`Room ${room.roomNumber}`}
-        loading="lazy"
-        sx={{ borderTopLeftRadius: 8, borderTopRightRadius: 8, objectFit: 'cover' }}
-      />
-      <CardContent>
-        <Typography gutterBottom variant="h6" component="div" sx={{ fontWeight: 'bold', color: '#3F4462' }}>
-          Room {room.roomNumber}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Discount {room.discount}
-        </Typography>
-      </CardContent>
-    </Card>
-  </Grid>
-));
+const IconContainer = styled(Box)(({ theme }) => ({
+  position: 'absolute',
+  bottom: theme.spacing(1),
+  right: theme.spacing(1),
+  display: 'flex',
+  gap: theme.spacing(1),
+  zIndex: 2,
+  opacity: 0,
+  transition: 'opacity 0.3s ease-in-out',
+}));
+
+const RoomCard = React.memo(({ room, onFavourite }: { room: Room; onFavourite: () => void }) => {
+  const [isHovered, setIsHovered] = useState(false);
+
+  return (
+    <Grid item xs={12} sm={6} md={4} key={room._id}>
+      <Card
+        sx={{
+          borderRadius: 2,
+          boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+          position: 'relative',
+          overflow: 'hidden',
+          transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
+          '&:hover': {
+            transform: 'translateY(-5px)',
+            boxShadow: '0 8px 16px rgba(0,0,0,0.15)',
+          },
+        }}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        <PriceBadge>
+          <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+            ${room.price} per night
+          </Typography>
+        </PriceBadge>
+        <CardMedia
+          component="img"
+          height="200"
+          image={room.images && room.images.length > 0 ? room.images[0] : defaultRoomImage}
+          alt={`Room ${room.roomNumber}`}
+          loading="lazy"
+          sx={{ borderTopLeftRadius: 8, borderTopRightRadius: 8, objectFit: 'cover' }}
+        />
+        <CardContent>
+          <Typography gutterBottom variant="h6" component="div" sx={{ fontWeight: 'bold', color: '#3F4462' }}>
+            Room {room.roomNumber}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            Discount {room.discount}
+          </Typography>
+        </CardContent>
+
+        <IconContainer sx={{ opacity: isHovered ? 1 : 0 }}>
+          <IconButton
+            sx={{
+              backgroundColor: 'rgba(187, 33, 33, 0.8)',
+              '&:hover': { backgroundColor: 'white' }
+            }}
+            aria-label="favorite room"
+            onClick={onFavourite}
+          >
+            <HeartIcon />
+          </IconButton>
+          <IconButton
+            sx={{
+              backgroundColor: 'rgba(41, 164, 208, 0.8)',
+              '&:hover': { backgroundColor: 'white' }
+            }}
+            aria-label="view room details"
+            onClick={() => console.log(`View Room ${room.roomNumber} details`)}
+          >
+            <ViewIcon />
+          </IconButton>
+        </IconContainer>
+      </Card>
+    </Grid>
+  );
+});
 
 const ITEMS_PER_PAGE = 9;
 
@@ -91,6 +144,7 @@ function Explore() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
+  let navigate = useNavigate()
 
   const getAllRooms = async () => {
     try {
@@ -98,6 +152,7 @@ function Explore() {
       setError(null);
       const response = await axiosInstance.get(ROOMS_USERS_URLS.GET_USERS_ROOMS);
       setRooms(response?.data?.data?.rooms || []);
+      setLoading(false)
     } catch (err: any) {
       console.error("Error fetching rooms:", err);
       if (err.response && err.response.status === 401) {
@@ -107,6 +162,20 @@ function Explore() {
       }
     } finally {
       setLoading(false);
+    }
+  };
+
+  const addToFavourites = async (roomId: string) => {
+    try {
+      const response = await axiosInstance.post(USERS_FAVORITES.ADD_TO_FAVOURITES, {
+        roomId: roomId,
+      });
+      console.log(response);
+      toast.success(response.data.message);
+      navigate('/Favorites')
+    } catch (error:any) {
+      console.error(error)
+      toast.error(error?.response?.data?.message||'Failed to add to favourites');
     }
   };
 
@@ -132,7 +201,7 @@ function Explore() {
         <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
           Home / Explore
         </Typography>
-        <Typography variant="h4" component="h1" sx={{ mb: 4,textAlign:'center', fontWeight: 'bold', color: '#3F4462' }}>
+        <Typography variant="h4" component="h1" sx={{ mb: 4, textAlign: 'center', fontWeight: 'bold', color: '#3F4462' }}>
           Explore ALL Rooms
         </Typography>
 
@@ -153,7 +222,11 @@ function Explore() {
           <>
             <Grid container spacing={3} sx={{ display: 'flex', justifyContent: 'center' }}>
               {displayedRooms.map((roomItem) => (
-                <RoomCard key={roomItem._id} room={roomItem} />
+                <RoomCard
+                  key={roomItem._id}
+                  room={roomItem}
+                  onFavourite={() => addToFavourites(roomItem._id)} // ✅ مهم جدًا
+                />
               ))}
             </Grid>
 
