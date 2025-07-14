@@ -10,7 +10,9 @@ import { BookingForm } from "./components/BookingForm";
 import AdsCard from "./components/AdsCard";
 import LandingBG from "../../../../assets/landing.png";
 import CardHome from '../Landing/components/CardHome';
-import SliderAds from "./components/sliderAds";
+import SliderAds from "./components/SliderAds";
+import Feedback from "./components/Feedback";
+
 export default function Landing() {
   const theme = useTheme();
   const downMd = useMediaQuery(theme.breakpoints.down("md"));
@@ -24,7 +26,7 @@ export default function Landing() {
             <Box
               sx={{
                 display: "flex",
-                flexDirection: { xs: "column", md: "row" }, 
+                flexDirection: { xs: "column", md: "row" },
                 alignItems: "center",
                 gap: 4,
               }}
@@ -125,7 +127,8 @@ export default function Landing() {
 
       <AdsCard />
       <CardHome />
-      <SliderAds/>
+      <SliderAds />
+      <Feedback />
 
     </>
   );

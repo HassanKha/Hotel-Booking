@@ -5,22 +5,27 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Paper from '@mui/material/Paper';
-import { Box } from '@mui/material';
+import { Box, CircularProgress } from '@mui/material';
 import type { Room } from '../../../../../interfaces/Shared/Shared';
+import { Link } from 'react-router-dom';
 
 export default function SliderAds() {
   const [rooms, setRooms] = useState<Room[]>([]);
 
-
+let [loading, setLoading] = useState(false);
 
   async function getAllRooms() {
+    setLoading(true);
     try {
       const res = await axiosInstance.get(`${ROOMS_USERS_URLS.GET_USERS_ROOMS}?page=1&size=10`);
       setRooms(res.data.data.rooms);
-      console.log(res.data.data.rooms);
+     
 
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Error fetching rooms');
+    }
+    finally {
+      setLoading(false);
     }
   }
 
@@ -44,11 +49,17 @@ export default function SliderAds() {
 
   return (
     <>
-      <div style={{ width: '85%', margin: '0 auto' ,paddingBottom:"50px"}}>
-        <h2 style={{ textAlign: 'center', margin: '20px 0' }}>Our Rooms</h2>
+    {loading ? (
+  <Box display="flex" justifyContent="center" alignItems="center" minHeight="300px">
+           <CircularProgress />
+         </Box>
+    ) : (
+       <div style={{ width: '85%', margin: '0 auto' ,paddingBottom:"50px"}}>
+        <h2 style={{  margin: '5px ' }}>Ads</h2>
         <Slider {...settings}  >
           {rooms.map((room) => (
             <div key={room._id} >
+              <Link style={{ textDecoration: 'none' }} to={`/room/${room._id}`}>
               <Paper
                 elevation={0}
                 sx={{
@@ -91,10 +102,13 @@ export default function SliderAds() {
                   </p>
                 </Box>
               </Paper>
+              </Link>
             </div>
           ))}
         </Slider>
       </div>
+    )}
+     
 
 
     </>

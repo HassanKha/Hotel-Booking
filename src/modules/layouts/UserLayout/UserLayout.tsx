@@ -1,6 +1,8 @@
 import { Box } from "@mui/material";
 import { Navbar } from "../../shared/HomeNavbar/Navbar";
 import { Outlet } from "react-router-dom";
+import Footer from "../../shared/Footer/Footer";
+import WhatsappChat from './../../shared/wts/WhatsappChat';
 
 export default function UserLayout() {
   return (
@@ -8,6 +10,8 @@ export default function UserLayout() {
       <Navbar />
 
       <Outlet/>
+      <Footer/>
+      <WhatsappChat/>
     </Box>
   )
 }
