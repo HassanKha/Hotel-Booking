@@ -25,3 +25,12 @@ export type SharedTableProps<RowType extends Record<string, any>> = {
   onEdit?: (row: RowType) => void;
   onDelete?: (row: RowType) => void;
 };
+
+export interface Room {
+  _id: string;
+  roomNumber: string;
+  capacity: number;
+  discount: number;
+  price: number;
+  images: string[];
+}
