@@ -51,13 +51,14 @@ const PriceBadge = styled(Box)(({ theme }) => ({
   color: 'white',
   padding: theme.spacing(0.5, 1.5),
   borderRadius: theme.shape.borderRadius,
-  zIndex: 1,
+  zIndex: 3, // زِد الـ zIndex ليكون فوق الأيقونات الأخرى
 }));
 
 const IconContainer = styled(Box)(({ theme }) => ({
   position: 'absolute',
-  bottom: theme.spacing(1),
-  right: theme.spacing(1),
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
   display: 'flex',
   gap: theme.spacing(1),
   zIndex: 2,
@@ -96,14 +97,49 @@ const FavoriteItemCard = ({
             ${room.price} per night
           </Typography>
         </PriceBadge>
-        <CardMedia
-          component="img"
-          height="200"
-          image={room.images && room.images.length > 0 ? room.images[0] : defaultRoomImage}
-          alt={`Room ${room.roomNumber}`}
-          loading="lazy"
-          sx={{ borderTopLeftRadius: 8, borderTopRightRadius: 8, objectFit: 'cover' }}
-        />
+
+        {/* 💡 التعديل هنا: وضع CardMedia داخل Box له position: relative */}
+        <Box sx={{ position: 'relative', overflow: 'hidden' }}>
+          <CardMedia
+            component="img"
+            height="200"
+            image={room.images && room.images.length > 0 ? room.images[0] : defaultRoomImage}
+            alt={`Room ${room.roomNumber}`}
+            loading="lazy"
+            sx={{
+              borderTopLeftRadius: 8,
+              borderTopRightRadius: 8,
+              objectFit: 'cover',
+              aspectRatio: '16 / 9',
+            }}
+          />
+          {/* 💡 نقل IconContainer ليصبح داخل Box الذي يحتوي على CardMedia */}
+          <IconContainer sx={{ opacity: isHovered ? 1 : 0 }}>
+            <IconButton
+              sx={{
+                backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                color: '#BB2121',
+                '&:hover': { backgroundColor: 'white' }
+              }}
+              aria-label="remove from favorites"
+              onClick={() => onOpenDialog(room._id)}
+            >
+              <HeartIcon />
+            </IconButton>
+            <IconButton
+              sx={{
+                backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                color: '#29A4D0',
+                '&:hover': { backgroundColor: 'white' }
+              }}
+              aria-label="view room details"
+              onClick={() => console.log(`View details for Room ${room.roomNumber}`)}
+            >
+              <ViewIcon />
+            </IconButton>
+          </IconContainer>
+        </Box>
+
         <CardContent>
           <Typography gutterBottom variant="h6" component="div" sx={{ fontWeight: 'bold', color: '#3F4462' }}>
             Room {room.roomNumber}
@@ -115,31 +151,6 @@ const FavoriteItemCard = ({
             Capacity: {room.capacity}
           </Typography>
         </CardContent>
-
-        <IconContainer sx={{ opacity: isHovered ? 1 : 0 }}>
-          <IconButton
-            sx={{
-              backgroundColor: 'rgba(255, 255, 255, 0.8)',
-              color: '#BB2121',
-              '&:hover': { backgroundColor: 'white' }
-            }}
-            aria-label="remove from favorites"
-            onClick={() => onOpenDialog(room._id)}
-          >
-            <HeartIcon />
-          </IconButton>
-          <IconButton
-            sx={{
-              backgroundColor: 'rgba(255, 255, 255, 0.8)',
-              color: '#29A4D0',
-              '&:hover': { backgroundColor: 'white' }
-            }}
-            aria-label="view room details"
-            onClick={() => console.log(`View details for Room ${room.roomNumber}`)}
-          >
-            <ViewIcon />
-          </IconButton>
-        </IconContainer>
       </Card>
     </Grid>
   );
@@ -156,7 +167,7 @@ function Favorites() {
     try {
       const response = await axiosInstance.get(USERS_FAVORITES.GET_USER_FAVOURITES);
       if (response?.data?.data?.favoriteRooms && response.data.data.favoriteRooms.length > 0) {
-        setFavList(response.data.data.favoriteRooms[0].rooms || []);
+        setFavList(response.data.data.favoriteRooms.map((fav: any) => fav.rooms).flat() || []);
       } else {
         setFavList([]);
       }
@@ -178,8 +189,7 @@ function Favorites() {
     try {
       setLoading(true);
       const response = await axiosInstance.delete(
-        USERS_FAVORITES.DELETE_FROM_FAVOURITE(selectedRoomId),
-        { data: { roomId: selectedRoomId } }
+        USERS_FAVORITES.DELETE_FROM_FAVOURITE(selectedRoomId), { data: { roomId: selectedRoomId } }
       );
       toast.success(response.data.message || 'Removed from favorites.');
       await getAllFavourites();
@@ -232,7 +242,6 @@ function Favorites() {
         )}
       </Container>
 
-      {/* ✅ Delete Confirmation Dialog */}
       <DeleteConfirmationDialog
         open={openDeleteDialog}
         onClose={() => setOpenDeleteDialog(false)}

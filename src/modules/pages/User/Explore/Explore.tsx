@@ -18,9 +18,6 @@ import { toast } from 'react-toastify';
 import { HeartIcon, ViewIcon } from '../../../../assets/ExploreIcons';
 import { useNavigate } from 'react-router-dom';
 
-
-
-
 interface Facility {
   _id: string;
   name: string;
@@ -54,13 +51,15 @@ const PriceBadge = styled(Box)(({ theme }) => ({
   color: 'white',
   padding: theme.spacing(0.5, 1.5),
   borderRadius: theme.shape.borderRadius,
-  zIndex: 1,
+  zIndex: 3, // زِد الـ zIndex ليكون فوق الأيقونات الأخرى
 }));
 
+// 💡 تم تعديل هذا الجزء لتحريك الأيقونات إلى منتصف الصورة
 const IconContainer = styled(Box)(({ theme }) => ({
   position: 'absolute',
-  bottom: theme.spacing(1),
-  right: theme.spacing(1),
+  top: '50%', // حرك لأعلى 50% من الصورة
+  left: '50%', // حرك لليسار 50% من الصورة
+  transform: 'translate(-50%, -50%)', // حرك العنصر نفسه 50% من عرضه وطوله للخلف عشان يتسنتر بالظبط
   display: 'flex',
   gap: theme.spacing(1),
   zIndex: 2,
@@ -93,14 +92,47 @@ const RoomCard = React.memo(({ room, onFavourite }: { room: Room; onFavourite: (
             ${room.price} per night
           </Typography>
         </PriceBadge>
-        <CardMedia
-          component="img"
-          height="200"
-          image={room.images && room.images.length > 0 ? room.images[0] : defaultRoomImage}
-          alt={`Room ${room.roomNumber}`}
-          loading="lazy"
-          sx={{ borderTopLeftRadius: 8, borderTopRightRadius: 8, objectFit: 'cover' }}
-        />
+
+        {/* 💡 التعديل هنا: وضع CardMedia داخل Box له position: relative */}
+        <Box sx={{ position: 'relative', overflow: 'hidden' }}>
+          <CardMedia
+            component="img"
+            height="200"
+            image={room.images && room.images.length > 0 ? room.images[0] : defaultRoomImage}
+            alt={`Room ${room.roomNumber}`}
+            loading="lazy"
+            sx={{
+              borderTopLeftRadius: 8,
+              borderTopRightRadius: 8,
+              objectFit: 'cover',
+              aspectRatio: '16 / 9',
+            }}
+          />
+          {/* 💡 نقل IconContainer ليصبح داخل Box الذي يحتوي على CardMedia */}
+          <IconContainer sx={{ opacity: isHovered ? 1 : 0 }}>
+            <IconButton
+              sx={{
+                backgroundColor: 'rgba(187, 33, 33, 0.8)',
+                '&:hover': { backgroundColor: 'white' }
+              }}
+              aria-label="favorite room"
+              onClick={onFavourite}
+            >
+              <HeartIcon />
+            </IconButton>
+            <IconButton
+              sx={{
+                backgroundColor: 'rgba(41, 164, 208, 0.8)',
+                '&:hover': { backgroundColor: 'white' }
+              }}
+              aria-label="view room details"
+              onClick={() => console.log(`View Room ${room.roomNumber} details`)}
+            >
+              <ViewIcon />
+            </IconButton>
+          </IconContainer>
+        </Box>
+
         <CardContent>
           <Typography gutterBottom variant="h6" component="div" sx={{ fontWeight: 'bold', color: '#3F4462' }}>
             Room {room.roomNumber}
@@ -109,29 +141,6 @@ const RoomCard = React.memo(({ room, onFavourite }: { room: Room; onFavourite: (
             Discount {room.discount}
           </Typography>
         </CardContent>
-
-        <IconContainer sx={{ opacity: isHovered ? 1 : 0 }}>
-          <IconButton
-            sx={{
-              backgroundColor: 'rgba(187, 33, 33, 0.8)',
-              '&:hover': { backgroundColor: 'white' }
-            }}
-            aria-label="favorite room"
-            onClick={onFavourite}
-          >
-            <HeartIcon />
-          </IconButton>
-          <IconButton
-            sx={{
-              backgroundColor: 'rgba(41, 164, 208, 0.8)',
-              '&:hover': { backgroundColor: 'white' }
-            }}
-            aria-label="view room details"
-            onClick={() => console.log(`View Room ${room.roomNumber} details`)}
-          >
-            <ViewIcon />
-          </IconButton>
-        </IconContainer>
       </Card>
     </Grid>
   );
@@ -225,7 +234,7 @@ function Explore() {
                 <RoomCard
                   key={roomItem._id}
                   room={roomItem}
-                  onFavourite={() => addToFavourites(roomItem._id)} // ✅ مهم جدًا
+                  onFavourite={() => addToFavourites(roomItem._id)}
                 />
               ))}
             </Grid>
