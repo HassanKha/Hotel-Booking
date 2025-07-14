@@ -6,7 +6,7 @@ import {
   Typography,
 } from "@mui/material";
 import type { Theme, SxProps } from "@mui/material";
-import LandingBG from "../../../../../assets/landing.png";
+import type { Room } from "../../../../../interfaces/Shared/Shared";
 export interface Ad {
   id: string | number;
   title: string;
@@ -37,23 +37,20 @@ const imageSx: SxProps<Theme> = {
   height: "100%",
   objectFit: "cover",
 };
-const ads = [
-  { id: 1, title: "Blue Origin Fams", price: 50, location: "Jakarta", image: LandingBG },
-  { id: 2, title: "Ocean Land",      price: 22, location: "Bandung", image: LandingBG },
-  { id: 3, title: "Stark House",     price: 856, location: "Malang",  image: LandingBG },
-  { id: 4, title: "Vinna Vill",      price: 62, location: "Malang",   image: LandingBG },
-  { id: 5, title: "Bobox",           price: 72, location: "Medan",    image: LandingBG },
-];
+
 /* ================================================== */
+export interface AdsSectionProps {
+  heading?: string;
+  rooms: Room[];
+}
+const AdsSection = ({ heading = "Most popular ads", rooms }: AdsSectionProps) => {
 
-const AdsSection = ({
-  heading = "Most popular ads",
-}) => {
-  if (!ads.length) return null;
 
-  // pick first item as “feature”, the rest for the grid
-  const [feature, ...gridAds] = ads;
+const smallAds = rooms?.slice(1, 4);
 
+
+
+  console.log(rooms,'rooms', smallAds)
   return (
     <Container maxWidth="lg" sx={{ py: 1 }}>
       <Typography
@@ -76,7 +73,7 @@ const AdsSection = ({
         }}
       >
         {/* ► Feature card (large, left) */}
-        <AdCard ad={feature} sx={{ flex: "1 1 50%" }} large />
+        <AdCard ad={rooms[0]} sx={{ flex: "1 1 50%" }} large />
 
         {/* ► Right column (up to 4 small cards) */}
         <Box
@@ -92,8 +89,8 @@ const AdsSection = ({
               key={row}
               sx={{ display: "flex", gap: 3, flex: "1 1 50%" }}
             >
-              {gridAds.slice(row * 2, row * 2 + 2).map((ad) => (
-                <AdCard key={ad.id} ad={ad} sx={{ flex: 1 }} />
+              {smallAds.slice(row * 2, row * 2 + 2).map((ad) => (
+                <AdCard key={ad._id} ad={ad} sx={{ flex: 1 }} />
               ))}
             </Box>
           ))}
@@ -106,7 +103,7 @@ const AdsSection = ({
 /* ---------- Single card component ----------------- */
 
 type AdCardProps = {
-  ad: Ad;
+  ad: Room;
   large?: boolean;
   sx?: SxProps<Theme>;
 };
@@ -114,11 +111,14 @@ type AdCardProps = {
 
 
 const AdCard: React.FC<AdCardProps> = ({ ad, large, sx }) => (
+
+
+
   <Box sx={{ ...cardWrapper, ...sx }}>
-    <Box component="img" src={ad.image} alt={ad.title} sx={imageSx} />
+    <Box component="img" src={ad?.images[0]} alt={ad?.roomNumber} sx={imageSx} />
 
     <Chip
-      label={`$${ad.price} per night`}
+      label={`$${ad?.price} per night`}
       sx={{
         position: "absolute",
         top: 12,
@@ -152,13 +152,13 @@ const AdCard: React.FC<AdCardProps> = ({ ad, large, sx }) => (
           fontSize: large ? undefined : "1rem",
         }}
       >
-        {ad.title}
+        {ad?.roomNumber}
       </Typography>
       <Typography
         variant="body2"
         sx={{ color: "rgba(255,255,255,.9)", fontSize: large ? "1rem" : ".875rem" }}
       >
-        {ad.location}, Indonesia
+        {ad?.facilities?.map(f => f.name).join(", ")}
       </Typography>
     </Box>
   </Box>

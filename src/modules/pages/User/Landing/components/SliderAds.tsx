@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import { axiosInstance, ROOMS_USERS_URLS } from '../../../../services/Urls';
-import { toast } from 'react-toastify';
+
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -8,25 +6,12 @@ import Paper from '@mui/material/Paper';
 import { Box } from '@mui/material';
 import type { Room } from '../../../../../interfaces/Shared/Shared';
 
-export default function SliderAds() {
-  const [rooms, setRooms] = useState<Room[]>([]);
 
+export interface SliderSectionProps {
+  rooms: Room[]
+}
+export default function SliderAds({ rooms }: SliderSectionProps) {
 
-
-  async function getAllRooms() {
-    try {
-      const res = await axiosInstance.get(`${ROOMS_USERS_URLS.GET_USERS_ROOMS}?page=1&size=10`);
-      setRooms(res.data.data.rooms);
-      console.log(res.data.data.rooms);
-
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Error fetching rooms');
-    }
-  }
-
-  useEffect(() => {
-    getAllRooms();
-  }, []);
 
   const settings = {
     infinite: true,

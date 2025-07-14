@@ -16,7 +16,7 @@ import defaultRoomImage from "../../../../assets/r01_2.jpg";
 import { axiosInstance, ROOMS_USERS_URLS, USERS_FAVORITES } from '../../../services/Urls';
 import { toast } from 'react-toastify';
 import { HeartIcon, ViewIcon } from '../../../../assets/ExploreIcons';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 interface Facility {
   _id: string;
@@ -51,15 +51,15 @@ const PriceBadge = styled(Box)(({ theme }) => ({
   color: 'white',
   padding: theme.spacing(0.5, 1.5),
   borderRadius: theme.shape.borderRadius,
-  zIndex: 3, // زِد الـ zIndex ليكون فوق الأيقونات الأخرى
+  zIndex: 3, 
 }));
 
-// 💡 تم تعديل هذا الجزء لتحريك الأيقونات إلى منتصف الصورة
+
 const IconContainer = styled(Box)(({ theme }) => ({
   position: 'absolute',
-  top: '50%', // حرك لأعلى 50% من الصورة
-  left: '50%', // حرك لليسار 50% من الصورة
-  transform: 'translate(-50%, -50%)', // حرك العنصر نفسه 50% من عرضه وطوله للخلف عشان يتسنتر بالظبط
+  top: '50%', 
+  left: '50%', 
+  transform: 'translate(-50%, -50%)', 
   display: 'flex',
   gap: theme.spacing(1),
   zIndex: 2,
@@ -67,8 +67,9 @@ const IconContainer = styled(Box)(({ theme }) => ({
   transition: 'opacity 0.3s ease-in-out',
 }));
 
-const RoomCard = React.memo(({ room, onFavourite }: { room: Room; onFavourite: () => void }) => {
+const RoomCard = React.memo(({ room, onFavourite,guests}: { room: Room; onFavourite: () => void , guests: any }) => {
   const [isHovered, setIsHovered] = useState(false);
+
 
   return (
     <Grid item xs={12} sm={6} md={4} key={room._id}>
@@ -89,11 +90,11 @@ const RoomCard = React.memo(({ room, onFavourite }: { room: Room; onFavourite: (
       >
         <PriceBadge>
           <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
-            ${room.price} per night
+               ${room.price * (Number(guests) || 1)} per night
           </Typography>
         </PriceBadge>
 
-        {/* 💡 التعديل هنا: وضع CardMedia داخل Box له position: relative */}
+ 
         <Box sx={{ position: 'relative', overflow: 'hidden' }}>
           <CardMedia
             component="img"
@@ -108,7 +109,7 @@ const RoomCard = React.memo(({ room, onFavourite }: { room: Room; onFavourite: (
               aspectRatio: '16 / 9',
             }}
           />
-          {/* 💡 نقل IconContainer ليصبح داخل Box الذي يحتوي على CardMedia */}
+
           <IconContainer sx={{ opacity: isHovered ? 1 : 0 }}>
             <IconButton
               sx={{
@@ -153,13 +154,19 @@ function Explore() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
+  const [searchParams] = useSearchParams();
+
+  const start  = searchParams.get("startDate") ?? '';      // ISO string
+  const end    = searchParams.get("endDate") ?? '';
+  const guests = Number(searchParams.get("guests"));
+
   let navigate = useNavigate()
 
   const getAllRooms = async () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await axiosInstance.get(ROOMS_USERS_URLS.GET_USERS_ROOMS);
+      const response = await axiosInstance.get(ROOMS_USERS_URLS.GET_USERS_ROOMS(start,end));
       setRooms(response?.data?.data?.rooms || []);
       setLoading(false)
     } catch (err: any) {
@@ -200,7 +207,7 @@ function Explore() {
     return rooms.slice(startIndex, endIndex);
   }, [page, rooms]);
 
-  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+  const handlePageChange = ( _e: React.ChangeEvent<unknown>,value: number) => {
     setPage(value);
   };
 
@@ -235,6 +242,7 @@ function Explore() {
                   key={roomItem._id}
                   room={roomItem}
                   onFavourite={() => addToFavourites(roomItem._id)}
+                  guests={guests}
                 />
               ))}
             </Grid>

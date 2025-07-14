@@ -71,9 +71,17 @@ export const DASHBOARD_Charts_URL = {
 ///////User Portal///////
 
 export const ROOMS_USERS_URLS = {
-  GET_USERS_ROOMS:`portal/rooms/available`
-}
+  GET_USERS_ROOMS: (startDate?: string | null, endDate?: string | null) => {
+    // collect defined params
+    const params = new URLSearchParams();
+    if (startDate) params.append("startDate", startDate);
+    if (endDate)   params.append("endDate",   endDate);
 
+    // build final url
+    const query = params.toString();               // "" or "startDate=…&endDate=…"
+    return `portal/rooms/available${query ? `?${query}` : ""}`;
+  },
+};
 export const USERS_FAVORITES = {
   GET_USER_FAVOURITES:`portal/favorite-rooms`,
   ADD_TO_FAVOURITES:`portal/favorite-rooms`,

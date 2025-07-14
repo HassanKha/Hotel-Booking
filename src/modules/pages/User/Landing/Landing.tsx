@@ -10,10 +10,33 @@ import { BookingForm } from "./components/BookingForm";
 import AdsCard from "./components/AdsCard";
 import LandingBG from "../../../../assets/landing.png";
 import CardHome from '../Landing/components/CardHome';
-import SliderAds from "./components/sliderAds";
+import SliderAds from "./components/SliderAds";
+import { axiosInstance, ROOMS_USERS_URLS } from "../../../services/Urls";
+import { toast } from "react-toastify";
+import { useEffect, useState } from "react";
+import type { Room } from "../../../../interfaces/Shared/Shared";
 export default function Landing() {
   const theme = useTheme();
   const downMd = useMediaQuery(theme.breakpoints.down("md"));
+  const [rooms, setRooms] = useState<Room[]>([]);
+
+
+
+  async function getAllRooms() {
+    try {
+      const res = await axiosInstance.get(`${ROOMS_USERS_URLS.GET_USERS_ROOMS(null,null)}?page=1&size=10`);
+      setRooms(res.data.data.rooms);
+      console.log(res.data.data.rooms);
+
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || 'Error fetching rooms');
+    }
+  }
+
+  useEffect(() => {
+    getAllRooms();
+  }, []);
+
 
   return (
     <>
@@ -123,9 +146,9 @@ export default function Landing() {
 
       </Box>
 
-      <AdsCard />
+      <AdsCard rooms={rooms} />
       <CardHome />
-      <SliderAds/>
+      <SliderAds rooms={rooms}/>
 
     </>
   );

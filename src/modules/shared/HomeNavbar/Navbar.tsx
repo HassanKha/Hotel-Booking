@@ -15,14 +15,22 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
-import {  NavLink } from "react-router-dom";
+import {  NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../../contexts/AuthContext";
 
 export const Navbar = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [open, setOpen] = useState(false);
-const { isAuthenticated } = useAuth();
+const { isAuthenticated ,logout} = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+  
+    navigate("/login");
+  };
+
 
   const toggleDrawer = () => setOpen(!open);
 
@@ -83,24 +91,13 @@ const navLinks = isAuthenticated
       </Box>
 
       {/* links */}
-      <List sx={{ flexGrow: 1 }}>
+      <List sx={{ flexGrow: 1 , width: '100%' , display: "flex", flexDirection:"column", justifyContent: "center" , alignItems: "center"}}>
         {navLinks.map((item) => (
-          <ListItem key={item.label} disablePadding>
-            <Button
-              fullWidth
-              sx={{
-                justifyContent: "flex-start",
-                color: theme.palette.text.primary,
-                fontWeight: 500,
-                py: 1.5,
-              }}
-              onClick={() => {
-                /* navigate(item.href) */
-                toggleDrawer();
-              }}
-            >
-              {item.label}
-            </Button>
+          <ListItem sx={{display: "flex", flexDirection:"column", justifyContent: "evenly" , alignItems: "center"}} key={item.label} disablePadding>
+
+             <NavButton key={item.label} to={item.href}>
+      {item.label}
+    </NavButton>
           </ListItem>
         ))}
       </List>
@@ -150,7 +147,7 @@ const navLinks = isAuthenticated
     
       variant="outlined"
       fullWidth
-      onClick={toggleDrawer}
+      onClick={handleLogout}
       sx={{
         borderColor: theme.palette.primary.main,
         color: theme.palette.primary.main,
@@ -238,7 +235,7 @@ const navLinks = isAuthenticated
 : 
  <Box sx={{ display: "flex", gap: 2 }}>
     <Button
-     
+     onClick={handleLogout}
       variant="contained"
       sx={{
         borderColor: theme.palette.primary.main,
