@@ -9,32 +9,34 @@ import {
 import { BookingForm } from "./components/BookingForm";
 import AdsCard from "./components/AdsCard";
 import LandingBG from "../../../../assets/landing.png";
-import CardHome from '../Landing/components/CardHome';
+import CardHome from "../Landing/components/CardHome";
 import SliderAds from "./components/SliderAds";
-<<<<<<< HEAD
-import Feedback from "./components/Feedback";
 
-=======
+import Feedback from "./components/Feedback";
 import { axiosInstance, ROOMS_USERS_URLS } from "../../../services/Urls";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import type { Room } from "../../../../interfaces/Shared/Shared";
->>>>>>> ff7b5458f4348b9096a582b2a8983f2cda6b111d
+
 export default function Landing() {
   const theme = useTheme();
   const downMd = useMediaQuery(theme.breakpoints.down("md"));
   const [rooms, setRooms] = useState<Room[]>([]);
-
-
+  const [loading,setloading] = useState<boolean>(false)
 
   async function getAllRooms() {
     try {
-      const res = await axiosInstance.get(`${ROOMS_USERS_URLS.GET_USERS_ROOMS(null,null)}?page=1&size=10`);
+      setloading(true)
+      const res = await axiosInstance.get(
+        `${ROOMS_USERS_URLS.GET_USERS_ROOMS(null, null)}?page=1&size=10`
+      );
       setRooms(res.data.data.rooms);
       console.log(res.data.data.rooms);
-
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Error fetching rooms');
+      toast.error(err.response?.data?.message || "Error fetching rooms");
+    }
+    finally {
+      setloading(false)
     }
   }
 
@@ -42,12 +44,10 @@ export default function Landing() {
     getAllRooms();
   }, []);
 
-
   return (
     <>
       <Box sx={{ minHeight: "100vh", bgcolor: "background.default" }}>
         <main>
-
           <Container maxWidth="lg" sx={{ py: { xs: 4, md: 6 } }}>
             <Box
               sx={{
@@ -57,7 +57,6 @@ export default function Landing() {
                 gap: 4,
               }}
             >
-
               <Box
                 sx={{
                   flex: 1,
@@ -94,8 +93,8 @@ export default function Landing() {
                     lineHeight: 1.6,
                   }}
                 >
-                  We provide what you need to enjoy your holiday with family. Time
-                  to make another memorable moments.
+                  We provide what you need to enjoy your holiday with family.
+                  Time to make another memorable moments.
                 </Typography>
                 <BookingForm />
               </Box>
@@ -146,20 +145,14 @@ export default function Landing() {
               </Box>
             </Box>
           </Container>
-
         </main>
-
       </Box>
 
       <AdsCard rooms={rooms} />
       <CardHome />
-<<<<<<< HEAD
-      <SliderAds />
+  <SliderAds rooms={rooms}  loading={loading}/>
       <Feedback />
-=======
-      <SliderAds rooms={rooms}/>
->>>>>>> ff7b5458f4348b9096a582b2a8983f2cda6b111d
-
+    
     </>
   );
 }
