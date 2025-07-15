@@ -11,28 +11,23 @@ import AdsCard from "./components/AdsCard";
 import LandingBG from "../../../../assets/landing.png";
 import CardHome from '../Landing/components/CardHome';
 import SliderAds from "./components/SliderAds";
-<<<<<<< HEAD
 import Feedback from "./components/Feedback";
 
-=======
 import { axiosInstance, ROOMS_USERS_URLS } from "../../../services/Urls";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import type { Room } from "../../../../interfaces/Shared/Shared";
->>>>>>> ff7b5458f4348b9096a582b2a8983f2cda6b111d
+
 export default function Landing() {
   const theme = useTheme();
   const downMd = useMediaQuery(theme.breakpoints.down("md"));
   const [rooms, setRooms] = useState<Room[]>([]);
-
-
 
   async function getAllRooms() {
     try {
       const res = await axiosInstance.get(`${ROOMS_USERS_URLS.GET_USERS_ROOMS(null,null)}?page=1&size=10`);
       setRooms(res.data.data.rooms);
       console.log(res.data.data.rooms);
-
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Error fetching rooms');
     }
@@ -42,12 +37,10 @@ export default function Landing() {
     getAllRooms();
   }, []);
 
-
   return (
     <>
       <Box sx={{ minHeight: "100vh", bgcolor: "background.default" }}>
         <main>
-
           <Container maxWidth="lg" sx={{ py: { xs: 4, md: 6 } }}>
             <Box
               sx={{
@@ -57,7 +50,6 @@ export default function Landing() {
                 gap: 4,
               }}
             >
-
               <Box
                 sx={{
                   flex: 1,
@@ -146,20 +138,13 @@ export default function Landing() {
               </Box>
             </Box>
           </Container>
-
         </main>
-
       </Box>
 
       <AdsCard rooms={rooms} />
       <CardHome />
-<<<<<<< HEAD
-      <SliderAds />
+      <SliderAds rooms={rooms} />
       <Feedback />
-=======
-      <SliderAds rooms={rooms}/>
->>>>>>> ff7b5458f4348b9096a582b2a8983f2cda6b111d
-
     </>
   );
 }
