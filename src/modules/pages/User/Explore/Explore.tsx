@@ -2,7 +2,6 @@ import React, { useEffect, useState, useMemo } from 'react';
 import {
   Typography,
   Container,
-  Grid,
   Card,
   CardMedia,
   CardContent,
@@ -17,31 +16,8 @@ import { axiosInstance, ROOMS_USERS_URLS, USERS_FAVORITES } from '../../../servi
 import { toast } from 'react-toastify';
 import { HeartIcon, ViewIcon } from '../../../../assets/ExploreIcons';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import type { Room } from '../../../../interfaces/Explore/Explore';
 
-interface Facility {
-  _id: string;
-  name: string;
-}
-
-interface Room {
-  _id: string;
-  roomNumber: string;
-  images: string[];
-  price: number;
-  discount: number;
-  capacity: number;
-  description: string;
-  facilities: Facility[];
-  createdAt: string;
-  createdBy: {
-    _id: string;
-    userName: string;
-    email: string;
-    role: string;
-  };
-  updatedAt: string;
-  isBooked: boolean;
-}
 
 const PriceBadge = styled(Box)(({ theme }) => ({
   position: 'absolute',
@@ -51,15 +27,14 @@ const PriceBadge = styled(Box)(({ theme }) => ({
   color: 'white',
   padding: theme.spacing(0.5, 1.5),
   borderRadius: theme.shape.borderRadius,
-  zIndex: 3, 
+  zIndex: 3,
 }));
-
 
 const IconContainer = styled(Box)(({ theme }) => ({
   position: 'absolute',
-  top: '50%', 
-  left: '50%', 
-  transform: 'translate(-50%, -50%)', 
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
   display: 'flex',
   gap: theme.spacing(1),
   zIndex: 2,
@@ -67,12 +42,17 @@ const IconContainer = styled(Box)(({ theme }) => ({
   transition: 'opacity 0.3s ease-in-out',
 }));
 
-const RoomCard = React.memo(({ room, onFavourite,guests}: { room: Room; onFavourite: () => void , guests: any }) => {
+const RoomCard = React.memo(({ room, onFavourite, guests }: { room: Room; onFavourite: () => void; guests: any }) => {
   const [isHovered, setIsHovered] = useState(false);
 
-
   return (
-    <Grid item xs={12} sm={6} md={4} key={room._id}>
+    <Box
+      sx={{
+        flex: '1 1 calc(33.33% - 24px)',
+        minWidth: 280,
+        maxWidth: 360,
+      }}
+    >
       <Card
         sx={{
           borderRadius: 2,
@@ -90,11 +70,10 @@ const RoomCard = React.memo(({ room, onFavourite,guests}: { room: Room; onFavour
       >
         <PriceBadge>
           <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
-               ${room.price * (Number(guests) || 1)} per night
+            ${room.price * (Number(guests) || 1)} per night
           </Typography>
         </PriceBadge>
 
- 
         <Box sx={{ position: 'relative', overflow: 'hidden' }}>
           <CardMedia
             component="img"
@@ -143,7 +122,7 @@ const RoomCard = React.memo(({ room, onFavourite,guests}: { room: Room; onFavour
           </Typography>
         </CardContent>
       </Card>
-    </Grid>
+    </Box>
   );
 });
 
@@ -155,20 +134,20 @@ function Explore() {
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [searchParams] = useSearchParams();
+  
 
-  const start  = searchParams.get("startDate") ?? '';      // ISO string
-  const end    = searchParams.get("endDate") ?? '';
+  const start = searchParams.get("startDate") ?? '';
+  const end = searchParams.get("endDate") ?? '';
   const guests = Number(searchParams.get("guests"));
-
-  let navigate = useNavigate()
+  const navigate = useNavigate();
 
   const getAllRooms = async () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await axiosInstance.get(ROOMS_USERS_URLS.GET_USERS_ROOMS(start,end));
+      const response = await axiosInstance.get(ROOMS_USERS_URLS.GET_USERS_ROOMS(start, end));
       setRooms(response?.data?.data?.rooms || []);
-      setLoading(false)
+      setLoading(false);
     } catch (err: any) {
       console.error("Error fetching rooms:", err);
       if (err.response && err.response.status === 401) {
@@ -186,12 +165,11 @@ function Explore() {
       const response = await axiosInstance.post(USERS_FAVORITES.ADD_TO_FAVOURITES, {
         roomId: roomId,
       });
-      console.log(response);
       toast.success(response.data.message);
-      navigate('/Favorites')
-    } catch (error:any) {
-      console.error(error)
-      toast.error(error?.response?.data?.message||'Failed to add to favourites');
+      navigate('/Favorites');
+    } catch (error: any) {
+      console.error(error);
+      toast.error(error?.response?.data?.message || 'Failed to add to favourites');
     }
   };
 
@@ -207,12 +185,12 @@ function Explore() {
     return rooms.slice(startIndex, endIndex);
   }, [page, rooms]);
 
-  const handlePageChange = ( _e: React.ChangeEvent<unknown>,value: number) => {
+  const handlePageChange = (_e: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
 
   return (
-    <Box sx={{ backgroundColor: '#F8F8F8', minHeight: '100vh' }}>
+    <Box sx={{ minHeight: '100vh' }}>
       <Container maxWidth="lg" sx={{ mt: 4 }}>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
           Home / Explore
@@ -236,7 +214,14 @@ function Explore() {
           </Box>
         ) : (
           <>
-            <Grid container spacing={3} sx={{ display: 'flex', justifyContent: 'center' }}>
+            <Box
+              sx={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: 3,
+                justifyContent: 'center',
+              }}
+            >
               {displayedRooms.map((roomItem) => (
                 <RoomCard
                   key={roomItem._id}
@@ -245,7 +230,7 @@ function Explore() {
                   guests={guests}
                 />
               ))}
-            </Grid>
+            </Box>
 
             <Box sx={{ display: 'flex', justifyContent: 'center', mt: 6, mb: 4 }}>
               <Pagination

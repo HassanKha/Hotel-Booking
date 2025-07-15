@@ -8,42 +8,11 @@ import ViewModel from "../ViewAddModel/ViewModel.tsx";
 import Header from "../../../../../shared/Header/Header.tsx";
 import Swal from "sweetalert2";
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from '@mui/material';
+import type { Ad } from "../../../../../../interfaces/Ads/Ads.ts";
+import type { RoomOption } from "../../../../../../interfaces/Rooms/Rooms.ts";
 
 
-interface AdCreatedBy {
-  _id: string;
-  userName: string;
-}
 
-
-interface RoomDetails {
-  _id: string;
-  roomNumber: string;
-  price: number;
-  capacity: number;
-  discount: number;
-  facilities: string[];
-  createdBy: string;
-  images: string[];
-  createdAt: string;
-  updatedAt: string;
-}
-
-
-interface Ad {
-  _id: string;
-  isActive: boolean;
-  room: RoomDetails | null; 
-  createdBy: AdCreatedBy; 
-  createdAt: string;
-  updatedAt: string;
-}
-
-
-interface RoomOption {
-  _id: string;
-  roomNumber: string;
-}
 
 export default function Ads() {
   const [ads, setAds] = useState<Ad[]>([]);

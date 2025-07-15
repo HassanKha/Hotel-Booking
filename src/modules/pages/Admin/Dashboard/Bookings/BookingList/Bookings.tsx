@@ -7,24 +7,9 @@ import ViewBookingModal from "../ViewBookingModal/ViewBookingModal.tsx";
 import Header from "../../../../../shared/Header/Header.tsx";
 import Swal from "sweetalert2";
 import "./Bookings.css";
+import type { Booking } from "../../../../../../interfaces/Bookings/Bookings.ts";
 
-interface Booking {
-  _id: string;
-  startDate: string;
-  endDate: string;
-  totalPrice: number;
-  user: {
-    _id: string;
-    userName: string;
-  } | null;
-  room: {
-    _id: string;
-    roomNumber: string;
-  } | null;
-  status: string;
-  createdAt: string;
-  updatedAt: string;
-}
+
 
 export default function Bookings() {
   const [bookings, setBookings] = useState<Booking[]>([]);

@@ -11,15 +11,10 @@ import AdsCard from "./components/AdsCard";
 import LandingBG from "../../../../assets/landing.png";
 import CardHome from '../Landing/components/CardHome';
 import SliderAds from "./components/SliderAds";
-<<<<<<< HEAD
-import Feedback from "./components/Feedback";
-
-=======
 import { axiosInstance, ROOMS_USERS_URLS } from "../../../services/Urls";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import type { Room } from "../../../../interfaces/Shared/Shared";
->>>>>>> ff7b5458f4348b9096a582b2a8983f2cda6b111d
 export default function Landing() {
   const theme = useTheme();
   const downMd = useMediaQuery(theme.breakpoints.down("md"));
@@ -153,12 +148,7 @@ export default function Landing() {
 
       <AdsCard rooms={rooms} />
       <CardHome />
-<<<<<<< HEAD
-      <SliderAds />
-      <Feedback />
-=======
       <SliderAds rooms={rooms}/>
->>>>>>> ff7b5458f4348b9096a582b2a8983f2cda6b111d
 
     </>
   );
