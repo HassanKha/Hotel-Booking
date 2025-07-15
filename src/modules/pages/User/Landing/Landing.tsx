@@ -9,10 +9,10 @@ import {
 import { BookingForm } from "./components/BookingForm";
 import AdsCard from "./components/AdsCard";
 import LandingBG from "../../../../assets/landing.png";
-import CardHome from '../Landing/components/CardHome';
+import CardHome from "../Landing/components/CardHome";
 import SliderAds from "./components/SliderAds";
-import Feedback from "./components/Feedback";
 
+import Feedback from "./components/Feedback";
 import { axiosInstance, ROOMS_USERS_URLS } from "../../../services/Urls";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
@@ -22,14 +22,21 @@ export default function Landing() {
   const theme = useTheme();
   const downMd = useMediaQuery(theme.breakpoints.down("md"));
   const [rooms, setRooms] = useState<Room[]>([]);
+  const [loading,setloading] = useState<boolean>(false)
 
   async function getAllRooms() {
     try {
-      const res = await axiosInstance.get(`${ROOMS_USERS_URLS.GET_USERS_ROOMS(null,null)}?page=1&size=10`);
+      setloading(true)
+      const res = await axiosInstance.get(
+        `${ROOMS_USERS_URLS.GET_USERS_ROOMS(null, null)}?page=1&size=10`
+      );
       setRooms(res.data.data.rooms);
       console.log(res.data.data.rooms);
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Error fetching rooms');
+      toast.error(err.response?.data?.message || "Error fetching rooms");
+    }
+    finally {
+      setloading(false)
     }
   }
 
@@ -86,8 +93,8 @@ export default function Landing() {
                     lineHeight: 1.6,
                   }}
                 >
-                  We provide what you need to enjoy your holiday with family. Time
-                  to make another memorable moments.
+                  We provide what you need to enjoy your holiday with family.
+                  Time to make another memorable moments.
                 </Typography>
                 <BookingForm />
               </Box>
@@ -143,8 +150,9 @@ export default function Landing() {
 
       <AdsCard rooms={rooms} />
       <CardHome />
-      <SliderAds rooms={rooms} />
+  <SliderAds rooms={rooms}  loading={loading}/>
       <Feedback />
+    
     </>
   );
 }

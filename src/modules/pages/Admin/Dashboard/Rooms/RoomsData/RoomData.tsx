@@ -18,30 +18,14 @@ import { axiosInstance, Facilities_URL, ROOMS_URLS } from '../../../../../servic
 import { useForm, Controller } from 'react-hook-form';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import type { RoomFormData, RoomToEdit } from '../../../../../../interfaces/Rooms/Rooms';
+import type { Facility } from '../../../../../../interfaces/Facilities/Facilities';
 
-interface RoomFormData {
-  roomNumber: string;
-  imgs: FileList | null;
-  price: number | null;
-  capacity: number | null;
-  discount: number | null;
-  facilities: string[];
-}
 
-interface Facility {
-  name: string;
-  _id: string;
-}
 
-interface RoomToEdit {
-  _id: string;
-  name: string;
-  image: string;
-  price: number;
-  discount: number;
-  capacity: number;
-  category: string;
-}
+
+
+
 
 function RoomData() {
   const [loading, setLoading] = useState<boolean>(false);
