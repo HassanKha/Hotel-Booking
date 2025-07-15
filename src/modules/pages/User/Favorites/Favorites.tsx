@@ -1,8 +1,7 @@
-import  { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Typography,
   Container,
-  Grid,
   Card,
   CardMedia,
   CardContent,
@@ -17,31 +16,7 @@ import NoData from '../../../shared/NoData/NoData';
 import { toast } from 'react-toastify';
 import { HeartIcon, ViewIcon } from '../../../../assets/ExploreIcons';
 import DeleteConfirmationDialog from '../../../shared/DeleteConfirmation/DeleteConfirmation';
-
-interface Facility {
-  _id: string;
-  name: string;
-}
-
-interface Room {
-  _id: string;
-  roomNumber: string;
-  images: string[];
-  price: number;
-  discount: number;
-  capacity: number;
-  description: string;
-  facilities: Facility[];
-  createdAt: string;
-  createdBy: {
-    _id: string;
-    userName: string;
-    email: string;
-    role: string;
-  };
-  updatedAt: string;
-  isBooked: boolean;
-}
+import type { Room } from '../../../../interfaces/Explore/Explore';
 
 const PriceBadge = styled(Box)(({ theme }) => ({
   position: 'absolute',
@@ -51,7 +26,7 @@ const PriceBadge = styled(Box)(({ theme }) => ({
   color: 'white',
   padding: theme.spacing(0.5, 1.5),
   borderRadius: theme.shape.borderRadius,
-  zIndex: 3, // زِد الـ zIndex ليكون فوق الأيقونات الأخرى
+  zIndex: 3,
 }));
 
 const IconContainer = styled(Box)(({ theme }) => ({
@@ -76,7 +51,13 @@ const FavoriteItemCard = ({
   const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <Grid item xs={12} sm={6} md={4}>
+    <Box
+      sx={{
+        flex: '1 1 calc(33.33% - 24px)',
+        minWidth: 280,
+        maxWidth: 360,
+      }}
+    >
       <Card
         sx={{
           borderRadius: 2,
@@ -98,7 +79,6 @@ const FavoriteItemCard = ({
           </Typography>
         </PriceBadge>
 
-        {/* 💡 التعديل هنا: وضع CardMedia داخل Box له position: relative */}
         <Box sx={{ position: 'relative', overflow: 'hidden' }}>
           <CardMedia
             component="img"
@@ -113,7 +93,7 @@ const FavoriteItemCard = ({
               aspectRatio: '16 / 9',
             }}
           />
-          {/* 💡 نقل IconContainer ليصبح داخل Box الذي يحتوي على CardMedia */}
+
           <IconContainer sx={{ opacity: isHovered ? 1 : 0 }}>
             <IconButton
               sx={{
@@ -152,7 +132,7 @@ const FavoriteItemCard = ({
           </Typography>
         </CardContent>
       </Card>
-    </Grid>
+    </Box>
   );
 };
 
@@ -208,7 +188,7 @@ function Favorites() {
   }, []);
 
   return (
-    <Box sx={{ backgroundColor: '#F8F8F8', minHeight: '100vh' }}>
+    <Box sx={{  minHeight: '100vh' }}>
       <Container maxWidth="lg" sx={{ mt: 4 }}>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
           Home / Favorites
@@ -226,7 +206,14 @@ function Favorites() {
             <Typography variant="h6" sx={{ ml: 2, color: '#3F4462' }}>Loading Favorites...</Typography>
           </Box>
         ) : favList?.length > 0 ? (
-          <Grid container spacing={3} sx={{ display: 'flex', justifyContent: 'center' }}>
+          <Box
+            sx={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: 3,
+              justifyContent: 'center',
+            }}
+          >
             {favList.map((roomItem) => (
               <FavoriteItemCard
                 key={roomItem._id}
@@ -234,7 +221,7 @@ function Favorites() {
                 onOpenDialog={handleOpenDeleteDialog}
               />
             ))}
-          </Grid>
+          </Box>
         ) : (
           <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '200px', flexDirection: 'column' }}>
             <NoData />
