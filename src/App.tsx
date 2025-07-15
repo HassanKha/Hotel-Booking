@@ -182,7 +182,7 @@ function App() {
     },
     {
       path: "/",
-      element: <UserLayout />,
+      element: <ProtectedUserRoute><UserLayout /></ProtectedUserRoute> ,
       children: [
         {
           index: true,

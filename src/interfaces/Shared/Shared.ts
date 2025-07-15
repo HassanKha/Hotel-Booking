@@ -33,4 +33,8 @@ export interface Room {
   discount: number;
   price: number;
   images: string[];
+  facilities: {
+    _id: string;
+    name: string;
+  }[];
 }
