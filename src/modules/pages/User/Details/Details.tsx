@@ -216,42 +216,45 @@ and to make lives better.`}
               const label = match?.[2] || feature.text;
 
               return (
-                <Grid item xs={12} sm={6} md={3} key={index}>
-                  <Box
-                    display="flex"
-                    flexDirection="column"
-                    alignItems="center"
-                    textAlign="center"
-                  >
-                    <img
-                      src={feature.icon}
-                      alt={feature.text}
-                      style={{
-                        width: 40,
-                        height: 40,
-                        marginBottom: 8,
-                        objectFit: "contain",
-                      }}
-                    />
-                    <Typography variant="body2" fontWeight="bold">
-                      <Box component="span" color="#152C5B">
-                        {number}
-                      </Box>{" "}
-                      <Box component="span" color="#B0B0B0">
-                        {label}
-                      </Box>
-                    </Typography>
-                  </Box>
-                </Grid>
+<Grid item xs={12} sm={6} md={3} key={index}>
+  <Box
+    display="flex"
+    flexDirection="column"
+    alignItems="flex-start"
+    textAlign="left"
+    paddingRight={5}
+  >
+    <Box
+      component="img"
+      src={feature.icon}
+      alt={feature.text}
+      sx={{
+        width: 40,
+        height: 40,
+        mb: 1,
+        objectFit: "contain",
+      }}
+    />
+    <Typography variant="body2" fontWeight="bold">
+      <Box component="span" color="#152C5B">
+        {number}
+      </Box>{" "}
+      <Box component="span" color="#B0B0B0">
+        {label}
+      </Box>
+    </Typography>
+  </Box>
+</Grid>
+
               );
             })}
           </Grid>
         </Box>
 
-        <Box flex={1}>
+        <Box flex={1.5}>
           <Card
             sx={{
-              p: 4,
+              p: 7,
               borderRadius: 3,
               boxShadow: 1,
               position: "sticky",
@@ -296,10 +299,10 @@ and to make lives better.`}
               <Box sx={{ mb: 4 }}>
                 <Typography
                   mt={10}
+                  mb={2}
                   variant="subtitle1"
                   color="#152C5B"
                   fontWeight="bold"
-                  mb={2}
                 >
                   Pick a Date
                 </Typography>
@@ -335,6 +338,8 @@ and to make lives better.`}
                     sx={{
                       display: "flex",
                       alignItems: "center",
+                      justifyContent: "center",
+
                       gap: 1,
                       flex: 1,
                     }}
@@ -463,9 +468,17 @@ and to make lives better.`}
             <Box display="flex" justifyContent="center">
               <Button
                 variant="contained"
-                color="primary"
-                sx={{ py: 1.5, fontWeight: "bold", fontSize: "1rem" }}
                 onClick={handleBookingClick}
+                sx={{
+                  py: 1,
+                  px: 5,
+                  fontWeight: "bold",
+                  fontSize: "1rem",
+                  backgroundColor: "#3252DF",
+                  "&:hover": {
+                    backgroundColor: "#253bb3",
+                  },
+                }}
               >
                 Continue Book
               </Button>
@@ -529,10 +542,16 @@ and to make lives better.`}
             <Button
               onClick={handleRate}
               variant="contained"
-              sx={{
-                px: 4,
-                "&:hover": { backgroundColor: "primary.main", color: "white" },
-              }}
+                sx={{
+                  py: 1,
+                  px: 8,
+                  fontWeight: "bold",
+                  fontSize: "1rem",
+                  backgroundColor: "#3252DF",
+                  "&:hover": {
+                    backgroundColor: "#253bb3",
+                  },
+                }}
             >
               Rate
             </Button>
@@ -568,7 +587,16 @@ and to make lives better.`}
               <Button
                 onClick={handleComment}
                 variant="contained"
-                sx={{ px: 4, fontWeight: "bold", textTransform: "none" }}
+                sx={{
+                  py: 1,
+                  px: 8,
+                  fontWeight: "bold",
+                  fontSize: "1rem",
+                  backgroundColor: "#3252DF",
+                  "&:hover": {
+                    backgroundColor: "#253bb3",
+                  },
+                }}
               >
                 Send
               </Button>
