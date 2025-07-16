@@ -15,7 +15,6 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  IconButton,
 } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import { toast } from "react-toastify";
@@ -24,7 +23,7 @@ import { DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { format } from "date-fns";
-import { axiosInstance } from "../../../services/Urls";
+import { axiosInstance, ROOMS_USERS_URLS } from "../../../services/Urls";
 import axios from "axios";
 
 // Room features icons
@@ -37,20 +36,14 @@ import icacImg from "../../../../assets/icac.png";
 import refrigeratorImg from "../../../../assets/refrigerator.png";
 import tvImg from "../../../../assets/tv.png";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import type { RoomDetails } from "../../../../interfaces/Rooms/Rooms";
 
-interface Room {
-  roomNumber: number;
-  price: number;
-  discount: number;
-  description: string;
-  images: string[];
-}
 
 export default function Details() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [room, setRoom] = useState<Room | null>(null);
+  const [room, setRoom] = useState<RoomDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [rating, setRating] = useState<number | null>(0);
   const [review, setReview] = useState("");
@@ -67,8 +60,9 @@ export default function Details() {
     try {
       setLoading(true);
       const res = await axiosInstance.get(
-        `https://upskilling-egypt.com:3000/api/v0/portal/rooms/${id}`
+        ROOMS_USERS_URLS.GET_ROOM_DETAILS(id!)
       );
+
       setRoom(res.data.data.room);
     } catch {
       toast.error("Failed to fetch room");
@@ -84,10 +78,11 @@ export default function Details() {
     }
 
     try {
-      await axiosInstance.post(
-        "https://upskilling-egypt.com:3000/api/v0/portal/room-reviews",
-        { roomId: id, rating, review }
-      );
+      await axiosInstance.post(ROOMS_USERS_URLS.ADD_REVIEW, {
+        roomId: id,
+        rating,
+        review,
+      });
       toast.success("Rating submitted!");
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
@@ -102,10 +97,10 @@ export default function Details() {
 
   const handleComment = async () => {
     try {
-      await axiosInstance.post(
-        "https://upskilling-egypt.com:3000/api/v0/portal/room-comments",
-        { roomId: id, comment }
-      );
+      await axiosInstance.post(ROOMS_USERS_URLS.ADD_COMMENT, {
+        roomId: id,
+        comment,
+      });
       toast.success("Comment submitted!");
     } catch {
       toast.error("Failed to submit comment");
@@ -216,36 +211,35 @@ and to make lives better.`}
               const label = match?.[2] || feature.text;
 
               return (
-<Grid item xs={12} sm={6} md={3} key={index}>
-  <Box
-    display="flex"
-    flexDirection="column"
-    alignItems="flex-start"
-    textAlign="left"
-    paddingRight={5}
-  >
-    <Box
-      component="img"
-      src={feature.icon}
-      alt={feature.text}
-      sx={{
-        width: 40,
-        height: 40,
-        mb: 1,
-        objectFit: "contain",
-      }}
-    />
-    <Typography variant="body2" fontWeight="bold">
-      <Box component="span" color="#152C5B">
-        {number}
-      </Box>{" "}
-      <Box component="span" color="#B0B0B0">
-        {label}
-      </Box>
-    </Typography>
-  </Box>
-</Grid>
-
+                <Grid item xs={12} sm={6} md={3} key={index}>
+                  <Box
+                    display="flex"
+                    flexDirection="column"
+                    alignItems="flex-start"
+                    textAlign="left"
+                    paddingRight={5}
+                  >
+                    <Box
+                      component="img"
+                      src={feature.icon}
+                      alt={feature.text}
+                      sx={{
+                        width: 40,
+                        height: 40,
+                        mb: 1,
+                        objectFit: "contain",
+                      }}
+                    />
+                    <Typography variant="body2" fontWeight="bold">
+                      <Box component="span" color="#152C5B">
+                        {number}
+                      </Box>{" "}
+                      <Box component="span" color="#B0B0B0">
+                        {label}
+                      </Box>
+                    </Typography>
+                  </Box>
+                </Grid>
               );
             })}
           </Grid>
@@ -542,16 +536,16 @@ and to make lives better.`}
             <Button
               onClick={handleRate}
               variant="contained"
-                sx={{
-                  py: 1,
-                  px: 8,
-                  fontWeight: "bold",
-                  fontSize: "1rem",
-                  backgroundColor: "#3252DF",
-                  "&:hover": {
-                    backgroundColor: "#253bb3",
-                  },
-                }}
+              sx={{
+                py: 1,
+                px: 8,
+                fontWeight: "bold",
+                fontSize: "1rem",
+                backgroundColor: "#3252DF",
+                "&:hover": {
+                  backgroundColor: "#253bb3",
+                },
+              }}
             >
               Rate
             </Button>

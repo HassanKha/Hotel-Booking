@@ -72,16 +72,18 @@ export const DASHBOARD_Charts_URL = {
 
 export const ROOMS_USERS_URLS = {
   GET_USERS_ROOMS: (startDate?: string | null, endDate?: string | null) => {
-    // collect defined params
     const params = new URLSearchParams();
     if (startDate) params.append("startDate", startDate);
-    if (endDate)   params.append("endDate",   endDate);
-
-    // build final url
-    const query = params.toString();               // "" or "startDate=…&endDate=…"
+    if (endDate) params.append("endDate", endDate);
+    const query = params.toString();
     return `portal/rooms/available${query ? `?${query}` : ""}`;
   },
+  GET_ROOM_DETAILS: (id: string) => `portal/rooms/${id}`,
+  ADD_REVIEW: `portal/room-reviews`,
+  ADD_COMMENT: `portal/room-comments`,
 };
+
+
 export const USERS_FAVORITES = {
   GET_USER_FAVOURITES:`portal/favorite-rooms`,
   ADD_TO_FAVOURITES:`portal/favorite-rooms`,
