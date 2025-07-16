@@ -21,12 +21,6 @@ import { toast } from 'react-toastify';
 import type { RoomFormData, RoomToEdit } from '../../../../../../interfaces/Rooms/Rooms';
 import type { Facility } from '../../../../../../interfaces/Facilities/Facilities';
 
-
-
-
-
-
-
 function RoomData() {
   const [loading, setLoading] = useState<boolean>(false);
   const [facilities, setFacilities] = useState<Facility[]>([]);
@@ -106,7 +100,6 @@ function RoomData() {
       for (let i = 0; i < data.imgs.length; i++) {
         formData.append('imgs', data.imgs[i]);
       }
-    } else if (roomToEdit) {
     }
 
     try {
@@ -171,16 +164,14 @@ function RoomData() {
                   fullWidth
                   error={!!errors.roomNumber}
                   helperText={errors.roomNumber?.message}
-                  sx={{
-                    backgroundColor: 'white',
-                    borderRadius: 1,
-                  }}
+                  sx={{ backgroundColor: 'white', borderRadius: 1 }}
                 />
               )}
             />
           </FormControl>
 
           <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 3 }}>
+            {/* Price */}
             <Controller
               name="price"
               control={control}
@@ -210,6 +201,7 @@ function RoomData() {
               )}
             />
 
+            {/* Capacity */}
             <Controller
               name="capacity"
               control={control}
@@ -240,6 +232,7 @@ function RoomData() {
               )}
             />
 
+            {/* Discount */}
             <Controller
               name="discount"
               control={control}
@@ -269,6 +262,7 @@ function RoomData() {
               )}
             />
 
+            {/* Facilities */}
             <FormControl fullWidth error={!!errors.facilities}>
               <InputLabel id="facilities-label" shrink={true}>Facilities</InputLabel>
               <Controller
@@ -324,6 +318,7 @@ function RoomData() {
             </Box>
           )}
 
+          {/* Upload Section */}
           <Box
             sx={{
               mt: 4,
@@ -346,7 +341,7 @@ function RoomData() {
             <input
               type="file"
               multiple
-              {...register('imgs', )}
+              {...register('imgs')}
               ref={(e) => {
                 if (fileInputRef) {
                   fileInputRef.current = e;
@@ -363,10 +358,25 @@ function RoomData() {
                 Choose Room Images
               </span>
             </Typography>
+
+            {/* Preview Images */}
             {watchedFiles && watchedFiles.length > 0 && (
-              <Typography variant="caption" sx={{ mt: 1 }}>
-                {watchedFiles.length} file(s) selected
-              </Typography>
+              <Box sx={{ mt: 2, display: 'flex', flexWrap: 'wrap', gap: 2, justifyContent: 'center' }}>
+                {Array.from(watchedFiles).map((file, index) => (
+                  <img
+                    key={index}
+                    src={URL.createObjectURL(file)}
+                    alt={`preview-${index}`}
+                    style={{
+                      width: '120px',
+                      height: '120px',
+                      objectFit: 'cover',
+                      borderRadius: '8px',
+                      border: '1px solid #ccc',
+                    }}
+                  />
+                ))}
+              </Box>
             )}
             {errors.imgs && <FormHelperText error>{errors.imgs.message}</FormHelperText>}
           </Box>
