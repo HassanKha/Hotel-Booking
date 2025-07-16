@@ -24,7 +24,7 @@ import Explore from "./modules/pages/User/Explore/Explore";
 import Favorites from "./modules/pages/User/Favorites/Favorites";
 import Details from "./modules/pages/User/Details/Details";
 import UserLayout from "./modules/layouts/UserLayout/UserLayout";
-
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 const Ads = lazy(
   () => import("./modules/pages/Admin/Dashboard/Ads/AdsList/Ads")
 );
@@ -64,6 +64,7 @@ const AdData = lazy(
 const UsersUpdate = lazy(
   () => import("./modules/pages/Admin/Dashboard/Users/UsersUpdate/UsersUpdate")
 );
+import { LocalizationProvider } from "@mui/x-date-pickers";
 import ProtectedUserRoute from "./modules/shared/ProtectedRoute/ProtectedUserRoute";
 
 function App() {
@@ -223,9 +224,11 @@ function App() {
         {
           path: "details/:id",
           element: (
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
             <Suspense fallback={null}>
               <Details />
             </Suspense>
+            </LocalizationProvider>
           ),
         },
       ],

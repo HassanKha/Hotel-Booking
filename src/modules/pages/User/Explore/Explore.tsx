@@ -18,7 +18,6 @@ import { HeartIcon, ViewIcon } from '../../../../assets/ExploreIcons';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import type { Room } from '../../../../interfaces/Explore/Explore';
 
-
 const PriceBadge = styled(Box)(({ theme }) => ({
   position: 'absolute',
   top: 0,
@@ -42,89 +41,101 @@ const IconContainer = styled(Box)(({ theme }) => ({
   transition: 'opacity 0.3s ease-in-out',
 }));
 
-const RoomCard = React.memo(({ room, onFavourite, guests }: { room: Room; onFavourite: () => void; guests: any }) => {
-  const [isHovered, setIsHovered] = useState(false);
+const RoomCard = React.memo(
+  ({
+    room,
+    onFavourite,
+    guests,
+    navigate
+  }: {
+    room: Room;
+    onFavourite: () => void;
+    guests: any;
+    navigate: (path: string) => void;
+  }) => {
+    const [isHovered, setIsHovered] = useState(false);
 
-  return (
-    <Box
-      sx={{
-        flex: '1 1 calc(33.33% - 24px)',
-        minWidth: 280,
-        maxWidth: 360,
-      }}
-    >
-      <Card
+    return (
+      <Box
         sx={{
-          borderRadius: 2,
-          boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
-          position: 'relative',
-          overflow: 'hidden',
-          transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
-          '&:hover': {
-            transform: 'translateY(-5px)',
-            boxShadow: '0 8px 16px rgba(0,0,0,0.15)',
-          },
+          flex: '1 1 calc(33.33% - 24px)',
+          minWidth: 280,
+          maxWidth: 360,
         }}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
       >
-        <PriceBadge>
-          <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
-            ${room.price * (Number(guests) || 1)} per night
-          </Typography>
-        </PriceBadge>
+        <Card
+          sx={{
+            borderRadius: 2,
+            boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+            position: 'relative',
+            overflow: 'hidden',
+            transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
+            '&:hover': {
+              transform: 'translateY(-5px)',
+              boxShadow: '0 8px 16px rgba(0,0,0,0.15)',
+            },
+          }}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
+          <PriceBadge>
+            <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+              ${room.price * (Number(guests) || 1)} per night
+            </Typography>
+          </PriceBadge>
 
-        <Box sx={{ position: 'relative', overflow: 'hidden' }}>
-          <CardMedia
-            component="img"
-            height="200"
-            image={room.images && room.images.length > 0 ? room.images[0] : defaultRoomImage}
-            alt={`Room ${room.roomNumber}`}
-            loading="lazy"
-            sx={{
-              borderTopLeftRadius: 8,
-              borderTopRightRadius: 8,
-              objectFit: 'cover',
-              aspectRatio: '16 / 9',
-            }}
-          />
-
-          <IconContainer sx={{ opacity: isHovered ? 1 : 0 }}>
-            <IconButton
+          <Box sx={{ position: 'relative', overflow: 'hidden' }}>
+            <CardMedia
+              component="img"
+              height="200"
+              image={room.images && room.images.length > 0 ? room.images[0] : defaultRoomImage}
+              alt={`Room ${room.roomNumber}`}
+              loading="lazy"
               sx={{
-                backgroundColor: 'rgba(187, 33, 33, 0.8)',
-                '&:hover': { backgroundColor: 'white' }
+                borderTopLeftRadius: 8,
+                borderTopRightRadius: 8,
+                objectFit: 'cover',
+                aspectRatio: '16 / 9',
               }}
-              aria-label="favorite room"
-              onClick={onFavourite}
-            >
-              <HeartIcon />
-            </IconButton>
-            <IconButton
-              sx={{
-                backgroundColor: 'rgba(41, 164, 208, 0.8)',
-                '&:hover': { backgroundColor: 'white' }
-              }}
-              aria-label="view room details"
-              onClick={() => console.log(`View Room ${room.roomNumber} details`)}
-            >
-              <ViewIcon />
-            </IconButton>
-          </IconContainer>
-        </Box>
+            />
 
-        <CardContent>
-          <Typography gutterBottom variant="h6" component="div" sx={{ fontWeight: 'bold', color: '#3F4462' }}>
-            Room {room.roomNumber}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Discount {room.discount}
-          </Typography>
-        </CardContent>
-      </Card>
-    </Box>
-  );
-});
+            <IconContainer sx={{ opacity: isHovered ? 1 : 0 }}>
+              <IconButton
+                sx={{
+                  backgroundColor: 'rgba(187, 33, 33, 0.8)',
+                  '&:hover': { backgroundColor: 'white' }
+                }}
+                aria-label="favorite room"
+                onClick={onFavourite}
+              >
+                <HeartIcon />
+              </IconButton>
+              <IconButton
+                sx={{
+                  backgroundColor: 'rgba(41, 164, 208, 0.8)',
+                  '&:hover': { backgroundColor: 'white' }
+                }}
+                aria-label="view room details"
+                onClick={() => navigate(`/details/${room._id}`)}
+              >
+                <ViewIcon />
+              </IconButton>
+            </IconContainer>
+          </Box>
+
+          <CardContent>
+            <Typography gutterBottom variant="h6" component="div" sx={{ fontWeight: 'bold', color: '#3F4462' }}>
+              Room {room.roomNumber}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Discount {room.discount}
+            </Typography>
+          </CardContent>
+        </Card>
+      </Box>
+    );
+  }
+);
 
 const ITEMS_PER_PAGE = 9;
 
@@ -134,12 +145,11 @@ function Explore() {
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [searchParams] = useSearchParams();
-  
+  const navigate = useNavigate();
 
   const start = searchParams.get("startDate") ?? '';
   const end = searchParams.get("endDate") ?? '';
   const guests = Number(searchParams.get("guests"));
-  const navigate = useNavigate();
 
   const getAllRooms = async () => {
     try {
@@ -228,6 +238,7 @@ function Explore() {
                   room={roomItem}
                   onFavourite={() => addToFavourites(roomItem._id)}
                   guests={guests}
+                  navigate={navigate}
                 />
               ))}
             </Box>
