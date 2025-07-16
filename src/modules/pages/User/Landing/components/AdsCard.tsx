@@ -7,6 +7,7 @@ import {
 } from "@mui/material";
 import type { Theme, SxProps } from "@mui/material";
 import type { Room } from "../../../../../interfaces/Shared/Shared";
+import { useThemeContext } from "../../../../../contexts/ThemeContext";
 export interface Ad {
   id: string | number;
   title: string;
@@ -49,8 +50,8 @@ const AdsSection = ({ heading = "Most popular ads", rooms }: AdsSectionProps) =>
 const smallAds = rooms?.slice(1, 4);
 
 
-
-  console.log(rooms,'rooms', smallAds)
+ const { darkMode } = useThemeContext();
+  
   return (
     <Container maxWidth="lg" sx={{ py: 1 }}>
       <Typography
@@ -59,6 +60,7 @@ const smallAds = rooms?.slice(1, 4);
           mb: 4,
           fontWeight: 600,
           fontSize: { xs: "1.5rem", md: "2rem" },
+        color: darkMode ? 'ffff' : ''
         }}
       >
         {heading}

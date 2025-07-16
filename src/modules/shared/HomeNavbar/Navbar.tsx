@@ -17,6 +17,8 @@ import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import {  NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../../contexts/AuthContext";
+import { useThemeContext } from "../../../contexts/ThemeContext";
+import { DarkModeIcon, LightModeIcon } from "../../../assets/Dashboard/NavbarIcons";
 
 export const Navbar = () => {
   const theme = useTheme();
@@ -24,7 +26,8 @@ export const Navbar = () => {
   const [open, setOpen] = useState(false);
 const { isAuthenticated ,logout} = useAuth();
   const navigate = useNavigate();
-
+ const { darkMode, toggleDarkMode } = useThemeContext();
+ 
   const handleLogout = () => {
     logout();
   
@@ -83,6 +86,7 @@ const navLinks = isAuthenticated
       }}
       role="presentation"
     >
+      
       {/* close button */}
       <Box sx={{ p: 2, display: "flex", justifyContent: "flex-end" }}>
         <IconButton onClick={toggleDrawer} aria-label="Close navigation">
@@ -100,11 +104,24 @@ const navLinks = isAuthenticated
     </NavButton>
           </ListItem>
         ))}
+        <Box sx={{ p: 2 }}>
+  <Button
+    fullWidth
+    onClick={toggleDarkMode}
+    variant="outlined"
+    startIcon={darkMode ? <LightModeIcon /> : <DarkModeIcon />}
+    sx={{ textTransform: "none",color: darkMode ? 'white' : 'black' }}
+  >
+    {darkMode ? "Light Mode" : "Dark Mode"}
+  </Button>
+</Box>
+
       </List>
 
       <Divider />
 {!isAuthenticated ? (
   <Box sx={{ p: 2, display: "flex", flexDirection: "column", gap: 1 }}>
+    
     <Button
       component={NavLink}
       to="/register"
@@ -198,7 +215,9 @@ const navLinks = isAuthenticated
     </NavButton>
   ))}
               </Box>
-
+<IconButton onClick={toggleDarkMode} sx={{ color: darkMode ? 'white' : 'black' }} aria-label="toggle dark mode">
+  {darkMode ? <LightModeIcon /> : <DarkModeIcon />}
+</IconButton>
              {!isAuthenticated ? (
   <Box sx={{ display: "flex", gap: 2 }}>
     <Button

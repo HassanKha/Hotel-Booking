@@ -44,7 +44,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.removeItem("user");
   };
 
-  // Fetch the latest user profile from server
+ 
   const getCurrentUser = async () => {
     if (!user?._id) return;
 
