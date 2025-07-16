@@ -15,13 +15,17 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  Grid,
+  IconButton,
 } from "@mui/material";
+import Grid from "@mui/material/Grid";
 import { toast } from "react-toastify";
 import { useAuth } from "../../../../contexts/AuthContext";
-import { DateRangePicker } from "@mui/x-date-pickers-pro";
-import dayjs, { Dayjs } from "dayjs";
+import { DatePicker } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { format } from "date-fns";
 import { axiosInstance } from "../../../services/Urls";
+import axios from "axios";
 
 // Room features icons
 import bedroomImg from "../../../../assets/bedroom.png";
@@ -32,6 +36,7 @@ import wifiImg from "../../../../assets/wifi.png";
 import icacImg from "../../../../assets/icac.png";
 import refrigeratorImg from "../../../../assets/refrigerator.png";
 import tvImg from "../../../../assets/tv.png";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 
 interface Room {
   roomNumber: number;
@@ -51,10 +56,12 @@ export default function Details() {
   const [review, setReview] = useState("");
   const [comment, setComment] = useState("");
   const [openLoginModal, setOpenLoginModal] = useState(false);
-  const [dateRange, setDateRange] = useState<[Dayjs | null, Dayjs | null]>([
-    dayjs(),
-    dayjs().add(2, "day"),
+  const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([
+    new Date(),
+    new Date(Date.now() + 2 * 24 * 60 * 60 * 1000), // 2 days later
   ]);
+  const [startDateOpen, setStartDateOpen] = useState(false);
+  const [endDateOpen, setEndDateOpen] = useState(false);
 
   const getRoomDetails = async () => {
     try {
@@ -71,14 +78,25 @@ export default function Details() {
   };
 
   const handleRate = async () => {
+    if (!rating) {
+      toast.error("Please provide a rating before submitting.");
+      return;
+    }
+
     try {
       await axiosInstance.post(
         "https://upskilling-egypt.com:3000/api/v0/portal/room-reviews",
         { roomId: id, rating, review }
       );
       toast.success("Rating submitted!");
-    } catch {
-      toast.error("Failed to submit rating");
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        console.error("Rating Error:", error.response?.data || error.message);
+        toast.error(error.response?.data?.message || "Failed to submit rating");
+      } else {
+        console.error("Unknown Error:", error);
+        toast.error("Something went wrong");
+      }
     }
   };
 
@@ -99,7 +117,13 @@ export default function Details() {
   }, [id]);
 
   const totalDays =
-    dateRange[0] && dateRange[1] ? dateRange[1].diff(dateRange[0], "day") : 0;
+    dateRange[0] && dateRange[1]
+      ? Math.round(
+          (dateRange[1].getTime() - dateRange[0].getTime()) /
+            (1000 * 60 * 60 * 24)
+        )
+      : 0;
+
   const totalPrice = totalDays * (room?.price || 0);
 
   const handleBookingClick = () => {
@@ -141,10 +165,10 @@ export default function Details() {
         alt={`Room ${room.roomNumber}`}
         sx={{
           borderRadius: 3,
-          height: 400,
+          width: "30%",
+          margin: "0 auto",
           objectFit: "cover",
           mb: 6,
-          width: "100%",
         }}
       />
 
@@ -236,28 +260,182 @@ and to make lives better.`}
               minHeight: "500px",
             }}
           >
-            <Typography fontWeight="bold" sx={{ mb: 3, py: 1 }}>
+            <Typography color="#152C5B" fontWeight="bold" sx={{ mb: 3, py: 1 }}>
               Start Booking
             </Typography>
 
             <Box sx={{ mb: 3 }}>
-              <Typography variant="h5" fontWeight="bold">
-                <span style={{ color: "green" }}>${room.price}</span> per night
+              <Typography>
+                <span
+                  style={{
+                    fontSize: "1.5rem",
+                    color: "#1ABC9C",
+                    fontWeight: "bold",
+                    marginRight: 10,
+                  }}
+                >
+                  ${room.price}
+                </span>
+                <span
+                  style={{
+                    fontSize: "1.5rem",
+                    letterSpacing: ".2rem",
+                    color: "#B0B0B0",
+                  }}
+                >
+                  per night
+                </span>
               </Typography>
-              <Typography color="error" fontWeight="bold">
+              <Typography color="#FF1612" fontWeight="bold">
                 Discount {room.discount}% Off
               </Typography>
             </Box>
 
-            <Typography variant="subtitle1" fontWeight="bold" mb={1}>
-              Pick a Date
-            </Typography>
+            {/* Updated Date Picker Section */}
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <Box sx={{ mb: 4 }}>
+                <Typography
+                  mt={10}
+                  variant="subtitle1"
+                  color="#152C5B"
+                  fontWeight="bold"
+                  mb={2}
+                >
+                  Pick a Date
+                </Typography>
 
-            <DateRangePicker
-              localeText={{ start: "Start date", end: "End date" }}
-              value={dateRange}
-              onChange={(newValue) => setDateRange(newValue)}
-            />
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 2,
+                    bgcolor: "#f8fafc",
+                    borderRadius: "12px",
+                    border: "1px solid #e2e8f0",
+                  }}
+                >
+                  {/* Calendar Icon */}
+                  <Box
+                    sx={{
+                      width: 48,
+                      height: 48,
+                      bgcolor: "#1e293b",
+                      borderRadius: "8px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                    }}
+                  >
+                    <CalendarMonthIcon sx={{ color: "#fff", fontSize: 28 }} />
+                  </Box>
+
+                  {/* Date Range Display */}
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1,
+                      flex: 1,
+                    }}
+                  >
+                    {/* Start Date */}
+                    <Box
+                      onClick={() => setStartDateOpen(true)}
+                      sx={{
+                        cursor: "pointer",
+                        px: 2,
+                        py: 1,
+                        borderRadius: "8px",
+                        transition: "background-color 0.2s",
+                        "&:hover": {
+                          bgcolor: "rgba(79, 70, 229, 0.1)",
+                        },
+                      }}
+                    >
+                      <Typography
+                        variant="h6"
+                        sx={{
+                          fontWeight: 500,
+                          color: "#1e293b",
+                          fontSize: "1rem",
+                        }}
+                      >
+                        {dateRange[0]
+                          ? format(dateRange[0], "dd MMM")
+                          : "Select date"}
+                      </Typography>
+                    </Box>
+
+                    {/* Separator */}
+                    <Box
+                      sx={{
+                        width: 20,
+                        height: 2,
+                        bgcolor: "#e2e8f0",
+                        borderRadius: "1px",
+                        mx: 1,
+                      }}
+                    />
+
+                    {/* End Date */}
+                    <Box
+                      onClick={() => setEndDateOpen(true)}
+                      sx={{
+                        cursor: "pointer",
+                        px: 2,
+                        py: 1,
+                        borderRadius: "8px",
+                        transition: "background-color 0.2s",
+                        "&:hover": {
+                          bgcolor: "rgba(79, 70, 229, 0.1)",
+                        },
+                      }}
+                    >
+                      <Typography
+                        variant="h6"
+                        sx={{
+                          fontWeight: 500,
+                          color: "#1e293b",
+                          fontSize: "1rem",
+                        }}
+                      >
+                        {dateRange[1]
+                          ? format(dateRange[1], "dd MMM")
+                          : "Select date"}
+                      </Typography>
+                    </Box>
+                  </Box>
+                </Box>
+
+                {/* Hidden Date Pickers */}
+                <DatePicker
+                  open={startDateOpen}
+                  onOpen={() => setStartDateOpen(true)}
+                  onClose={() => setStartDateOpen(false)}
+                  value={dateRange[0]}
+                  onChange={(newValue) => {
+                    setDateRange([newValue, dateRange[1]]);
+                    setStartDateOpen(false);
+                  }}
+                  minDate={new Date()}
+                  sx={{ display: "none" }}
+                />
+
+                <DatePicker
+                  open={endDateOpen}
+                  onOpen={() => setEndDateOpen(true)}
+                  onClose={() => setEndDateOpen(false)}
+                  value={dateRange[1]}
+                  onChange={(newValue) => {
+                    setDateRange([dateRange[0], newValue]);
+                    setEndDateOpen(false);
+                  }}
+                  minDate={dateRange[0] || new Date()}
+                  sx={{ display: "none" }}
+                />
+              </Box>
+            </LocalizationProvider>
 
             <Typography variant="body1" mt={3} mb={3} fontWeight="medium">
               {totalDays > 0 ? (
@@ -282,15 +460,16 @@ and to make lives better.`}
               )}
             </Typography>
 
-            <Button
-              variant="contained"
-              color="primary"
-              fullWidth
-              sx={{ py: 1.5, fontWeight: "bold", fontSize: "1rem" }}
-              onClick={handleBookingClick}
-            >
-              Continue Book
-            </Button>
+            <Box display="flex" justifyContent="center">
+              <Button
+                variant="contained"
+                color="primary"
+                sx={{ py: 1.5, fontWeight: "bold", fontSize: "1rem" }}
+                onClick={handleBookingClick}
+              >
+                Continue Book
+              </Button>
+            </Box>
           </Card>
 
           <Dialog
