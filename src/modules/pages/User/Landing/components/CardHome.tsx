@@ -10,15 +10,17 @@ import img5 from '../../../../../assets/5.png'
 import img6 from '../../../../../assets/6.png'
 import img7 from '../../../../../assets/7.png'
 import img8 from '../../../../../assets/8.png'
+import { useThemeContext } from '../../../../../contexts/ThemeContext';
 
 
 
 
 export default function CardHome() {
+    const { darkMode } = useThemeContext();
     return (
         <>
 
-            <Container sx={{ py: 10, color: "#152C5B" }} maxWidth="lg">
+            <Container sx={{ py: 10,  color: darkMode? '#ffff' : "#1e293b", }} maxWidth="lg">
                 <h2 style={{ margin: "20px" }}> Houses with beauty backyard</h2>
                 <Box
                 

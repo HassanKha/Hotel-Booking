@@ -8,6 +8,7 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
 import { format } from "date-fns"
 import { useNavigate } from "react-router-dom"
+import { useThemeContext } from "../../../../../contexts/ThemeContext"
 
 export const BookingForm = () => {
   const [guests, setGuests] = React.useState(2)
@@ -15,6 +16,7 @@ export const BookingForm = () => {
   const [endDate, setEndDate] = React.useState<Date | null>(new Date(Date.now() + 6 * 24 * 60 * 60 * 1000)) // 6 days later
   const [startDateOpen, setStartDateOpen] = React.useState(false)
   const [endDateOpen, setEndDateOpen] = React.useState(false)
+ const { darkMode } = useThemeContext();
 
   const handleGuestChange = (increment: boolean) => {
     if (increment) {
@@ -55,7 +57,7 @@ export const BookingForm = () => {
           sx={{
             mb: 3,
             fontWeight: 700,
-            color: "#1e293b",
+            color: darkMode? '#ffff' : "#1e293b",
             fontSize: "1.75rem",
           }}
         >
@@ -70,7 +72,7 @@ export const BookingForm = () => {
               sx={{
                 mb: 2,
                 fontWeight: 600,
-                color: "#1e293b",
+                color: darkMode? '#ffff' : "#1e293b",
                 fontSize: "1.25rem",
               }}
             >
@@ -226,7 +228,7 @@ export const BookingForm = () => {
               onClose={() => setStartDateOpen(false)}
               value={startDate}
               onChange={(newValue) => {
-                setStartDate(newValue)
+                setStartDate(newValue ? new Date(newValue as Date) : null)
                 setStartDateOpen(false)
               }}
               minDate={new Date()}
@@ -244,7 +246,7 @@ export const BookingForm = () => {
               onClose={() => setEndDateOpen(false)}
               value={endDate}
               onChange={(newValue) => {
-                setEndDate(newValue)
+                setEndDate(newValue ? new Date(newValue as Date) : null)
                 setEndDateOpen(false)
               }}
               minDate={startDate || new Date()}
@@ -265,7 +267,7 @@ export const BookingForm = () => {
             sx={{
               mb: 2,
               fontWeight: 600,
-              color: "#1e293b",
+          color: darkMode? '#ffff' : "#1e293b",
               fontSize: "1.25rem",
             }}
           >
@@ -320,7 +322,7 @@ export const BookingForm = () => {
               variant="h6"
               sx={{
                 fontWeight: 500,
-                color: "#1e293b",
+               color: darkMode? '#ffff' : "#1e293b",
                 fontSize: "1.1rem",
                 minWidth: "100px",
                 textAlign: "center",
