@@ -18,6 +18,7 @@ import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import type { Room } from "../../../../interfaces/Shared/Shared";
 import { useThemeContext } from "../../../../contexts/ThemeContext";
+//import { useTranslation } from "react-i18next";
 
 export default function Landing() {
   const theme = useTheme();
@@ -25,6 +26,7 @@ export default function Landing() {
   const [rooms, setRooms] = useState<Room[]>([]);
   const [loading,setloading] = useState<boolean>(false)
  const { darkMode } = useThemeContext();
+ //const { t, i18n } = useTranslation();
 
   async function getAllRooms() {
     try {

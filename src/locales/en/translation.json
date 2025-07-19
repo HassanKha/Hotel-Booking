@@ -1,0 +1,16 @@
+{
+  "navbar": {
+    "home": "Home",
+    "explore": "Explore",
+    "favorites": "Favorites",
+    "register": "Register",
+    "loginNow": "Login Now",
+    "logout": "Logout",
+    "lightMode": "Light Mode",
+    "darkMode": "Dark Mode"
+  },
+  "language": {
+    "en": "English",
+    "ar": "Arabic"
+  }
+}
