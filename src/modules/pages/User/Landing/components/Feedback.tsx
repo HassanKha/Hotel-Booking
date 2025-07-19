@@ -5,6 +5,8 @@ import Slider from 'react-slick';
 import { useRef } from 'react';
 import img1 from '../../../../../assets/rev1.jpg';
 import img2 from '../../../../../assets/rev2.png';
+import img3 from '../../../../../assets/family.jpeg';
+
 
 
 export default function Feedback() {
@@ -36,7 +38,7 @@ export default function Feedback() {
             author: 'John, Photographer',
         },
         {
-            img: 'https://images.unsplash.com/photo-1607746882042-944635dfe10e',
+            img: img3,
 
             title: 'Great Memories',
             rating: 5,
