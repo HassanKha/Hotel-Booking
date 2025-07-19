@@ -211,13 +211,19 @@ and to make lives better.`}
               { icon: icacImg, text: "7 unit ready" },
               { icon: refrigeratorImg, text: "2 refrigerator" },
               { icon: tvImg, text: "4 television" },
-            ].map((feature, index) => {
+            ].map((feature, _) => {
               const match = feature.text.match(/^(\d+)\s(.+)$/);
               const number = match?.[1] || "";
               const label = match?.[2] || feature.text;
 
               return (
-                <Grid item xs={12} sm={6} md={3} key={index}>
+                <Grid
+                  display="flex"
+                  flexWrap="wrap"
+                  gap={2}
+                  mb={4}
+                  justifyContent={{ xs: "center", md: "flex-start" }}
+                >
                   <Box
                     display="flex"
                     flexDirection="column"
@@ -418,7 +424,7 @@ and to make lives better.`}
                   onOpen={() => setStartDateOpen(true)}
                   onClose={() => setStartDateOpen(false)}
                   value={dateRange[0]}
-                  onChange={(newValue) => {
+                  onChange={(newValue: any) => {
                     setDateRange([newValue, dateRange[1]]);
                     setStartDateOpen(false);
                   }}
@@ -431,7 +437,7 @@ and to make lives better.`}
                   onOpen={() => setEndDateOpen(true)}
                   onClose={() => setEndDateOpen(false)}
                   value={dateRange[1]}
-                  onChange={(newValue) => {
+                  onChange={(newValue: any) => {
                     setDateRange([dateRange[0], newValue]);
                     setEndDateOpen(false);
                   }}

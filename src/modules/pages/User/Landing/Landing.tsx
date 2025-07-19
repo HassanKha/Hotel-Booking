@@ -17,12 +17,14 @@ import { axiosInstance, ROOMS_USERS_URLS } from "../../../services/Urls";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import type { Room } from "../../../../interfaces/Shared/Shared";
+import { useThemeContext } from "../../../../contexts/ThemeContext";
 
 export default function Landing() {
   const theme = useTheme();
   const downMd = useMediaQuery(theme.breakpoints.down("md"));
   const [rooms, setRooms] = useState<Room[]>([]);
   const [loading,setloading] = useState<boolean>(false)
+ const { darkMode } = useThemeContext();
 
   async function getAllRooms() {
     try {
@@ -69,16 +71,17 @@ export default function Landing() {
                   sx={{
                     mb: 2,
                     fontSize: { xs: "2rem", md: "2.5rem" },
-                    color: "#152C5B",
+                    color: darkMode ? 'white' : "#152C5B",
                     display: "flex",
                     flexDirection: "column",
                     fontWeight: "900",
+                 
                   }}
                 >
                   Forget Busy Work,{" "}
                   <Box
                     component="span"
-                    sx={{ color: "#152C5B", fontWeight: "900" }}
+                    sx={{ color: darkMode ? 'white' : "#152C5B", fontWeight: "900" }}
                   >
                     Start Next Vacation
                   </Box>
@@ -88,7 +91,7 @@ export default function Landing() {
                   variant="body1"
                   sx={{
                     mb: 4,
-                    color: "text.secondary",
+                    color: darkMode ? 'white' : "text.secondary",
                     fontSize: "1.1rem",
                     lineHeight: 1.6,
                   }}

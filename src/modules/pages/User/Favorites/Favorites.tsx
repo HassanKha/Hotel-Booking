@@ -17,6 +17,7 @@ import { toast } from 'react-toastify';
 import { HeartIcon, ViewIcon } from '../../../../assets/ExploreIcons';
 import DeleteConfirmationDialog from '../../../shared/DeleteConfirmation/DeleteConfirmation';
 import type { Room } from '../../../../interfaces/Explore/Explore';
+import { useThemeContext } from '../../../../contexts/ThemeContext';
 
 const PriceBadge = styled(Box)(({ theme }) => ({
   position: 'absolute',
@@ -141,6 +142,7 @@ function Favorites() {
   const [favList, setFavList] = useState<Room[]>([]);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
+const { darkMode } = useThemeContext();
 
   const getAllFavourites = async () => {
     setLoading(true);
@@ -193,17 +195,17 @@ function Favorites() {
         <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
           Home / Favorites
         </Typography>
-        <Typography variant="h4" component="h1" sx={{ mb: 4, textAlign: 'center', fontWeight: 'bold', color: '#3F4462' }}>
+        <Typography variant="h4" component="h1" sx={{ mb: 4, textAlign: 'center', fontWeight: 'bold', color: darkMode? '#ffff' : "#1e293b" }}>
           Your Favorite Rooms
         </Typography>
-        <Typography variant="h5" component="h2" sx={{ mb: 3, fontWeight: 'bold', color: '#3F4462' }}>
+        <Typography variant="h5" component="h2" sx={{ mb: 3, fontWeight: 'bold', color: darkMode? '#ffff' : "#1e293b" }}>
           Saved For Later
         </Typography>
 
         {loading ? (
           <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '200px' }}>
             <CircularProgress />
-            <Typography variant="h6" sx={{ ml: 2, color: '#3F4462' }}>Loading Favorites...</Typography>
+            <Typography variant="h6" sx={{ ml: 2, color: darkMode? '#ffff' : "#1e293b" }}>Loading Favorites...</Typography>
           </Box>
         ) : favList?.length > 0 ? (
           <Box
