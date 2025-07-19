@@ -25,6 +25,7 @@ const stripePromise = loadStripe(
 );
 
 function PaymentForm() {
+  const [isLoading, setIsLoading] = useState(false);
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
@@ -49,7 +50,7 @@ function PaymentForm() {
 
     const cardElement = elements.getElement(CardElement);
     if (!cardElement) return;
-
+setIsLoading(true)
     try {
       const { token, error } = await stripe.createToken(cardElement);
 
@@ -68,6 +69,9 @@ function PaymentForm() {
       const message =
         err?.response?.data?.message || "Payment failed. Please try again.";
       toast.error(message);
+    }
+    finally{
+      setIsLoading(false)
     }
   };
 
@@ -170,7 +174,7 @@ function PaymentForm() {
                 disabled={!stripe}
                 sx={{ py: 1.5, fontWeight: "bold", fontSize: "1rem" }}
               >
-                Pay Now
+              {isLoading ? "Processing..." : "Pay Now"} 
               </Button>
             </>
           )}
