@@ -66,6 +66,10 @@ const UsersUpdate = lazy(
 );
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import ProtectedUserRoute from "./modules/shared/ProtectedRoute/ProtectedUserRoute";
+import Payment from "./modules/pages/User/Landing/components/Payment";
+import PaymentSuccess from "./modules/pages/User/Landing/components/PaymentSuccess ";
+
+
 
 function App() {
   const routes: RouteObject[] = [
@@ -211,12 +215,30 @@ function App() {
             </Suspense>
           ),
         },
+         {
+          path: "/payment",
+          element: (
+            <Suspense fallback={null}>
+              <Payment />
+            </Suspense>
+          ),
+        },
         {
           path: "Favorites",
           element: (
             <Suspense fallback={null}>
               <ProtectedUserRoute>
                 <Favorites />
+              </ProtectedUserRoute>
+            </Suspense>
+          ),
+        },
+         {
+          path: "payment-success",
+          element: (
+            <Suspense fallback={null}>
+              <ProtectedUserRoute>
+            <PaymentSuccess />
               </ProtectedUserRoute>
             </Suspense>
           ),

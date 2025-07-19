@@ -38,7 +38,6 @@ import tvImg from "../../../../assets/tv.png";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import type { RoomDetails } from "../../../../interfaces/Rooms/Rooms";
 
-
 export default function Details() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -51,7 +50,7 @@ export default function Details() {
   const [openLoginModal, setOpenLoginModal] = useState(false);
   const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([
     new Date(),
-    new Date(Date.now() + 2 * 24 * 60 * 60 * 1000), // 2 days later
+    new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
   ]);
   const [startDateOpen, setStartDateOpen] = useState(false);
   const [endDateOpen, setEndDateOpen] = useState(false);
@@ -62,7 +61,6 @@ export default function Details() {
       const res = await axiosInstance.get(
         ROOMS_USERS_URLS.GET_ROOM_DETAILS(id!)
       );
-
       setRoom(res.data.data.room);
     } catch {
       toast.error("Failed to fetch room");
@@ -72,11 +70,7 @@ export default function Details() {
   };
 
   const handleRate = async () => {
-    if (!rating) {
-      toast.error("Please provide a rating before submitting.");
-      return;
-    }
-
+    if (!rating) return toast.error("Please provide a rating.");
     try {
       await axiosInstance.post(ROOMS_USERS_URLS.ADD_REVIEW, {
         roomId: id,
@@ -84,14 +78,8 @@ export default function Details() {
         review,
       });
       toast.success("Rating submitted!");
-    } catch (error: unknown) {
-      if (axios.isAxiosError(error)) {
-        console.error("Rating Error:", error.response?.data || error.message);
-        toast.error(error.response?.data?.message || "Failed to submit rating");
-      } else {
-        console.error("Unknown Error:", error);
-        toast.error("Something went wrong");
-      }
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Rating failed");
     }
   };
 
@@ -103,7 +91,40 @@ export default function Details() {
       });
       toast.success("Comment submitted!");
     } catch {
-      toast.error("Failed to submit comment");
+      toast.error("Comment submission failed");
+    }
+  };
+
+  const handleBookingClick = async () => {
+    if (!user) return setOpenLoginModal(true);
+    if (!dateRange[0] || !dateRange[1]) return toast.error("Pick a date.");
+
+    const totalDays = Math.round(
+      (dateRange[1].getTime() - dateRange[0].getTime()) / (1000 * 60 * 60 * 24)
+    );
+    const totalPrice = totalDays * (room?.price || 0);
+
+    const bookingData = {
+      startDate: format(dateRange[0], "yyyy-MM-dd"),
+      endDate: format(dateRange[1], "yyyy-MM-dd"),
+      room: id,
+      totalPrice,
+    };
+
+    try {
+      const response = await axiosInstance.post(
+        "https://upskilling-egypt.com:3000/api/v0/portal/booking",
+        bookingData
+      );
+
+      navigate("/payment", {
+        state: {
+          booking: response.data.data,
+          totalPrice,
+        },
+      });
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Booking failed");
     }
   };
 
@@ -111,32 +132,17 @@ export default function Details() {
     getRoomDetails();
   }, [id]);
 
-  const totalDays =
-    dateRange[0] && dateRange[1]
-      ? Math.round(
-          (dateRange[1].getTime() - dateRange[0].getTime()) /
-            (1000 * 60 * 60 * 24)
-        )
-      : 0;
+  const totalDays = dateRange[0] && dateRange[1]
+    ? Math.round(
+        (dateRange[1].getTime() - dateRange[0].getTime()) / (1000 * 60 * 60 * 24)
+      )
+    : 0;
 
   const totalPrice = totalDays * (room?.price || 0);
 
-  const handleBookingClick = () => {
-    if (!user) {
-      setOpenLoginModal(true);
-      return;
-    }
-    console.log("Proceed with booking...");
-  };
-
   if (loading || !room) {
     return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        minHeight="70vh"
-      >
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="70vh">
         <CircularProgress />
       </Box>
     );
@@ -333,7 +339,6 @@ and to make lives better.`}
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-
                       gap: 1,
                       flex: 1,
                     }}
