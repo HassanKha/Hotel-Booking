@@ -90,6 +90,9 @@ export const USERS_FAVORITES = {
   DELETE_FROM_FAVOURITE:(id:string)=>`portal/favorite-rooms/${id}`,
 }
 
+export const USERS_BOOKINGS ={
+  GET_USERS_BOKKINGS:`portal/booking/my`
+}
 
 
 

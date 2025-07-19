@@ -40,7 +40,7 @@ export default function SliderAds({ rooms, loading }: SliderAdsProps) {
         <Slider {...settings}  >
           {rooms.map((room) => (
             <div key={room._id} >
-              <Link style={{ textDecoration: 'none' }} to={`/room/${room._id}`}>
+              <Link style={{ textDecoration: 'none' }} to={`/details/${room._id}`}>
               <Paper
                 elevation={0}
                 sx={{

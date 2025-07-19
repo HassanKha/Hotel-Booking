@@ -11,9 +11,9 @@ import { useThemeContext } from "../../../../../contexts/ThemeContext";
 export interface Ad {
   id: string | number;
   title: string;
-  price: number;           // nightly price
-  location: string;        // e.g. “Jakarta”
-  image: string;           // absolute or imported URL
+  price: number;           
+  location: string;        
+  image: string;           
 }
 
 
