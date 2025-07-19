@@ -68,6 +68,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import ProtectedUserRoute from "./modules/shared/ProtectedRoute/ProtectedUserRoute";
 import Payment from "./modules/pages/User/Landing/components/Payment";
 import PaymentSuccess from "./modules/pages/User/Landing/components/PaymentSuccess ";
+import MyBookings from "./modules/pages/User/My Bookings/MyBookings";
 
 
 
@@ -229,6 +230,16 @@ function App() {
             <Suspense fallback={null}>
               <ProtectedUserRoute>
                 <Favorites />
+              </ProtectedUserRoute>
+            </Suspense>
+          ),
+        },
+        {
+          path: "my-bookings",
+          element: (
+            <Suspense fallback={null}>
+              <ProtectedUserRoute>
+                <MyBookings />
               </ProtectedUserRoute>
             </Suspense>
           ),

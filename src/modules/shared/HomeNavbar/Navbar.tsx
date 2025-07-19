@@ -69,6 +69,7 @@ const navLinks = isAuthenticated
       { label: "Home", href: "landing" },
       { label: "Explore", href: "Explore" },
       { label: "Favorites", href: "Favorites" },
+      { label: "My Bookings", href: "my-bookings" },
     ]
   : [
       { label: "Home", href: "landing" },

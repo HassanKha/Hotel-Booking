@@ -15,3 +15,18 @@ export interface Booking {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface UserBookings {
+  _id: string;
+  startDate: string; 
+  endDate: string;
+  totalPrice: number;
+  user: {
+    _id: string;
+  };
+  room: string;
+  status: "Pending" | "Completed" ; 
+  createdAt: string;
+  updatedAt: string;
+
+}
