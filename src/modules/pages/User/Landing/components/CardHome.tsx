@@ -1,6 +1,6 @@
 import Container from '@mui/material/Container';
 import Paper from '@mui/material/Paper';
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import '../Landing.module.css';
 import img1 from '../../../../../assets/1.png';
 import img2 from '../../../../../assets/2.png';
@@ -36,10 +36,14 @@ export default function CardHome() {
       <Paper
         key={title}
         elevation={0}
+        role="article"
+        aria-label={title}
+        tabIndex={0}
         sx={{
           flex: 1,
           p: 2,
           backgroundColor: 'transparent',
+          outline: 'none',
           '&:hover': {
             boxShadow: 1,
             transform: 'scale(1.04)',
@@ -48,28 +52,43 @@ export default function CardHome() {
         }}
       >
         <Box sx={{ position: 'relative' }}>
-          <img style={{ width: '100%' }} src={img} alt={title} />
-          <h3 style={{ margin: '10px 0' }}>{title}</h3>
-          <p style={{ color: '#B0B0B0', fontSize: '13px' }}>
+          <Box
+            component="img"
+            src={img}
+            alt={`${title} image`}
+            sx={{ width: '100%', borderRadius: 1 }}
+          />
+          <Typography variant="h6" component="h3" sx={{ mt: 1.5 }}>
+            {title}
+          </Typography>
+          <Typography
+            variant="body2"
+            sx={{ color: '#B0B0B0', fontSize: '13px' }}
+          >
             {t(`cardHome.titles.${key}`)}
-          </p>
+          </Typography>
+
           {popular && (
-            <p
-              style={{
+            <Box
+              component="span"
+              aria-label="Popular choice"
+              sx={{
                 position: 'absolute',
                 top: 0,
                 right: 0,
                 backgroundColor: '#f14b99ff',
                 color: 'white',
-                padding: '0.5rem 1.5rem',
+                px: 2,
+                py: 0.5,
                 borderRadius: '0.5rem',
                 zIndex: 3,
-                margin: '0',
+                fontSize: '0.75rem',
+                fontWeight: 500,
               }}
-              className='discound'
+              className="discount"
             >
               {t('cardHome.popularChoice')}
-            </p>
+            </Box>
           )}
         </Box>
       </Paper>
@@ -77,19 +96,47 @@ export default function CardHome() {
 
   return (
     <Container
+      component="section"
+      aria-label="Popular Hotels"
       sx={{
         py: 10,
         color: darkMode ? '#fff' : '#1e293b',
       }}
-      maxWidth='lg'
+      maxWidth="lg"
     >
-      <h2 style={{ margin: '20px' }}>{t('cardHome.section1Title')}</h2>
-      <Box display='flex' flexDirection={{ xs: 'column', md: 'row' }} gap={2}>
+      <Typography
+        component="h2"
+        variant="h4"
+        sx={{ mb: 3, ml: 1 }}
+      >
+        {t('cardHome.section1Title')}
+      </Typography>
+
+      <Box
+        display="flex"
+        flexDirection={{ xs: 'column', md: 'row' }}
+        gap={2}
+        role="list"
+        aria-label="Card list row one"
+      >
         {renderCards(firstRow)}
       </Box>
 
-      <h2 style={{ margin: '20px' }}>{t('cardHome.section2Title')}</h2>
-      <Box display='flex' flexDirection={{ xs: 'column', md: 'row' }} gap={2}>
+      <Typography
+        component="h2"
+        variant="h4"
+        sx={{ mt: 6, mb: 3, ml: 1 }}
+      >
+        {t('cardHome.section2Title')}
+      </Typography>
+
+      <Box
+        display="flex"
+        flexDirection={{ xs: 'column', md: 'row' }}
+        gap={2}
+        role="list"
+        aria-label="Card list row two"
+      >
         {renderCards(secondRow)}
       </Box>
     </Container>
