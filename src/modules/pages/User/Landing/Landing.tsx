@@ -15,7 +15,7 @@ import SliderAds from "./components/SliderAds";
 import Feedback from "./components/Feedback";
 import { axiosInstance, ROOMS_USERS_URLS } from "../../../services/Urls";
 import { toast } from "react-toastify";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import type { Room } from "../../../../interfaces/Shared/Shared";
 import { useThemeContext } from "../../../../contexts/ThemeContext";
 import { useTranslation } from "react-i18next";
@@ -24,33 +24,41 @@ export default function Landing() {
   const theme = useTheme();
   const downMd = useMediaQuery(theme.breakpoints.down("md"));
   const [rooms, setRooms] = useState<Room[]>([]);
-  const [loading,setloading] = useState<boolean>(false)
- const { darkMode } = useThemeContext();
- const { t } = useTranslation();
+  const [loading, setLoading] = useState<boolean>(false);
+  const { darkMode } = useThemeContext();
+  const { t } = useTranslation();
 
-  async function getAllRooms() {
+  const getAllRooms = useCallback(async () => {
     try {
-      setloading(true)
+      setLoading(true);
       const res = await axiosInstance.get(
         `${ROOMS_USERS_URLS.GET_USERS_ROOMS(null, null)}?page=1&size=10`
       );
       setRooms(res.data.data.rooms);
-      console.log(res.data.data.rooms);
     } catch (err: any) {
       toast.error(err.response?.data?.message || "Error fetching rooms");
+    } finally {
+      setLoading(false);
     }
-    finally {
-      setloading(false)
-    }
-  }
+  }, []);
 
   useEffect(() => {
     getAllRooms();
-  }, []);
+  }, [getAllRooms]);
+
+  const headingSplit = useMemo(() => {
+    const title = t("landing.title");
+    const highlight = t("landing.highlight");
+    return title.split(highlight);
+  }, [t]);
 
   return (
     <>
-      <Box sx={{ minHeight: "100vh", bgcolor: "background.default" }}>
+      <Box
+        sx={{ minHeight: "100vh", bgcolor: "background.default" }}
+        component="section"
+        aria-label="landing-intro"
+      >
         <main>
           <Container maxWidth="lg" sx={{ py: { xs: 4, md: 6 } }}>
             <Box
@@ -73,17 +81,16 @@ export default function Landing() {
                   sx={{
                     mb: 2,
                     fontSize: { xs: "2rem", md: "2.5rem" },
-                    color: darkMode ? 'white' : "#152C5B",
+                    color: darkMode ? "white" : "#152C5B",
                     display: "flex",
                     flexDirection: "column",
                     fontWeight: "900",
-                 
                   }}
                 >
-                 {t("landing.title").split(t("landing.highlight"))[0]}
+                  {headingSplit[0]}
                   <Box
                     component="span"
-                    sx={{ color: darkMode ? 'white' : "#152C5B", fontWeight: "900" }}
+                    sx={{ color: darkMode ? "white" : "#152C5B", fontWeight: "900" }}
                   >
                     {t("landing.highlight")}
                   </Box>
@@ -93,13 +100,14 @@ export default function Landing() {
                   variant="body1"
                   sx={{
                     mb: 4,
-                    color: darkMode ? 'white' : "text.secondary",
+                    color: darkMode ? "white" : "text.secondary",
                     fontSize: "1.1rem",
                     lineHeight: 1.6,
                   }}
                 >
                   {t("landing.description")}
                 </Typography>
+
                 <BookingForm />
               </Box>
 
@@ -133,12 +141,12 @@ export default function Landing() {
                   <Box
                     component="img"
                     src={LandingBG}
-                    alt="Modern glass cottage on a hill"
+                    alt={t("landing.imageAlt", "A scenic view of hotel resort")} // accessibility
                     loading="lazy"
+                    width="100%"
+                    height="auto"
                     sx={{
                       display: "block",
-                      width: "100%",
-                      height: "auto",
                       borderRadius: "inherit",
                       objectFit: "cover",
                       position: "relative",
@@ -152,11 +160,11 @@ export default function Landing() {
         </main>
       </Box>
 
+      {/* SEO and UX enhancements: pass loading state */}
       <AdsCard rooms={rooms} />
       <CardHome />
-  <SliderAds rooms={rooms}  loading={loading}/>
+      <SliderAds rooms={rooms} loading={loading} />
       <Feedback />
-    
     </>
   );
 }

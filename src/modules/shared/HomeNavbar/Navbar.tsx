@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import {
   AppBar,
   Toolbar,
@@ -25,8 +25,6 @@ import {
 import { useTranslation } from "react-i18next";
 import i18n from "../../../i18n";
 
-
-
 export const Navbar = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
@@ -35,62 +33,54 @@ export const Navbar = () => {
   const navigate = useNavigate();
   const { darkMode, toggleDarkMode } = useThemeContext();
   const { t } = useTranslation();
-  const handleLogout = () => {
+
+  const handleLogout = useCallback(() => {
     logout();
-
     navigate("/login");
-  };
-  const toggleDrawer = () => setOpen(!open);
+  }, [logout, navigate]);
 
-  const NavButton = ({
-    to,
-    children,
-    ...props
-  }: {
-    to: string;
-    children: React.ReactNode;
-  }) => {
-    const theme = useTheme();
+  const toggleDrawer = useCallback(() => {
+    setOpen((prev) => !prev);
+  }, []);
 
-    return (
-      <Button
-        component={NavLink}
-        to={to}
-        end
-        sx={{
-          px: 0,
-          color: theme.palette.text.primary,
-          fontWeight: 500,
-          textTransform: "none",
-          "&:hover": {
-            color: theme.palette.primary.main,
-          },
-          "&.active": {
-            color: theme.palette.primary.main,
-          },
-        }}
-        {...props}
-      >
-        {children}
-      </Button>
-    );
-  };
-
-const navLinks = isAuthenticated
-  ? [
-      { label: t("navbar.home"), href: "landing" },
-      { label: t("navbar.explore"), href: "Explore" },
-      { label: t("navbar.favorites"), href: "Favorites" },
-      { label: t("navbar.my-bookings"), href: "my-bookings" },
-    ]
-  : [
-      { label: t("navbar.home"), href: "landing" },
-      { label: t("navbar.explore"), href: "Explore" },
-    ];
-
-  const toggleLanguage = () => {
+  const toggleLanguage = useCallback(() => {
     i18n.changeLanguage(i18n.language === "en" ? "ar" : "en");
-  };
+  }, []);
+
+  const navLinks = useMemo(
+    () =>
+      isAuthenticated
+        ? [
+            { label: t("navbar.home"), href: "landing" },
+            { label: t("navbar.explore"), href: "Explore" },
+            { label: t("navbar.favorites"), href: "Favorites" },
+            { label: t("navbar.my-bookings"), href: "my-bookings" },
+          ]
+        : [
+            { label: t("navbar.home"), href: "landing" },
+            { label: t("navbar.explore"), href: "Explore" },
+          ],
+    [isAuthenticated, t]
+  );
+
+  const NavButton = ({ to, children }: { to: string; children: React.ReactNode }) => (
+    <Button
+      component={NavLink}
+      to={to}
+      end
+      sx={{
+        px: 0,
+        color: theme.palette.text.primary,
+        fontWeight: 500,
+        textTransform: "none",
+        "&:hover": { color: theme.palette.primary.main },
+        "&.active": { color: theme.palette.primary.main },
+      }}
+    >
+      {children}
+    </Button>
+  );
+
   const drawer = (
     <Box
       sx={{
@@ -101,42 +91,28 @@ const navLinks = isAuthenticated
         flexDirection: "column",
       }}
       role="presentation"
+      aria-label="Mobile navigation menu"
     >
-      {/* close button */}
       <Box sx={{ p: 2, display: "flex", justifyContent: "flex-end" }}>
         <IconButton onClick={toggleDrawer} aria-label="Close navigation">
           <CloseIcon />
         </IconButton>
       </Box>
 
-      {/* links */}
       <List
         sx={{
           flexGrow: 1,
-          width: "100%",
           display: "flex",
           flexDirection: "column",
-          justifyContent: "center",
           alignItems: "center",
         }}
       >
         {navLinks.map((item) => (
-          <ListItem
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "evenly",
-              alignItems: "center",
-            }}
-            key={item.label}
-            disablePadding
-          >
-            <NavButton key={item.label} to={item.href}>
-              {item.label}
-            </NavButton>
+          <ListItem key={item.href} disablePadding>
+            <NavButton to={item.href}>{item.label}</NavButton>
           </ListItem>
         ))}
-        <Box sx={{ p: 2 , display:'flex', flexDirection: 'column', gap:'2' }}>
+        <Box sx={{ p: 2, display: "flex", flexDirection: "column", gap: 2 }}>
           <Button
             fullWidth
             onClick={toggleDarkMode}
@@ -147,10 +123,10 @@ const navLinks = isAuthenticated
             {darkMode ? t("navbar.lightMode") : t("navbar.darkMode")}
           </Button>
           <Button
-            sx={{ textTransform: "none", color: darkMode ? "white" : "black" }}
             fullWidth
             variant="outlined"
             onClick={toggleLanguage}
+            sx={{ textTransform: "none", color: darkMode ? "white" : "black" }}
           >
             {i18n.language === "ar" ? "English" : "العربية"}
           </Button>
@@ -158,62 +134,50 @@ const navLinks = isAuthenticated
       </List>
 
       <Divider />
-      {!isAuthenticated ? (
-        <Box sx={{ p: 2, display: "flex", flexDirection: "column", gap: 1 }}>
-          <Button
-            component={NavLink}
-            to="/register"
-            variant="outlined"
-            fullWidth
-            onClick={toggleDrawer}
-            sx={{
-              borderColor: theme.palette.primary.main,
-              color: theme.palette.primary.main,
-              textTransform: "none",
-              "&.active": {
+
+      <Box sx={{ p: 2, display: "flex", flexDirection: "column", gap: 1 }}>
+        {!isAuthenticated ? (
+          <>
+            <Button
+              component={NavLink}
+              to="/register"
+              variant="outlined"
+              fullWidth
+              onClick={toggleDrawer}
+              sx={{
+                borderColor: theme.palette.primary.main,
                 color: theme.palette.primary.main,
-                fontWeight: 600,
-              },
-            }}
-          >
-             {t("navbar.register")}
-          </Button>
+                textTransform: "none",
+              }}
+            >
+              {t("navbar.register")}
+            </Button>
+            <Button
+              component={NavLink}
+              to="/login"
+              variant="contained"
+              fullWidth
+              onClick={toggleDrawer}
+              sx={{ textTransform: "none" }}
+            >
+              {t("navbar.loginNow")}
+            </Button>
+          </>
+        ) : (
           <Button
-            component={NavLink}
-            to="/login"
-            variant="contained"
-            fullWidth
-            onClick={toggleDrawer}
-            sx={{
-              textTransform: "none",
-              "&.active": {
-                fontWeight: 600,
-              },
-            }}
-          >
-          {t("navbar.loginNow")}
-          </Button>
-        </Box>
-      ) : (
-        <Box sx={{ p: 2, display: "flex", flexDirection: "column", gap: 1 }}>
-          <Button
-            variant="outlined"
-            fullWidth
             onClick={handleLogout}
+            variant="outlined"
+            fullWidth
             sx={{
               borderColor: theme.palette.primary.main,
               color: theme.palette.primary.main,
               textTransform: "none",
-              "&.active": {
-                color: theme.palette.primary.main,
-                fontWeight: 600,
-              },
             }}
           >
-           {t("navbar.logout")}
+            {t("navbar.logout")}
           </Button>
-        </Box>
-      )}
+        )}
+      </Box>
     </Box>
   );
 
@@ -228,40 +192,38 @@ const navLinks = isAuthenticated
         }}
       >
         <Toolbar sx={{ justifyContent: "space-between", py: 1 }}>
-          {/* Brand ------------------------------------------------------ */}
-          <Typography variant="h6" sx={{ fontWeight: 600, fontSize: "1.5rem" }}>
-            <Box component="span" sx={{ color: theme.palette.primary.main }}>
+          <Typography variant="h1" sx={{ fontSize: "1.5rem", fontWeight: 600 }}>
+            <Box component="span" color="primary.main">
               Stay
             </Box>
-            <Box component="span" sx={{ color: theme.palette.text.primary }}>
+            <Box component="span" color="text.primary">
               cation.
             </Box>
           </Typography>
 
-          {/* Desktop nav ------------------------------------------------- */}
-          {!isMobile && (
+          {!isMobile ? (
             <Box sx={{ display: "flex", alignItems: "center", gap: 4 }}>
               <Box sx={{ display: "flex", gap: 3 }}>
                 {navLinks.map((item) => (
-                  <NavButton key={item.label} to={item.href}>
+                  <NavButton key={item.href} to={item.href}>
                     {item.label}
                   </NavButton>
                 ))}
               </Box>
               <IconButton
                 onClick={toggleDarkMode}
+                aria-label="Toggle dark mode"
                 sx={{ color: darkMode ? "white" : "black" }}
-                aria-label="toggle dark mode"
               >
                 {darkMode ? <LightModeIcon /> : <DarkModeIcon />}
               </IconButton>
-               <IconButton
-         sx={{ color: darkMode ? "white" : "black" }}
-                aria-label="translate"
-            onClick={toggleLanguage}
-          >
-            {i18n.language === "ar" ? "English" : "العربية"}
-          </IconButton>
+              <IconButton
+                onClick={toggleLanguage}
+                aria-label="Toggle language"
+                sx={{ color: darkMode ? "white" : "black" }}
+              >
+                {i18n.language === "ar" ? "English" : "العربية"}
+              </IconButton>
               {!isAuthenticated ? (
                 <Box sx={{ display: "flex", gap: 2 }}>
                   <Button
@@ -269,13 +231,9 @@ const navLinks = isAuthenticated
                     to="/register"
                     variant="outlined"
                     sx={{
+                      textTransform: "none",
                       borderColor: theme.palette.primary.main,
                       color: theme.palette.primary.main,
-                      textTransform: "none",
-                      "&.active": {
-                        color: theme.palette.primary.main,
-                        fontWeight: 600,
-                      },
                     }}
                   >
                     Register
@@ -284,43 +242,25 @@ const navLinks = isAuthenticated
                     component={NavLink}
                     to="/login"
                     variant="contained"
-                    sx={{
-                      textTransform: "none",
-                      "&.active": {
-                        fontWeight: 600,
-                      },
-                    }}
+                    sx={{ textTransform: "none" }}
                   >
                     Login&nbsp;Now
                   </Button>
                 </Box>
               ) : (
-                <Box sx={{ display: "flex", gap: 2 }}>
-                  <Button
-                    onClick={handleLogout}
-                    variant="contained"
-                    sx={{
-                      borderColor: theme.palette.primary.main,
-                      color: "white",
-                      textTransform: "none",
-                      "&.active": {
-                        color: theme.palette.primary.main,
-                        fontWeight: 600,
-                      },
-                    }}
-                  >
+                <Button
+                  onClick={handleLogout}
+                  variant="contained"
+                  sx={{ textTransform: "none", color: "white" }}
+                >
                   {t("navbar.logout")}
-                  </Button>
-                </Box>
+                </Button>
               )}
             </Box>
-          )}
-
-          {/* Mobile hamburger ------------------------------------------ */}
-          {isMobile && (
+          ) : (
             <IconButton
-              aria-label="Open navigation menu"
               onClick={toggleDrawer}
+              aria-label="Open mobile navigation"
               sx={{ color: theme.palette.text.primary }}
             >
               <MenuIcon />
