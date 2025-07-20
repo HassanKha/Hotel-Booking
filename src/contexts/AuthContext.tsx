@@ -5,13 +5,13 @@ import { axiosInstance, USERS_URLS } from "../modules/services/Urls";
 export const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null); // from localStorage
-  const [currentUser, setCurrentUser] = useState<User | null>(null); // from API
+  const [user, setUser] = useState<User | null>(null); 
+  const [currentUser, setCurrentUser] = useState<User | null>(null); 
   const [token, setToken] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(true); // auth init
-  const [userLoading, setUserLoading] = useState<boolean>(false); // current user loading
+  const [loading, setLoading] = useState<boolean>(true); 
+  const [userLoading, setUserLoading] = useState<boolean>(false); 
 
-  // Load from localStorage
+  
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     const storedUser = localStorage.getItem("user");
@@ -27,7 +27,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setLoading(false);
   }, []);
 
-  // Login method
+
   const login = (newToken: string, newUser: User) => {
     setToken(newToken);
     setUser(newUser);
@@ -35,7 +35,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.setItem("user", JSON.stringify(newUser));
   };
 
-  // Logout method
+
   const logout = () => {
     setToken(null);
     setUser(null);
@@ -54,7 +54,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const updatedUser = res.data?.data?.user;
       console.log(res)
       if (updatedUser) {
-        setCurrentUser(updatedUser); // ✅ separate state
+        setCurrentUser(updatedUser); 
       }
     } catch (error) {
       console.error("Failed to fetch current user:", error);
@@ -67,7 +67,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     <AuthContext.Provider
       value={{
         user,
-        currentUser, // ✅ expose it
+        currentUser, 
         token,
         login,
         logout,

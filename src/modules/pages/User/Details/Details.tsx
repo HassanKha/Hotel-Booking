@@ -43,7 +43,7 @@ export default function Details() {
   const [commentRefreshTrigger, setCommentRefreshTrigger] = useState(0);
   const navigate = useNavigate();
   const { user } = useAuth();
-    const location = useLocation();
+  const location = useLocation();
   const guests = location.state?.guests;
   const [room, setRoom] = useState<RoomDetails | null>(null);
   const [loading, setLoading] = useState(true);
@@ -93,7 +93,7 @@ export default function Details() {
         comment,
       });
       toast.success("Comment submitted!");
-       setCommentRefreshTrigger(prev => prev + 1); // 🔁 trigger refresh
+      setCommentRefreshTrigger(prev => prev + 1); // 🔁 trigger refresh
     } catch {
       toast.error("Comment submission failed");
     }
@@ -106,7 +106,7 @@ export default function Details() {
     const totalDays = Math.round(
       (dateRange[1].getTime() - dateRange[0].getTime()) / (1000 * 60 * 60 * 24)
     );
-    const totalPrice = totalDays * ((room?.price || 1) * (guests|| 1));
+    const totalPrice = totalDays * ((room?.price || 1) * (guests || 1));
 
     const bookingData = {
       startDate: format(dateRange[0], "yyyy-MM-dd"),
@@ -138,8 +138,8 @@ export default function Details() {
 
   const totalDays = dateRange[0] && dateRange[1]
     ? Math.round(
-        (dateRange[1].getTime() - dateRange[0].getTime()) / (1000 * 60 * 60 * 24)
-      )
+      (dateRange[1].getTime() - dateRange[0].getTime()) / (1000 * 60 * 60 * 24)
+    )
     : 0;
 
   const totalPrice = totalDays * (room?.price || 0);
@@ -170,7 +170,7 @@ export default function Details() {
         alt={`Room ${room.roomNumber}`}
         sx={{
           borderRadius: 3,
-          width: "30%",
+          width: "60%",
           margin: "0 auto",
           objectFit: "cover",
           mb: 6,
@@ -287,8 +287,8 @@ and to make lives better.`}
                     marginRight: 10,
                   }}
                 >
-                  ${(guests|| 1)*room.price}
-           
+                  ${(guests || 1) * room.price}
+
                 </span>
                 <span
                   style={{
@@ -393,7 +393,6 @@ and to make lives better.`}
                       }}
                     />
 
-                    {/* End Date */}
                     <Box
                       onClick={() => setEndDateOpen(true)}
                       sx={{
@@ -423,7 +422,6 @@ and to make lives better.`}
                   </Box>
                 </Box>
 
-                {/* Hidden Date Pickers */}
                 <DatePicker
                   open={startDateOpen}
                   onOpen={() => setStartDateOpen(true)}
@@ -615,9 +613,9 @@ and to make lives better.`}
             </Box>
           </Box>
         </Box>
-        
+
       )}
-            <CommentsSection Id={id ?? null} refreshTrigger={commentRefreshTrigger} />
+      <CommentsSection Id={id ?? null} refreshTrigger={commentRefreshTrigger} />
     </Container>
   );
 }
