@@ -9,7 +9,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
 import { format } from "date-fns"
 import { useNavigate } from "react-router-dom"
 import { useThemeContext } from "../../../../../contexts/ThemeContext"
-
+import { useTranslation } from "react-i18next";
 export const BookingForm = () => {
   const [guests, setGuests] = React.useState(2)
   const [startDate, setStartDate] = React.useState<Date | null>(new Date())
@@ -17,7 +17,6 @@ export const BookingForm = () => {
   const [startDateOpen, setStartDateOpen] = React.useState(false)
   const [endDateOpen, setEndDateOpen] = React.useState(false)
  const { darkMode } = useThemeContext();
-
   const handleGuestChange = (increment: boolean) => {
     if (increment) {
       setGuests((prev) => prev + 1)
@@ -25,6 +24,7 @@ export const BookingForm = () => {
       setGuests((prev) => Math.max(1, prev - 1))
     }
   }
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,7 +61,7 @@ export const BookingForm = () => {
             fontSize: "1.75rem",
           }}
         >
-          Start Booking
+          {t("bookingForm.startBooking")}
         </Typography>
 
         {/* Pick a Date Section */}
@@ -76,7 +76,7 @@ export const BookingForm = () => {
                 fontSize: "1.25rem",
               }}
             >
-              Pick a Date
+               {t("bookingForm.pickDate")}
             </Typography>
 
             <Box
@@ -158,7 +158,7 @@ export const BookingForm = () => {
                       mb: 0.5,
                     }}
                   >
-                    Check-in
+                 {t("bookingForm.checkIn")}
                   </Typography>
                   <Typography
                     variant="h6"
@@ -205,7 +205,7 @@ export const BookingForm = () => {
                       mb: 0.5,
                     }}
                   >
-                    Check-out
+                  {t("bookingForm.checkOut")}
                   </Typography>
                   <Typography
                     variant="h6"
@@ -271,7 +271,7 @@ export const BookingForm = () => {
               fontSize: "1.25rem",
             }}
           >
-            Capacity
+            {t("bookingForm.capacity")}
           </Typography>
 
           <Box
@@ -328,7 +328,7 @@ export const BookingForm = () => {
                 textAlign: "center",
               }}
             >
-              {guests} person{guests !== 1 ? "s" : ""}
+            {t("bookingForm.guests", { count: guests })}
             </Typography>
 
             {/* Plus Button */}
@@ -401,7 +401,7 @@ export const BookingForm = () => {
             },
           }}
         >
-          Explore
+         {t("bookingForm.explore")}
         </Button>
       </CardContent>
     </Box>

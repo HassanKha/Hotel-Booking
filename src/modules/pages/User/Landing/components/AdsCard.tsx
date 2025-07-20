@@ -16,6 +16,7 @@ export interface Ad {
   image: string;           
 }
 
+import { useTranslation } from "react-i18next";
 
 const cardWrapper: SxProps<Theme> = {
   position: "relative",
@@ -44,11 +45,11 @@ export interface AdsSectionProps {
   heading?: string;
   rooms: Room[];
 }
-const AdsSection = ({ heading = "Most popular ads", rooms }: AdsSectionProps) => {
+const AdsSection = ({  rooms }: AdsSectionProps) => {
 
 
 const smallAds = rooms?.slice(1, 4);
-
+ const { t } = useTranslation();
 
  const { darkMode } = useThemeContext();
   
@@ -63,7 +64,7 @@ const smallAds = rooms?.slice(1, 4);
         color: darkMode? '#ffff' : "#1e293b",
         }}
       >
-        {heading}
+      {t("adsSection.heading")}
       </Typography>
 
       <Box
@@ -75,7 +76,7 @@ const smallAds = rooms?.slice(1, 4);
         }}
       >
         {/* ► Feature card (large, left) */}
-        <AdCard ad={rooms[0]} sx={{ flex: "1 1 50%" }} large />
+        <AdCard t={t} ad={rooms[0]} sx={{ flex: "1 1 50%" }} large />
 
         {/* ► Right column (up to 4 small cards) */}
         <Box
@@ -92,7 +93,7 @@ const smallAds = rooms?.slice(1, 4);
               sx={{ display: "flex", gap: 3, flex: "1 1 50%" }}
             >
               {smallAds.slice(row * 2, row * 2 + 2).map((ad) => (
-                <AdCard key={ad._id} ad={ad} sx={{ flex: 1 }} />
+                <AdCard key={ad._id} t={t} ad={ad} sx={{ flex: 1 }} />
               ))}
             </Box>
           ))}
@@ -108,11 +109,12 @@ type AdCardProps = {
   ad: Room;
   large?: boolean;
   sx?: SxProps<Theme>;
+  t: (key: string, options?: any) => string;
 };
 
 
 
-const AdCard: React.FC<AdCardProps> = ({ ad, large, sx }) => (
+const AdCard: React.FC<AdCardProps> = ({ ad, large, sx,t }) => (
 
 
 
@@ -120,7 +122,7 @@ const AdCard: React.FC<AdCardProps> = ({ ad, large, sx }) => (
     <Box component="img" src={ad?.images[0]} alt={ad?.roomNumber} sx={imageSx} />
 
     <Chip
-      label={`$${ad?.price} per night`}
+     label={t("adsSection.perNight", { price: `$${ad?.price}` })}
       sx={{
         position: "absolute",
         top: 12,

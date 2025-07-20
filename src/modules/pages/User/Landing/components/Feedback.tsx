@@ -1,147 +1,150 @@
-import { Box, Typography, IconButton, Rating, Paper } from '@mui/material';
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import Slider from 'react-slick';
-import { useRef } from 'react';
-import img1 from '../../../../../assets/rev1.jpg';
-import img2 from '../../../../../assets/rev2.png';
-import img3 from '../../../../../assets/family.jpeg';
+import  { useRef } from "react";
+import {
+  Box,
+  IconButton,
+  Paper,
+  Rating,
+  Typography,
+} from "@mui/material";
+import Slider from "react-slick";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import { useTranslation } from "react-i18next";
+import img1 from "../../../../../assets/1.png";
+import img2 from "../../../../../assets/2.png";
+import img3 from "../../../../../assets/3.png";
 
+const Feedback = () => {
+  const { t } = useTranslation();
+  const sliderRef = useRef<Slider | null>(null);
 
+  const data = [
+     { img: img1 },
+    { img: img2 },
+    { img: img3 },
+  ];
 
-export default function Feedback() {
-    const sliderRef = useRef<Slider | null>(null);
+  const settings = {
+    dots: false,
+    infinite: true,
+    speed: 1000,
+    slidesToShow: 1,
+    arrows: false,
+    autoplay: true,
+    autoplaySpeed: 4000,
+  };
 
-    const settings = {
-        infinite: true,
-        speed: 500,
-        autoplay: false,
-        slidesToShow: 1,
-        slidesToScroll: 1,
-        arrows: false,
-    };
+  return (
+    <Box
+      sx={{
+        pt: 2,
+        pb: 10,
+        px: { xs: 2, md: 10 },
+      }}
+    >
+      <Typography
+        variant="h4"
+        fontWeight="bold"
+        color="primary"
+        textAlign="center"
+        mb={6}
+      >
+        {t("feedback.title")}
+      </Typography>
 
-    const data = [
-        {
-            img: img1,
-            title: 'Happy Family',
-            rating: 5,
-            text: 'What a great trip with my family and I should try again next time soon ...',
-            author: 'Angga, Product Designer',
-        },
+      <Slider ref={sliderRef} {...settings}>
+        {data.map((item, index) => (
+          <Box key={index}>
+            <Paper
+              elevation={3}
+              sx={{
+                borderRadius: 4,
+                overflow: "hidden",
+                p: { xs: 2, md: 4 },
+                display: "flex",
+                flexDirection: { xs: "column", md: "row" },
+                alignItems: "center",
+                gap: 3,
+              }}
+            >
+              <Box sx={{ position: "relative", flexShrink: 0 }}>
+                <Box
+                  sx={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    background: "rgba(0, 0, 0, 0.3)",
+                    zIndex: 1,
+                    borderBottomRightRadius: "100px",
+                  }}
+                />
+                <Box
+                  component="img"
+                  src={item.img}
+                  alt={t(`feedback.items.${index}.title`)}
+                  sx={{
+                    width: "100%",
+                    height: { xs: 250, md: 400 },
+                    borderRadius: 4,
+                    objectFit: "cover",
+                    position: "relative",
+                    zIndex: 2,
+                  }}
+                  style={{ borderBottomRightRadius: "100px" }}
+                />
+              </Box>
 
-        {
-            img: img2,
-            title: 'Great Memories',
-            rating: 5,
-            text: 'Great experience with my loved ones. Will go again for sure!',
-            author: 'John, Photographer',
-        },
-        {
-            img: img3,
+              <Box sx={{ flex: 1 }}>
+                <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>
+                  {t(`feedback.items.${index}.title`)}
+                </Typography>
 
-            title: 'Great Memories',
-            rating: 5,
-            text: 'Great experience with my loved ones. Will go again for sure!',
-            author: 'John, Photographer',
-        },
-    ];
+                <Rating value={5} readOnly size="small" sx={{ mb: 2 }} />
 
-    return (
-        <Box sx={{ maxWidth: 1000, mx: 'auto', my: 5 }}>
-            <Slider {...settings} ref={sliderRef}>
-                {data.map((item, index) => (
-                    <Box key={index}>
-                        <Paper
-                            elevation={3}
-                            sx={{
-                                display: 'flex',
-                                flexDirection: 'row',
-                                alignItems: 'center',
-                                gap: { xs: 3, md: 5 },
-                                p: { xs: 2, md: 4 },
-                                borderRadius: 4,
-                                backgroundColor: '#fffefeff',
-                                boxShadow: 0,
-                                flexWrap: 'wrap',
-                            }}
-                        >
-                            {/* Image */}
-                            <Box
-                                sx={{
-                                    position: 'relative',
-                                    width: { xs: '100%', sm: 300 },
-                                    flexShrink: 0,
-                                    borderRadius: 4,
-                                }}
-                            >
-                                <Box
-                                    sx={{
-                                        position: 'absolute',
-                                        right: 25,
-                                        bottom: 25,
-                                        width: '100%',
-                                        height: '100%',
-                                        borderRadius: 4,
-                                        border: '2px solid #e0e0e0',
-                                        zIndex: 0,
-                                        
-                                    }}
-                                />
-                                <Box
-                                    component="img"
-                                    src={item.img}
-                                    alt={item.title}
-                                    sx={{
-                                        width: '100%',
-                                        height: { xs: 250, md: 400 },
-                                        borderRadius: 4,
-                                        objectFit: 'cover',
-                                        position: 'relative',
-                                        zIndex: 1,
-                                    }}
-                                    style={{ borderBottomRightRadius: '100px' }}
-                                />
-                            </Box>
+                <Typography
+                  variant="body1"
+                  sx={{ color: "text.secondary", mb: 2 }}
+                >
+                  {t(`feedback.items.${index}.text`)}
+                </Typography>
 
-                           
-                            <Box sx={{ flex: 1 }}>
-                                <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>
-                                    {item.title}
-                                </Typography>
+                <Typography
+                  variant="caption"
+                  color="text.disabled"
+                  display="block"
+                  sx={{ mb: 3 }}
+                >
+                  {t(`feedback.items.${index}.author`)}
+                </Typography>
 
-                                <Rating value={item.rating} readOnly size="small" sx={{ mb: 2 }} />
+                <Box sx={{ display: "flex", gap: 2 }}>
+                  <IconButton
+                    style={{
+                      border: "3px solid rgb(25, 118, 210)",
+                      margin: "0 30px",
+                    }}
+                    color="primary"
+                    onClick={() => sliderRef.current?.slickPrev()}
+                  >
+                    <ArrowBackIosNewIcon />
+                  </IconButton>
+                  <IconButton
+                    style={{ border: "3px solid rgb(25, 118, 210)" }}
+                    color="primary"
+                    onClick={() => sliderRef.current?.slickNext()}
+                  >
+                    <ArrowForwardIosIcon />
+                  </IconButton>
+                </Box>
+              </Box>
+            </Paper>
+          </Box>
+        ))}
+      </Slider>
+    </Box>
+  );
+};
 
-                                <Typography
-                                    variant="body1"
-                                    sx={{ color: 'text.secondary', mb: 2 }}
-                                >
-                                    {item.text}
-                                </Typography>
-
-                                <Typography
-                                    variant="caption"
-                                    color="text.disabled"
-                                    display="block"
-                                    sx={{ mb: 3 }}
-                                >
-                                    {item.author}
-                                </Typography>
-
-                                {/* Arrows */}
-                                <Box sx={{ display: 'flex', gap: 2 }}>
-                                    <IconButton style={{ border: '3px solid rgb(25, 118, 210)',  margin: '0 30px',fontSize: '30px'}} color="primary" onClick={() => sliderRef.current?.slickPrev()}>
-                                        <ArrowBackIosNewIcon />
-                                    </IconButton>
-                                    <IconButton style={{ border: '3px solid rgb(25, 118, 210)',fontSize: '30px'}} color="primary" onClick={() => sliderRef.current?.slickNext()}>
-                                        <ArrowForwardIosIcon />
-                                    </IconButton>
-                                </Box>
-                            </Box>
-                        </Paper>
-                    </Box>
-                ))}
-            </Slider>
-        </Box>
-    );
-}
+export default Feedback;

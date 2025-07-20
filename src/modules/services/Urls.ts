@@ -94,5 +94,8 @@ export const USERS_BOOKINGS ={
   GET_USERS_BOKKINGS:`portal/booking/my`
 }
 
+export const comments_URL = { GET_COMMENTS:(id:string)=>`portal/room-comments/${id}`,
+}
+
 
 

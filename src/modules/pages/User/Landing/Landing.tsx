@@ -18,7 +18,7 @@ import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import type { Room } from "../../../../interfaces/Shared/Shared";
 import { useThemeContext } from "../../../../contexts/ThemeContext";
-//import { useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 
 export default function Landing() {
   const theme = useTheme();
@@ -26,7 +26,7 @@ export default function Landing() {
   const [rooms, setRooms] = useState<Room[]>([]);
   const [loading,setloading] = useState<boolean>(false)
  const { darkMode } = useThemeContext();
- //const { t, i18n } = useTranslation();
+ const { t } = useTranslation();
 
   async function getAllRooms() {
     try {
@@ -80,12 +80,12 @@ export default function Landing() {
                  
                   }}
                 >
-                  Forget Busy Work,{" "}
+                 {t("landing.title").split(t("landing.highlight"))[0]}
                   <Box
                     component="span"
                     sx={{ color: darkMode ? 'white' : "#152C5B", fontWeight: "900" }}
                   >
-                    Start Next Vacation
+                    {t("landing.highlight")}
                   </Box>
                 </Typography>
 
@@ -98,8 +98,7 @@ export default function Landing() {
                     lineHeight: 1.6,
                   }}
                 >
-                  We provide what you need to enjoy your holiday with family.
-                  Time to make another memorable moments.
+                  {t("landing.description")}
                 </Typography>
                 <BookingForm />
               </Box>

@@ -5,8 +5,6 @@ import {
   Button,
   Container,
   Typography,
-  useMediaQuery,
-  useTheme,
 } from "@mui/material";
 import { loadStripe } from "@stripe/stripe-js";
 import {
@@ -30,8 +28,6 @@ function PaymentForm() {
   const elements = useElements();
   const navigate = useNavigate();
   const location = useLocation();
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const booking = location.state?.booking?.booking || location.state?.booking;
   const totalPrice = location.state?.totalPrice;

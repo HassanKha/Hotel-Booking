@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import {
   Box,
@@ -24,7 +24,6 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { format } from "date-fns";
 import { axiosInstance, ROOMS_USERS_URLS } from "../../../services/Urls";
-import axios from "axios";
 
 // Room features icons
 import bedroomImg from "../../../../assets/bedroom.png";
@@ -37,11 +36,15 @@ import refrigeratorImg from "../../../../assets/refrigerator.png";
 import tvImg from "../../../../assets/tv.png";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import type { RoomDetails } from "../../../../interfaces/Rooms/Rooms";
+import CommentsSection from "./componets/comments";
 
 export default function Details() {
   const { id } = useParams();
+  const [commentRefreshTrigger, setCommentRefreshTrigger] = useState(0);
   const navigate = useNavigate();
   const { user } = useAuth();
+    const location = useLocation();
+  const guests = location.state?.guests;
   const [room, setRoom] = useState<RoomDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [rating, setRating] = useState<number | null>(0);
@@ -90,6 +93,7 @@ export default function Details() {
         comment,
       });
       toast.success("Comment submitted!");
+       setCommentRefreshTrigger(prev => prev + 1); // 🔁 trigger refresh
     } catch {
       toast.error("Comment submission failed");
     }
@@ -102,7 +106,7 @@ export default function Details() {
     const totalDays = Math.round(
       (dateRange[1].getTime() - dateRange[0].getTime()) / (1000 * 60 * 60 * 24)
     );
-    const totalPrice = totalDays * (room?.price || 0);
+    const totalPrice = totalDays * ((room?.price || 1) * (guests|| 1));
 
     const bookingData = {
       startDate: format(dateRange[0], "yyyy-MM-dd"),
@@ -283,7 +287,8 @@ and to make lives better.`}
                     marginRight: 10,
                   }}
                 >
-                  ${room.price}
+                  ${(guests|| 1)*room.price}
+           
                 </span>
                 <span
                   style={{
@@ -512,6 +517,8 @@ and to make lives better.`}
 
       <Divider sx={{ my: 4 }} />
 
+
+
       {user && (
         <Box
           display="flex"
@@ -608,7 +615,9 @@ and to make lives better.`}
             </Box>
           </Box>
         </Box>
+        
       )}
+            <CommentsSection Id={id ?? null} refreshTrigger={commentRefreshTrigger} />
     </Container>
   );
 }

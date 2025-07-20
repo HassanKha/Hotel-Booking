@@ -25,6 +25,8 @@ import {
 import { useTranslation } from "react-i18next";
 import i18n from "../../../i18n";
 
+
+
 export const Navbar = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
@@ -38,7 +40,6 @@ export const Navbar = () => {
 
     navigate("/login");
   };
-
   const toggleDrawer = () => setOpen(!open);
 
   const NavButton = ({
@@ -75,16 +76,16 @@ export const Navbar = () => {
     );
   };
 
-  const navLinks = isAuthenticated
-    ? [
-        { label: "Home", href: "landing" },
-        { label: "Explore", href: "Explore" },
-        { label: "Favorites", href: "Favorites" },
-      ]
-    : [
-        { label: "Home", href: "landing" },
-        { label: "Explore", href: "Explore" },
-      ];
+const navLinks = isAuthenticated
+  ? [
+      { label: t("navbar.home"), href: "landing" },
+      { label: t("navbar.explore"), href: "Explore" },
+      { label: t("navbar.favorites"), href: "Favorites" },
+    ]
+  : [
+      { label: t("navbar.home"), href: "landing" },
+      { label: t("navbar.explore"), href: "Explore" },
+    ];
 
   const toggleLanguage = () => {
     i18n.changeLanguage(i18n.language === "en" ? "ar" : "en");
@@ -142,7 +143,7 @@ export const Navbar = () => {
             startIcon={darkMode ? <LightModeIcon /> : <DarkModeIcon />}
             sx={{ textTransform: "none", color: darkMode ? "white" : "black" }}
           >
-            {darkMode ? "Light Mode" : "Dark Mode"}
+            {darkMode ? t("navbar.lightMode") : t("navbar.darkMode")}
           </Button>
           <Button
             sx={{ textTransform: "none", color: darkMode ? "white" : "black" }}
@@ -174,7 +175,7 @@ export const Navbar = () => {
               },
             }}
           >
-            Register
+             {t("navbar.register")}
           </Button>
           <Button
             component={NavLink}
@@ -189,7 +190,7 @@ export const Navbar = () => {
               },
             }}
           >
-            Login&nbsp;Now
+          {t("navbar.loginNow")}
           </Button>
         </Box>
       ) : (
@@ -208,7 +209,7 @@ export const Navbar = () => {
               },
             }}
           >
-            Logout
+           {t("navbar.logout")}
           </Button>
         </Box>
       )}
@@ -307,7 +308,7 @@ export const Navbar = () => {
                       },
                     }}
                   >
-                    Logout
+                  {t("navbar.logout")}
                   </Button>
                 </Box>
               )}

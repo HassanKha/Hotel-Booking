@@ -11,9 +11,9 @@ interface SliderAdsProps {
   rooms: Room[];
   loading: boolean;
 }
-
+import { useTranslation } from "react-i18next";
 export default function SliderAds({ rooms, loading }: SliderAdsProps) {
-
+const { t } = useTranslation();
   const settings = {
     infinite: true,
     speed: 1000,
@@ -36,7 +36,7 @@ export default function SliderAds({ rooms, loading }: SliderAdsProps) {
          </Box>
     ) : (
        <div style={{ width: '85%', margin: '0 auto' ,paddingBottom:"50px"}}>
-        <h2 style={{  margin: '5px ' }}>Ads</h2>
+        <h2 style={{  margin: '5px ' }}>{t("slider.ads")}</h2>
         <Slider {...settings}  >
           {rooms.map((room) => (
             <div key={room._id} >
