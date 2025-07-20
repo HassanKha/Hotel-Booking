@@ -29,7 +29,6 @@ const columns = [
     ),
   },
   { id: "email", label: "Email", align: "center" as "center", render: (row: User) => row.email },
-  { id: "phoneNumber", label: "Phone", align: "center" as "center", render: (row: User) => row.phoneNumber ? `0${row.phoneNumber}` : "N/A" },
   { id: "country", label: "Country", align: "center" as "center", render: (row: User) => row.country },
   { id: "role", label: "Role", align: "center" as "center", render: (row: User) => row.role },
 ];
@@ -58,7 +57,6 @@ export default function Users() {
         userName: user.userName || "N/A",
         profileImage: user.profileImage || "",
         email: user.email || "N/A",
-        phoneNumber: user.phoneNumber, 
         country: user.country || "N/A",
         role: user.role || "N/A",
       }));

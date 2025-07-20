@@ -1,12 +1,4 @@
 
-interface Room {
-  roomNumber: number;
-  price: number;
-  discount: number;
-  description: string;
-  images: string[];
-}
-
 export interface RoomToEdit {
   _id: string;
   name: string;

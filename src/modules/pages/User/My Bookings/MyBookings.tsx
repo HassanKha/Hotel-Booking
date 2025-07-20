@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Box, Typography, Card, CardContent, Button, Chip,
   Table, TableHead, TableBody, TableRow, TableCell, TableContainer, Paper, CircularProgress,
@@ -135,11 +135,11 @@ export default function MyBookings() {
                         },
                       }}
                       icon={
-                        booking.status.toLowerCase() === 'completed' ? (
+                        booking?.status?.toLowerCase() === 'completed' ? (
                           <CheckCircleOutline />
-                        ) : booking.status.toLowerCase() === 'pending' ? (
+                        ) : booking?.status?.toLowerCase() === 'pending' ? (
                           <AccessTime />
-                        ) : null
+                        ) : undefined
                       }
                     />
                     {booking.status === 'Pending' && (
@@ -194,11 +194,11 @@ export default function MyBookings() {
                           },
                         }}
                         icon={
-                          booking.status.toLowerCase() === 'completed' ? (
+                          booking?.status?.toLowerCase() === 'completed' ? (
                             <CheckCircleOutline />
-                          ) : booking.status.toLowerCase() === 'pending' ? (
+                          ) : booking?.status?.toLowerCase() === 'pending' ? (
                             <AccessTime />
-                          ) : null
+                          ) : undefined
                         }
                       />
                     </TableCell>
