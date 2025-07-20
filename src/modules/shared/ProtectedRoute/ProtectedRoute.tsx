@@ -7,6 +7,8 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 
   if (loading) return null; // Or a spinner while checking
 
+
+
   if (!isAuthenticated) return <Navigate to="/login" replace />;
   if (user?.role === "user") return <Navigate to="/landing" replace />;
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Box,
   Card,
@@ -6,12 +6,13 @@ import {
   Typography,
   useTheme,
   useMediaQuery,
+  Skeleton,
 } from "@mui/material";
 import { styled, keyframes } from "@mui/material/styles";
-import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
-import { axiosInstance, DASHBOARD_Charts_URL } from "../../../services/Urls";
+import { axiosInstance, DASHBOARD_Charts_URL } from "../../../../services/Urls";
 import { toast } from "react-toastify";
-import { AdminIcon, UserIcon } from "../../../../assets/Dashboard/Home";
+import { AdminIcon, UserIcon } from "../../../../../assets/Dashboard/Home";
+const LazyPieChart = React.lazy(() => import("./Charts"));
 
 const fadeInUp = keyframes`
   from {
@@ -225,116 +226,43 @@ const UserStatsItem = ({
   );
 };
 
-const DonutChart = ({ bookings }: { bookings: { pending: number; completed: number } }) => {
-  const theme = useTheme();
-  const pieData = [
-    { name: "Pending", value: bookings.pending, color: "#4F46E5" },
-    { name: "Completed", value: bookings.completed, color: "#8B5CF6" },
-  ];
-  const textColor = theme.palette.mode === "dark" ? "#ffffff" : theme.palette.text.primary;
 
-  return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: { xs: "column", sm: "row" },
-        alignItems: "center",
-        justifyContent: "space-between",
-        gap: 4,
-        flex: 1,
-      }}
-    >
-      <Box
-        sx={{
-          flex: "0 0 auto",
-          height: { xs: 200, sm: 250 },
-          width: { xs: 200, sm: 250 },
-          mx: "auto",
-        }}
-      >
-        <ResponsiveContainer width="100%" height="100%">
-          <PieChart>
-            <Pie
-              data={pieData}
-              cx="50%"
-              cy="50%"
-              labelLine={false}
-              outerRadius={100}
-              innerRadius={60}
-              fill="#8884d8"
-              dataKey="value"
-              startAngle={90}
-              endAngle={450}
-            >
-              {pieData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={entry.color} />
-              ))}
-            </Pie>
-          </PieChart>
-        </ResponsiveContainer>
-      </Box>
-
-      <Box
-        sx={{
-          flex: 1,
-          minWidth: "200px",
-          width: "100%",
-        }}
-      >
-        {pieData.map((item) => (
-          <Box
-            key={item.name}
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              mb: 2,
-              justifyContent: { xs: "center", sm: "flex-start" },
-            }}
-          >
-            <Box
-              sx={{
-                width: 16,
-                height: 16,
-                backgroundColor: item.color,
-                borderRadius: "50%",
-                mr: 2,
-              }}
-            />
-            <Typography
-              variant="body2"
-              sx={{ fontSize: "1rem", color: textColor }}
-            >
-              {item.name}
-            </Typography>
-          </Box>
-        ))}
-      </Box>
-    </Box>
-  );
-};
 
 export const DashboardHome: React.FC = () => {
   const theme = useTheme();
   const isSmall = useMediaQuery(theme.breakpoints.down("sm"));
   const [dashboardData, setDashboardData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchCharts = async () => {
+    let mounted = true;
+    (async () => {
       try {
         const res = await axiosInstance.get(DASHBOARD_Charts_URL.GET_Dash);
-        setDashboardData(res.data.data);
-      } catch (err) {
+        if (mounted) {
+          setDashboardData(res.data.data);
+          setLoading(false);
+        }
+      } catch {
         toast.error("Error fetching dashboard data");
+        setLoading(false);
       }
+    })();
+    return () => {
+      mounted = false;
     };
-    fetchCharts();
   }, []);
 
-  const stats = [
-    { title: "Rooms", value: dashboardData?.rooms || 0, delay: 0 },
-    { title: "Facilities", value: dashboardData?.facilities || 0, delay: 200 },
-    { title: "Ads", value: dashboardData?.ads || 0, delay: 400 },
-  ];
+
+    const stats = useMemo(
+    () => [
+      { title: "Rooms", value: dashboardData?.rooms || 0,delay: 0 },
+      { title: "Facilities", value: dashboardData?.facilities || 0 ,  delay: 200 },
+      { title: "Ads", value: dashboardData?.ads || 0, delay: 400  },
+    ],
+    [dashboardData]
+  );
+
 
   const userCount = dashboardData?.users?.user || 0;
   const adminCount = dashboardData?.users?.admin || 0;
@@ -342,7 +270,7 @@ export const DashboardHome: React.FC = () => {
 
   return (
    <Box sx={{ p: { xs: 2, md: 2 }, mb: 4 }}>
-  {/* Title and Subtitle */}
+
   <AnimatedContainer sx={{ mb: 4 }}>
     <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
       Dashboard Overview
@@ -352,7 +280,6 @@ export const DashboardHome: React.FC = () => {
     </Typography>
   </AnimatedContainer>
 
-  {/* Stats Cards */}
   <Box
     display="flex"
     flexWrap="wrap"
@@ -364,10 +291,10 @@ export const DashboardHome: React.FC = () => {
         key={stat.title}
         sx={{
           flex: {
-            xs: "1 1 100%",                     // 1 per row on mobile
-            sm: "1 1 calc(50% - 24px)",         // 2 per row on small screens
-            md: "1 1 calc(33.33% - 24px)",      // 3 per row on medium
-            lg: "1 1 calc(25% - 24px)",         // 4 per row on large
+            xs: "1 1 100%",                    
+            sm: "1 1 calc(50% - 24px)",         
+            md: "1 1 calc(33.33% - 24px)",      
+            lg: "1 1 calc(25% - 24px)",         
           },
           justifyContent: "center",
           alignItems: "center",
@@ -424,7 +351,13 @@ export const DashboardHome: React.FC = () => {
         >
           Booking Status Overview
         </Typography>
-        {dashboardData?.bookings && <DonutChart bookings={dashboardData.bookings} />}
+             {loading ? (
+                <Skeleton variant="rectangular" width="100%" height={250} />
+              ) : (
+                <React.Suspense fallback={<Skeleton variant="rectangular" width="100%" height={250} />}>
+                  <LazyPieChart bookings={dashboardData.bookings} />
+                </React.Suspense>
+              )}
       </ChartContainer>
     </Box>
 

@@ -8,42 +8,11 @@ import ViewModel from "../ViewAddModel/ViewModel.tsx";
 import Header from "../../../../../shared/Header/Header.tsx";
 import Swal from "sweetalert2";
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from '@mui/material';
+import type { Ad } from "../../../../../../interfaces/Ads/Ads.ts";
+import type { RoomOption } from "../../../../../../interfaces/Rooms/Rooms.ts";
 
 
-interface AdCreatedBy {
-  _id: string;
-  userName: string;
-}
 
-
-interface RoomDetails {
-  _id: string;
-  roomNumber: string;
-  price: number;
-  capacity: number;
-  discount: number;
-  facilities: string[];
-  createdBy: string;
-  images: string[];
-  createdAt: string;
-  updatedAt: string;
-}
-
-
-interface Ad {
-  _id: string;
-  isActive: boolean;
-  room: RoomDetails | null; 
-  createdBy: AdCreatedBy; 
-  createdAt: string;
-  updatedAt: string;
-}
-
-
-interface RoomOption {
-  _id: string;
-  roomNumber: string;
-}
 
 export default function Ads() {
   const [ads, setAds] = useState<Ad[]>([]);
@@ -196,6 +165,18 @@ export default function Ads() {
       align: "center" as const,
       render: (row: Ad) => `$${row.room?.price}`,
     },
+     {
+      id: "Discount",
+      label: "Discount",
+      align: "center" as const,
+      render: (row: Ad) => row.room?.discount,
+    },
+     {
+      id: "Active",
+      label: "Active",
+      align: "center" as const,
+      render: (row: Ad) => row.isActive ? "Yes" : "No",
+    },
     {
       id: "Capacity",
       label: "Capacity",
@@ -207,13 +188,7 @@ export default function Ads() {
       label: "Created By",
       align: "center" as const,
       render: (row: Ad) => row.createdBy?.userName ?? "-", 
-    },
-    {
-      id: "Created At",
-      label: "Created At",
-      align: "center" as const,
-      render: (row: Ad) => new Date(row.createdAt).toLocaleDateString(),
-    },
+    }
   ];
 
   return (

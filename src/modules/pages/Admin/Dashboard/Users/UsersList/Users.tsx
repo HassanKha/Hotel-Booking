@@ -5,19 +5,9 @@ import { axiosInstance, USERS_URLS } from "../../../../../services/Urls.ts";
 import { CircularProgress, Box } from "@mui/material";
 import UserDetailsModal from "../UsersData/UserDetailsModal.tsx";
 import { toast } from "react-toastify";
+import type { User } from "../../../../../../interfaces/Auth/AuthContextType.ts";
 
-interface User {
-  _id: string;
-  userName: string;
-  email: string;
-  phoneNumber: number;
-  country: string;
-  role: string;
-  profileImage: string;
-  verified: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
+
 
 const columns = [
   { id: "userName", label: "Name", align: "center" as "center", render: (row: User) => row.userName },

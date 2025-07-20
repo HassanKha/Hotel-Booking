@@ -19,6 +19,8 @@ axiosInstance.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+///////Admin Portal///////
+
 export const USERS_URLS = {
   LOGIN: `/portal/users/login`,
   FORGET_PASS: `/portal/users/forgot-password`,
@@ -65,6 +67,36 @@ export const DASHBOARD_Charts_URL = {
 
 }
 
+
+///////User Portal///////
+
+export const ROOMS_USERS_URLS = {
+  GET_USERS_ROOMS: (startDate?: string | null, endDate?: string | null) => {
+    const params = new URLSearchParams();
+    if (startDate) params.append("startDate", startDate);
+    if (endDate) params.append("endDate", endDate);
+    const query = params.toString();
+    return `portal/rooms/available${query ? `?${query}` : ""}`;
+  },
+  GET_ROOM_DETAILS: (id: string) => `portal/rooms/${id}`,
+  ADD_REVIEW: `portal/room-reviews`,
+  ADD_COMMENT: `portal/room-comments`,
+};
+
+
+export const USERS_FAVORITES = {
+  GET_USER_FAVOURITES:`portal/favorite-rooms`,
+  ADD_TO_FAVOURITES:`portal/favorite-rooms`,
+  DELETE_FROM_FAVOURITE:(id:string)=>`portal/favorite-rooms/${id}`,
+}
+
+export const USERS_BOOKINGS ={
+  GET_USERS_BOKKINGS:`portal/booking/my`,
+  PAY_BOOKING:(id:string)=>`/portal/booking/${id}/pay`
+}
+
+export const comments_URL = { GET_COMMENTS:(id:string)=>`portal/room-comments/${id}`,
+}
 
 
 
