@@ -5,7 +5,8 @@
     "favorites": "Favorites",
     "register": "Register",
     "loginNow": "Login Now",
-       "logout": "Logout",
+    "my-bookings":"My Bookings",
+    "logout": "Logout",
     "lightMode": "Light Mode",
     "darkMode": "Dark Mode"
   },

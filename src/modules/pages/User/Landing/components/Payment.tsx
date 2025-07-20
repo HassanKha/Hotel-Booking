@@ -15,7 +15,7 @@ import {
   useElements,
 } from "@stripe/react-stripe-js";
 import { toast } from "react-toastify";
-import { axiosInstance } from "../../../../services/Urls";
+import { axiosInstance, USERS_BOOKINGS } from "../../../../services/Urls";
 import payment from "../../../../../assets/payment.jpg";
 
 const stripePromise = loadStripe(
@@ -55,7 +55,7 @@ setIsLoading(true)
         return;
       }
 
-      await axiosInstance.post(`/portal/booking/${booking._id}/pay`, {
+      await axiosInstance.post(USERS_BOOKINGS.PAY_BOOKING(booking._id), {
         token: token.id,
       });
 

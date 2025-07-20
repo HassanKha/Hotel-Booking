@@ -91,7 +91,8 @@ export const USERS_FAVORITES = {
 }
 
 export const USERS_BOOKINGS ={
-  GET_USERS_BOKKINGS:`portal/booking/my`
+  GET_USERS_BOKKINGS:`portal/booking/my`,
+  PAY_BOOKING:(id:string)=>`/portal/booking/${id}/pay`
 }
 
 export const comments_URL = { GET_COMMENTS:(id:string)=>`portal/room-comments/${id}`,

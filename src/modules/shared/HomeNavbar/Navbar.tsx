@@ -81,6 +81,7 @@ const navLinks = isAuthenticated
       { label: t("navbar.home"), href: "landing" },
       { label: t("navbar.explore"), href: "Explore" },
       { label: t("navbar.favorites"), href: "Favorites" },
+      { label: t("navbar.my-bookings"), href: "my-bookings" },
     ]
   : [
       { label: t("navbar.home"), href: "landing" },
